@@ -1,9 +1,8 @@
 import { comingSoon, films } from './data/catalog.js';
 import { createDialog } from './modules/dialog.js';
-import { initSiteShell, registerServiceWorker } from './modules/site-shell.js';
+import { initSiteShell } from './modules/site-shell.js';
 
 initSiteShell();
-registerServiceWorker();
 
 const filmGrid = document.querySelector('#film-grid');
 const slateGrid = document.querySelector('#slate-grid');
@@ -96,7 +95,6 @@ comingSoon.forEach((title) => slateGrid.appendChild(renderSlateCard(title)));
 
 const playerRoot = document.querySelector('#player-dialog');
 const detailsRoot = document.querySelector('#details-dialog');
-const installRoot = document.querySelector('#install-dialog');
 
 const playerDialog = createDialog(playerRoot, {
   onClose: () => {
@@ -106,10 +104,6 @@ const playerDialog = createDialog(playerRoot, {
 });
 
 const detailsDialog = createDialog(detailsRoot, {
-  onClose: scheduleHero
-});
-
-const installDialog = createDialog(installRoot, {
   onClose: scheduleHero
 });
 
@@ -249,20 +243,4 @@ searchClose.addEventListener('click', () => setSearchOpen(false, { restoreFocus:
 searchInput.addEventListener('input', () => filterCatalogue(searchInput.value));
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !searchPanel.hidden) setSearchOpen(false, { restoreFocus: true });
-});
-
-function openDownloadDialog(trigger) {
-  stopHero();
-  installDialog.open(trigger);
-}
-
-document.querySelectorAll('[data-open-install]').forEach((button) => {
-  button.addEventListener('click', (event) => openDownloadDialog(event.currentTarget));
-});
-
-installRoot.querySelectorAll('.install-option').forEach((link) => {
-  link.addEventListener('click', () => {
-    installDialog.close();
-    showToast('Your download is starting.');
-  });
 });

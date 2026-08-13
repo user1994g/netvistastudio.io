@@ -10,6 +10,7 @@
   display: grid;
   grid-template-columns: minmax(0, .9fr) minmax(440px, 1.1fr);
   width: min(1260px, 100%);
+  max-width: 100%;
   margin: 0 auto;
   padding: 138px var(--gutter) 110px;
   gap: clamp(52px, 8vw, 120px);
@@ -88,6 +89,7 @@
 
 .application-form {
   display: grid;
+  min-width: 0;
   padding: clamp(25px, 4vw, 43px);
   gap: 19px;
   border: 1px solid var(--line);
@@ -226,7 +228,13 @@
   font: 9px var(--mono);
 }
 
-.application-footer > a:not(.footer-brand) {
+.application-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.application-footer-actions a {
   color: var(--muted-strong);
 }
 
@@ -248,6 +256,10 @@
 }
 
 @media (max-width: 580px) {
+  .application-layout {
+    padding-top: 96px;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -258,7 +270,7 @@
   }
 
   .application-intro h1 {
-    font-size: clamp(59px, 17vw, 78px);
+    font-size: clamp(50px, 16vw, 72px);
   }
 
   .application-footer {
@@ -269,5 +281,10 @@
 
   .application-footer > p:last-child {
     margin-top: 10px;
+  }
+
+  .application-footer-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 }

@@ -1,10 +1,1 @@
 .DS_Store
-node_modules/
-out/
-desktop/assets/icon-source.png
-mobile/www/
-android/.gradle/
-android/local.properties
-android/app/src/main/assets/public/
-ios/App/App/public/
-ios/build/

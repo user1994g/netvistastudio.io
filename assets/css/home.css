@@ -1,5 +1,7 @@
 .hero {
   position: relative;
+  width: 100%;
+  max-width: 100%;
   min-height: max(760px, 91vh);
   isolation: isolate;
   overflow: hidden;
@@ -33,6 +35,7 @@
 .hero-content {
   display: flex;
   width: min(700px, 100%);
+  max-width: 100%;
   min-height: max(760px, 91vh);
   padding: 145px var(--gutter) 170px;
   flex-direction: column;
@@ -483,6 +486,7 @@
   .hero-content {
     min-height: 730px;
     padding-top: 110px;
+    padding-bottom: 120px;
   }
 
   .hero h1 {
@@ -537,6 +541,24 @@
   }
 
   .studio-callout h2 {
-    font-size: 46px;
+    font-size: clamp(38px, 13vw, 46px);
+  }
+}
+
+@media (max-width: 380px) {
+  .hero h1 {
+    font-size: clamp(50px, 16vw, 64px);
+  }
+
+  .hero-description {
+    font-size: 13px;
+  }
+
+  .hero-actions {
+    width: 100%;
+  }
+
+  .hero-actions .button {
+    flex: 1 1 130px;
   }
 }

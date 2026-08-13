@@ -11,8 +11,6 @@
 
   <link rel="icon" type="image/png" href="assets/images/photos/netvistastudio-logo.png">
   <link rel="apple-touch-icon" href="assets/images/brand/apple-touch-icon.png">
-  <link rel="manifest" href="site.webmanifest">
-
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="netvistastudio">
   <meta property="og:url" content="https://netvistastudio.com/">
@@ -30,8 +28,8 @@
   <link rel="preload" as="image" href="assets/images/photos/dark-echoes.jpg">
   <link rel="preload" as="image" href="assets/images/photos/final-lesson.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/home.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=8">
+  <link rel="stylesheet" href="assets/css/home.css?v=8">
 
   <script type="application/ld+json">
     {
@@ -89,14 +87,12 @@
       <a href="#films">Films</a>
       <a href="#coming-soon">Coming Soon</a>
       <a href="applications/">Applications</a>
+      <a href="http://video.netvistastudio.com/">Video Editor</a>
     </nav>
 
     <div class="header-actions">
       <button class="icon-button" id="search-toggle" type="button" aria-label="Search titles" aria-expanded="false" aria-controls="search-panel">
         <span aria-hidden="true">⌕</span>
-      </button>
-      <button class="header-app-button" type="button" data-open-install>
-        <span aria-hidden="true">↓</span><span>Get the app</span>
       </button>
     </div>
   </header>
@@ -176,7 +172,7 @@
     <p>Independent stories after dark.</p>
     <div class="footer-actions">
       <a href="applications/">Applications</a>
-      <button type="button" data-open-install>Get the app</button>
+      <a href="http://video.netvistastudio.com/">Video Editor</a>
     </div>
     <p class="copyright">© <span data-current-year>2026</span> netvistastudio</p>
   </footer>
@@ -223,31 +219,16 @@
     </section>
   </div>
 
-  <div class="dialog" id="install-dialog" hidden>
-    <div class="dialog-backdrop" data-dialog-close></div>
-    <section class="dialog-panel install-panel" role="dialog" aria-modal="true" aria-labelledby="install-title">
-      <button class="dialog-close" type="button" data-dialog-close aria-label="Close app install options">×</button>
-      <p class="section-kicker">NETVISTASTUDIO APP</p>
-      <h2 id="install-title">Watch anywhere.</h2>
-      <p>Choose your device, then download the official netvistastudio app from GitHub Releases.</p>
-      <div class="install-options">
-        <a class="install-option" href="https://github.com/user1994g/400.github.io/releases/latest/download/netvistastudio-mac.zip">
-          <span aria-hidden="true">⌘</span><strong>Download for Mac</strong><small>Universal app (ZIP)</small>
-        </a>
-        <a class="install-option" href="https://github.com/user1994g/400.github.io/releases/latest/download/netvistastudio-windows.exe">
-          <span aria-hidden="true">⊞</span><strong>Download for Windows</strong><small>64-bit installer</small>
-        </a>
-        <a class="install-option" href="https://github.com/user1994g/400.github.io/releases/latest/download/netvistastudio-android.apk">
-          <span aria-hidden="true">A</span><strong>Download for Android</strong><small>Installable APK</small>
-        </a>
-        <a class="install-option" href="https://github.com/user1994g/400.github.io/releases/latest/download/netvistastudio-ios-unsigned.ipa">
-          <span aria-hidden="true">●</span><strong>Download for iPhone</strong><small>Unsigned IPA · sideload required</small>
-        </a>
-      </div>
-      <p class="install-status">These direct downloads are outside the app stores. Your device may ask you to confirm the file; the iPhone IPA must be signed or sideloaded.</p>
-    </section>
-  </div>
-
-  <script type="module" src="assets/js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister());
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
+    }
+  </script>
+  <script type="module" src="assets/js/app.js?v=8"></script>
 </body>
 </html>

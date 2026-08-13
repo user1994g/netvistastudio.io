@@ -14,8 +14,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css">
-  <link rel="stylesheet" href="../assets/css/applications.css">
+  <link rel="stylesheet" href="../assets/css/style.css?v=8">
+  <link rel="stylesheet" href="../assets/css/applications.css?v=8">
 
   <script type="application/ld+json">
     {
@@ -46,6 +46,7 @@
       <a href="../#films">Films</a>
       <a href="../#coming-soon">Coming Soon</a>
       <a class="is-active" href="./">Applications</a>
+      <a href="http://video.netvistastudio.com/">Video Editor</a>
     </nav>
 
     <div class="header-actions">
@@ -128,10 +129,23 @@
   <footer class="application-footer">
     <a class="footer-brand" href="../">netvistastudio</a>
     <p>Independent stories after dark.</p>
-    <a href="../#films">Browse films</a>
+    <div class="application-footer-actions">
+      <a href="../#films">Browse films</a>
+      <a href="http://video.netvistastudio.com/">Video Editor</a>
+    </div>
     <p>© <span data-current-year>2026</span> netvistastudio</p>
   </footer>
 
-  <script type="module" src="../assets/js/applications.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister());
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
+    }
+  </script>
+  <script type="module" src="../assets/js/applications.js?v=8"></script>
 </body>
 </html>
