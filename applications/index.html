@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08090c">
+  <meta name="theme-color" content="#09090f">
   <meta name="description" content="Apply to work with netvistastudio. We welcome writers, directors, editors and creative collaborators.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://netvistastudio.com/applications/">
@@ -11,11 +11,24 @@
 
   <link rel="icon" type="image/png" href="../assets/images/photos/netvistastudio-logo.png">
   <link rel="apple-touch-icon" href="../assets/images/brand/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="netvistastudio">
+  <meta property="og:url" content="https://netvistastudio.com/applications/">
+  <meta property="og:title" content="Applications | netvistastudio">
+  <meta property="og:description" content="Introduce your creative work to netvistastudio.">
+  <meta property="og:image" content="https://netvistastudio.com/assets/images/brand/studio-pixel-night.png">
+  <meta property="og:image:width" content="1672">
+  <meta property="og:image:height" content="941">
+  <meta property="og:image:alt" content="Pixel-art film studio glowing inside a chapel at night">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Applications | netvistastudio">
+  <meta name="twitter:description" content="Introduce your creative work to netvistastudio.">
+  <meta name="twitter:image" content="https://netvistastudio.com/assets/images/brand/studio-pixel-night.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=8">
-  <link rel="stylesheet" href="../assets/css/applications.css?v=8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Silkscreen:wght@400;700&amp;family=Syne:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css?v=9">
+  <link rel="stylesheet" href="../assets/css/applications.css?v=9">
 
   <script type="application/ld+json">
     {
@@ -34,31 +47,37 @@
 
   <header class="site-header is-scrolled" id="site-header">
     <a class="brand" href="../" aria-label="netvistastudio home">
-      <span>netvistastudio</span>
+      <span>netvista<span class="brand-accent">studio</span></span>
     </a>
 
     <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
-      Browse <span aria-hidden="true">⌄</span>
+      Menu <span aria-hidden="true">+</span>
     </button>
 
     <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation">
-      <a href="../#top">Home</a>
-      <a href="../#films">Films</a>
-      <a href="../#coming-soon">Coming Soon</a>
+      <a href="../#top">Index</a>
+      <a href="../#work">Work</a>
+      <a href="../#media">Media lab</a>
+      <a href="../#studio">Studio</a>
       <a class="is-active" href="./">Applications</a>
-      <a href="http://video.netvistastudio.com/">Video Editor</a>
+      <a href="http://video.netvistastudio.com/">Video Editor <span aria-hidden="true">↗</span></a>
     </nav>
 
     <div class="header-actions">
-      <a class="header-app-button" href="../#films"><span aria-hidden="true">▶</span><span>Browse films</span></a>
+      <a class="header-app-button" href="../#work"><span>Browse work</span><span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
   <main class="application-layout">
     <section class="application-intro" aria-labelledby="application-title">
       <p class="section-kicker"><span class="live-dot" aria-hidden="true"></span> APPLICATIONS ARE OPEN</p>
-      <h1 id="application-title">Bring your story into the dark.</h1>
-      <p class="application-lead">Tell us what you make, what you want to make next and how we can reach you. No account is needed.</p>
+      <h1 id="application-title">Send us your strange signal.</h1>
+      <p class="application-lead">Tell us what you make, what you want to make next and how we can reach you. No account, no creative obstacle course.</p>
+
+      <div class="application-pixel-note" aria-hidden="true">
+        <span>INCOMING_TRANSMISSION</span>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
 
       <div class="application-steps" aria-label="Application process">
         <div>
@@ -81,7 +100,7 @@
 
       <div class="form-heading">
         <p class="section-kicker">YOUR APPLICATION</p>
-        <h2>Start something unforgettable.</h2>
+        <h2>Start a new project file.</h2>
         <p><span aria-hidden="true">*</span> Required fields</p>
       </div>
 
@@ -127,10 +146,10 @@
   </main>
 
   <footer class="application-footer">
-    <a class="footer-brand" href="../">netvistastudio</a>
-    <p>Independent stories after dark.</p>
+    <a class="footer-brand" href="../">netvista<span>studio</span></a>
+    <p>Independent film and media made after dark.</p>
     <div class="application-footer-actions">
-      <a href="../#films">Browse films</a>
+      <a href="../#work">Selected work</a>
       <a href="http://video.netvistastudio.com/">Video Editor</a>
     </div>
     <p>© <span data-current-year>2026</span> netvistastudio</p>
@@ -146,6 +165,6 @@
       caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
     }
   </script>
-  <script type="module" src="../assets/js/applications.js?v=8"></script>
+  <script type="module" src="../assets/js/applications.js?v=9"></script>
 </body>
 </html>

@@ -1,11 +1,10 @@
-import { comingSoon, films } from './data/catalog.js';
+import { films } from './data/catalog.js';
 import { createDialog } from './modules/dialog.js';
 import { initSiteShell } from './modules/site-shell.js';
 
 initSiteShell();
 
 const filmGrid = document.querySelector('#film-grid');
-const slateGrid = document.querySelector('#slate-grid');
 const hero = document.querySelector('.hero');
 const heroBackdrop = document.querySelector('#hero-backdrop');
 const heroTitle = document.querySelector('#hero-title');
@@ -15,21 +14,12 @@ const heroFormat = document.querySelector('#hero-format');
 const heroDescription = document.querySelector('#hero-description');
 const heroSwitcher = document.querySelector('#hero-switcher');
 const heroIndex = document.querySelector('#hero-index');
-const toast = document.querySelector('#toast');
 const videoFrame = document.querySelector('#video-frame');
 
 let currentFilm = films[0];
 let detailsFilm = films[0];
 let heroTimer;
 let heroSwapTimer;
-let toastTimer;
-
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add('is-visible');
-  window.clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 2600);
-}
 
 function metaMarkup(item) {
   return `
@@ -40,15 +30,16 @@ function metaMarkup(item) {
   `;
 }
 
-function renderFilmCard(film) {
+function renderFilmCard(film, index) {
   const article = document.createElement('article');
   article.className = 'film-card catalog-item';
   article.dataset.title = film.title.toLowerCase();
   article.innerHTML = `
+    <span class="film-card-index">PROJECT / ${String(index + 1).padStart(2, '0')}</span>
     <button class="film-card-art" type="button" aria-label="Play ${film.title}">
       <img src="${film.artwork}" alt="Artwork for ${film.title}" loading="eager" decoding="async">
       <span class="film-card-overlay">
-        <p>NETVISTASTUDIO ORIGINAL</p>
+        <p>ORIGINAL MOVING IMAGE</p>
         <span class="play-disc" aria-hidden="true">▶</span>
       </span>
     </button>
@@ -57,8 +48,8 @@ function renderFilmCard(film) {
       <div class="title-meta">${metaMarkup(film)}</div>
       <p>${film.description}</p>
       <div class="film-card-actions">
-        <button class="text-button" type="button" data-play>Play film</button>
-        <button class="text-button" type="button" data-details>View details</button>
+        <button class="text-button" type="button" data-play>Watch film ↗</button>
+        <button class="text-button" type="button" data-details>Project notes</button>
       </div>
     </div>
   `;
@@ -69,29 +60,7 @@ function renderFilmCard(film) {
   return article;
 }
 
-function renderSlateCard(title) {
-  const button = document.createElement('button');
-  button.className = 'slate-card catalog-item';
-  button.type = 'button';
-  button.dataset.title = title.title.toLowerCase();
-  button.dataset.letter = title.title.charAt(0);
-  button.style.setProperty('--tone-a', title.tone.a);
-  button.style.setProperty('--tone-b', title.tone.b);
-  button.style.setProperty('--tone-glow', title.tone.glow);
-  button.setAttribute('aria-label', `${title.title} — ${title.statusLabel}`);
-  button.innerHTML = `
-    <span class="slate-status">${title.statusLabel}</span>
-    <span class="slate-copy">
-      <h3>${title.title}</h3>
-      <p>${title.year} · ${title.format}</p>
-    </span>
-  `;
-  button.addEventListener('click', () => showToast('This video is not out yet.'));
-  return button;
-}
-
-films.forEach((film) => filmGrid.appendChild(renderFilmCard(film)));
-comingSoon.forEach((title) => slateGrid.appendChild(renderSlateCard(title)));
+films.forEach((film, index) => filmGrid.appendChild(renderFilmCard(film, index)));
 
 const playerRoot = document.querySelector('#player-dialog');
 const detailsRoot = document.querySelector('#details-dialog');
@@ -217,11 +186,10 @@ function filterCatalogue(query) {
     if (matchesQuery) matches += 1;
   });
 
-  document.querySelector('#films').hidden = Boolean(normalized) && ![...filmGrid.children].some((item) => !item.hidden);
-  document.querySelector('#coming-soon').hidden = Boolean(normalized) && ![...slateGrid.children].some((item) => !item.hidden);
+  document.querySelector('#work').hidden = Boolean(normalized) && ![...filmGrid.children].some((item) => !item.hidden);
   searchStatus.textContent = normalized
     ? `${matches} title${matches === 1 ? '' : 's'} found.`
-    : 'Search available films and the upcoming slate.';
+    : 'Search the released film portfolio.';
 }
 
 function setSearchOpen(open, { restoreFocus = false } = {}) {
