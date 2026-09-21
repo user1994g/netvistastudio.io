@@ -1,0 +1,2 @@
+/account /editor/account/ 302
+/account/* /editor/account/:splat 302
