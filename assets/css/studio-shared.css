@@ -1,0 +1,53 @@
+/* One navigation and masthead scale for both studio and editor. */
+.site-header, .site-header.is-scrolled {
+  position: fixed; inset: 0 0 auto; z-index: 50; width: 100%;
+  display: flex; align-items: center; flex-wrap: nowrap;
+  min-height: 92px; padding: 0 clamp(22px, 5vw, 88px); gap: 28px;
+  background: #111; border-bottom: 1px solid #373735;
+}
+.site-header .brand, .site-header .brand-accent {
+  font: 700 22px/1.2 'DM Sans', Arial, sans-serif;
+  letter-spacing: -1px; color: #ed302c; white-space: nowrap;
+}
+.site-header .primary-nav {
+  display: flex; align-items: center; gap: 24px; margin-left: auto;
+  font: 400 14px/1.6 'DM Sans', Arial, sans-serif;
+  text-transform: none; letter-spacing: 0;
+}
+.site-header .primary-nav a {
+  padding: 10px 0; font: inherit; color: #aaa9a4; border: 0;
+}
+.site-header .primary-nav a:hover, .site-header .primary-nav a.is-active { color: #f3f3ee; }
+.site-header .primary-nav a.is-active {
+  text-decoration: underline; text-decoration-color: #ed302c; text-underline-offset: 8px;
+}
+.site-header .primary-nav a::before { display: none; }
+.site-header .nav-toggle { display: none; }
+.hero-intro h1, .hero h1.studio-masthead {
+  font: 400 clamp(110px, 21vw, 300px)/.9 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: -.025em; text-transform: uppercase; text-wrap: nowrap;
+}
+.hero-intro h1 .masthead-name, .hero h1.studio-masthead .masthead-name {
+  display: block; margin-bottom: 18px;
+  font: 400 clamp(32px, 3.5vw, 48px)/1.1 'DM Sans', Arial, sans-serif;
+  letter-spacing: -.04em; text-transform: none; color: #f3f3ee;
+}
+main#main { padding-top: 92px; }
+@media (max-width: 1000px) {
+  .site-header .nav-toggle {
+    display: inline-flex; align-items: center; margin-left: auto; gap: 7px;
+    padding: 8px 12px; border: 1px solid #373735; background: transparent;
+    color: #f3f3ee; font: 400 14px/1.6 'DM Sans', Arial, sans-serif; text-transform: none;
+  }
+  .site-header .primary-nav {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    margin: 0; padding: 20px clamp(22px, 5vw, 88px); background: #111;
+    border-bottom: 1px solid #373735;
+  }
+  .site-header.nav-open .primary-nav { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+@media (max-width: 700px) {
+  .site-header, .site-header.is-scrolled { min-height: 72px; gap: 16px; }
+  main#main { padding-top: 72px; }
+  .hero-intro h1, .hero h1.studio-masthead { font-size: clamp(100px, 25vw, 175px); }
+}
