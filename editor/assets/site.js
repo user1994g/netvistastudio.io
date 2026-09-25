@@ -72,6 +72,7 @@
   let downloadReturnFocus = null;
   let accountGateReturnFocus = null;
   let gateAttempt = 0;
+  let pageUnlocked = false;
   let authRedirect;
   let authReady = null;
   const authRequest = async (operation) => {
@@ -84,14 +85,20 @@
       return { data: {}, error };
     } finally { clearTimeout(timer); }
   };
-  // Keep ordinary site visits light: the Supabase SDK is loaded only when
-  // someone opens the account/download flow that needs it.
+  // Entry requires a fresh sign-in; downloads reuse this page's verified access.
   const loadAuthClient = () => {
     if (authReady) return authReady;
     authReady = authRequest(async () => {
       const { supabase, authRedirect: publicRedirect } = await import('./auth-client.js');
       authRedirect = publicRedirect;
-      // A remembered session must never unlock a new download request.
+      supabase.auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_OUT' && pageUnlocked) {
+          pageUnlocked = false;
+          document.body.classList.add('editor-locked');
+          closeDownload();
+          openAccountGate({ preventDefault() {}, currentTarget: null });
+        }
+      });
       return { data: supabase };
     }).then(({ data, error }) => {
       if (error) return null;
@@ -132,7 +139,7 @@
     accountGateSigninForm.hidden = signup;
     accountGateSignupForm.hidden = !signup;
     document.querySelector('#account-gate-title').textContent = signup ? 'Join the studio.' : 'Welcome back.';
-    document.querySelector('#account-gate-description').textContent = signup ? 'Create a free account and start making.' : 'Sign in for this download. We ask each time you get the app.';
+    document.querySelector('#account-gate-description').textContent = signup ? 'Create a free account to open the Video Editor page.' : 'Sign in to open the Video Editor page. Downloads are available once you’re in.';
     setGateStatus('');
   };
   const setGateBusy = (form, busy) => {
@@ -140,6 +147,7 @@
   };
   const closeAccountGate = () => {
     if (accountGateModal.hidden) return;
+    if (!pageUnlocked) { window.location.assign('/'); return; }
     gateAttempt += 1;
     accountGateSigninForm.reset();
     accountGateSignupForm.reset();
@@ -169,14 +177,21 @@
     });
   };
   const handleDownloadRequest = (event) => {
+    event.preventDefault();
     downloadReturnFocus = event.currentTarget;
-    openAccountGate(event);
+    if (pageUnlocked) openDownloadChooser();
+    else openAccountGate(event);
   };
   downloadButtons.forEach((button) => button.addEventListener('click', handleDownloadRequest));
   downloadModal.querySelectorAll('[data-close-download]').forEach((button) => button.addEventListener('click', closeDownload));
   downloadModal.querySelectorAll('[data-platform]').forEach((link) => link.addEventListener('click', closeDownload));
   window.addEventListener('pageshow', (event) => {
-    if (event.persisted) { closeDownload(); closeAccountGate(); }
+    if (event.persisted) {
+      closeDownload();
+      pageUnlocked = false;
+      document.body.classList.add('editor-locked');
+      openAccountGate({ preventDefault() {}, currentTarget: null });
+    }
   });
   downloadModal.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') { event.preventDefault(); closeDownload(); }
@@ -214,8 +229,10 @@
     if (error) { setGateStatus(error.message || 'We could not sign you in. Check your email and password.', 'error'); return; }
     accountGateSigninForm.reset();
     if (!data.session) { setGateStatus('Please sign in again to continue.', 'error'); return; }
+    pageUnlocked = true;
+    document.body.classList.remove('editor-locked');
     closeAccountGate();
-    openDownloadChooser();
+    document.querySelector('#main').focus();
   });
   accountGateSignupForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -237,8 +254,10 @@
     if (data.session) {
       accountGateSignupForm.reset();
       if (accountGateModal.hidden) return;
+      pageUnlocked = true;
+      document.body.classList.remove('editor-locked');
       closeAccountGate();
-      openDownloadChooser();
+      document.querySelector('#main').focus();
     } else {
       setGateMode('signin');
       document.querySelector('#gate-signin-email').value = email;
@@ -257,6 +276,7 @@
     else setGateStatus('If an account uses that email, a password reset link is on its way.', 'success');
   });
   const copyButton = document.querySelector('.copy-button');
+  openAccountGate({ preventDefault() {}, currentTarget: null });
   copyButton.addEventListener('click', async () => {
     const command = `git clone ${repositoryURL}.git\ncd ${repository}\n# macOS: sh build_app.sh\n# Windows/Linux: see cross_platform/README.md`;
     try {

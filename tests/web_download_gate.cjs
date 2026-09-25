@@ -58,19 +58,22 @@ async function page({ fail = false } = {}) {
 (async () => {
   const p = await page();
   const gate = p.node('#account-gate-modal'), chooser = p.node('#download-modal');
-  await p.node('#get-app').fire();
-  assert(!gate.hidden && chooser.hidden, 'Saved session must still show login');
+  assert(!gate.hidden && chooser.hidden, 'Entry requires login even with a saved session');
   await p.node('#gate-signin-form').fire('submit');
-  assert(gate.hidden && !chooser.hidden, 'Fresh login opens platform choices');
+  assert(gate.hidden && chooser.hidden, 'Fresh login opens the page, not downloads');
+  await p.node('#get-app').fire();
+  assert(!chooser.hidden, 'Download opens platform choices without another login');
   await p.node('#platform').fire();
   assert(chooser.hidden, 'Choosing a platform consumes this download flow');
   await p.node('#get-app').fire();
-  assert(!gate.hidden && chooser.hidden, 'Second download requires login again');
+  assert(gate.hidden && !chooser.hidden, 'Second download reuses page access');
+  p.restore();
+  assert(!gate.hidden && chooser.hidden, 'Restored page requires login');
   p.auth.signInWithPassword = async () => ({ data: {}, error: Error('Wrong password') });
   await p.node('#gate-signin-form').fire('submit');
   assert(!gate.hidden && chooser.hidden, 'Old session cannot bypass a failed login');
   await p.node('#gate-signup-form').fire('submit');
-  assert(!chooser.hidden, 'Fresh signup also opens downloads');
+  assert(gate.hidden && chooser.hidden, 'Fresh signup opens the page');
   p.restore();
   assert(chooser.hidden, 'Browser back cannot restore an unlocked chooser');
   await p.node('#get-app').fire();
@@ -86,5 +89,5 @@ async function page({ fail = false } = {}) {
   const broken = await page({ fail: true });
   await broken.node('#get-app').fire();
   assert(broken.node('#download-modal').hidden, 'SDK failure keeps downloads closed');
-  console.log('PASS: remembered session, repeat download, failed login, signup, browser back, cancelled request, SDK failure.');
+  console.log('PASS: entry gate, repeat download, failed login, signup, browser back, cancelled request, SDK failure.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
