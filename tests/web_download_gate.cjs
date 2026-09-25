@@ -13,7 +13,7 @@ async function page({ fail = false } = {}) {
     const n = {
       hidden: id.endsWith('-modal'), value: '', dataset: { platform: 'mac' },
       classList: { add() {}, remove() {}, toggle() {} },
-      setAttribute() {}, focus() {}, insertAdjacentHTML() {}, contains() { return false; },
+      setAttribute() {}, hasAttribute(name) { return id === '#site-header' && name === 'data-shared-navigation'; }, focus() {}, insertAdjacentHTML() {}, contains() { return false; },
       querySelector(selector) { return node(id + ' ' + selector); },
       querySelectorAll(selector) { return selector.includes('data-platform') ? [node('#platform')] : []; },
       reset() { calls.push(['reset', id]); },

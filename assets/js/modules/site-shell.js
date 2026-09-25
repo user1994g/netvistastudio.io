@@ -32,6 +32,7 @@ export function initSiteShell() {
   }, { passive: true });
   updateHeader();
 
+  if (!header?.hasAttribute('data-shared-navigation')) {
   navToggle?.addEventListener('click', () => {
     const open = header.classList.toggle('nav-open');
     navToggle.setAttribute('aria-expanded', String(open));
@@ -61,6 +62,7 @@ export function initSiteShell() {
     });
   });
 
+  }
   document.querySelectorAll('[data-current-year]').forEach((element) => {
     element.textContent = new Date().getFullYear();
   });

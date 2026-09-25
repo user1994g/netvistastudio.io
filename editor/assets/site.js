@@ -43,6 +43,7 @@
   const updateHeader = () => header.classList.toggle('is-scrolled', window.scrollY > 18);
   updateHeader();
   window.addEventListener('scroll', updateHeader, { passive: true });
+  if (!header.hasAttribute('data-shared-navigation')) {
   navToggle.addEventListener('click', () => {
     const open = !header.classList.contains('nav-open');
     header.classList.toggle('nav-open', open);
@@ -56,6 +57,7 @@
     if (event.key === 'Escape') closeNavigation();
   });
 
+  }
   const downloadModal = document.querySelector('#download-modal');
   const downloadDialog = downloadModal.querySelector('.download-dialog');
   const accountGateModal = document.querySelector('#account-gate-modal');
