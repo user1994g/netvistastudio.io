@@ -32,6 +32,8 @@
   <link rel="stylesheet" href="../assets/css/applications.css?v=9">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/studio-theme.css?v=1">
+  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=4">
+  <script defer src="/assets/mobile-navigation.js?v=2"></script>
 
   <script type="application/ld+json">
     {
@@ -48,27 +50,25 @@
 <body class="applications-page">
   <a class="skip-link" href="#application-form">Skip to application form</a>
 
-  <header class="site-header is-scrolled" id="site-header">
-    <a class="brand" href="../" aria-label="netvistastudio home">
+  <header class="nv-header" id="site-header" data-shared-navigation>
+    <a class="nv-brand" href="/" aria-label="netvistastudio home">
       <span>netvista<span class="brand-accent">studio</span></span>
     </a>
 
-    <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+    <button class="nv-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
       Menu <span aria-hidden="true">+</span>
     </button>
 
-    <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation">
+    <nav class="nv-nav" id="primary-nav" aria-label="Primary navigation">
       <a href="../#top">Index</a>
       <a href="../#work">Work</a>
       <a href="../#media">Media lab</a>
       <a href="../#studio">Studio</a>
-      <a class="is-active" href="./">Applications</a>
+      <a class="is-active" href="/applications/" aria-current="page">Applications</a>
       <a href="/editor/">Video Editor <span aria-hidden="true">↗</span></a>
     </nav>
 
-    <div class="header-actions">
-      <a class="header-app-button" href="../#work"><span>Browse work</span><span aria-hidden="true">↗</span></a>
-    </div>
+    <div class="nv-actions nv-actions-placeholder" aria-hidden="true"></div>
   </header>
 
   <main class="application-layout">

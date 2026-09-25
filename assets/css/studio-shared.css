@@ -11,6 +11,7 @@ html { scroll-padding-top: calc(var(--nv-header-height) + 16px); }
 .nv-nav a.is-active::after { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #ed302c; }
 .nv-toggle { display: none; }
 .nv-actions { flex: none; }
+.nv-actions-placeholder { width: 44px; height: 44px; }
 .nv-actions button { width: 44px; height: 44px; border: 1px solid #373735; border-radius: 6px; color: #fff; background: #202020; }
 .nv-header a:focus-visible, .nv-header button:focus-visible { outline: 2px solid #f3f3ee; outline-offset: 3px; }
 .navigation-backdrop { position: fixed; inset: 0; z-index: 49; border: 0; padding: 0; background: #0009; cursor: pointer; }
