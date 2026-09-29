@@ -2,12 +2,12 @@
   const repository = 'videoediterNetVistaStudio.github.io';
   const repositoryURL = 'https://github.com/user1994g/videoediterNetVistaStudio.github.io';
   // Keep download links on a published release until the next assets exist.
-  const releaseTag = 'v1.4.0-beta.4';
+  const releaseTag = 'v1.4.0-beta.6';
   const releaseURL = `${repositoryURL}/releases/tag/${releaseTag}`;
   const downloads = {
-    mac: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-macOS-1.4-Beta-4.zip`,
-    windows: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Windows-1.4-Beta-4.zip`,
-    linux: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Linux-1.4-Beta-4.zip`
+    mac: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-macOS-1.4-Beta-6.zip`,
+    windows: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Windows-1.4-Beta-6.zip`,
+    linux: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Linux-1.4-Beta-6.zip`
   };
 
   document.querySelectorAll('.github-link').forEach((link) => { link.href = repositoryURL; });
