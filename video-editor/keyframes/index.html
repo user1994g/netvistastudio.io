@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08090c">
+  <title>How to Zoom and Fade Video with Keyframes | NetVista Studio</title>
+  <meta name="description" content="Animate a video zoom or opacity fade in NetVista Studio on Mac. Add keyframes, choose easing, retime diamonds and save your Beta 6 project.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://netvistastudio.com/video-editor/keyframes/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="NetVista Studio">
+  <meta property="og:title" content="How to Zoom and Fade Video with Keyframes">
+  <meta property="og:description" content="A Mac Beta 6 guide to animated scale, opacity fades, easing and keyframe timing in NetVista Studio.">
+  <meta property="og:url" content="https://netvistastudio.com/video-editor/keyframes/">
+  <meta property="og:image" content="https://netvistastudio.com/editor/assets/studio-room-1672.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Zoom and Fade Video with Keyframes">
+  <meta name="twitter:description" content="Create a smooth zoom or opacity fade with NetVista Studio's Mac keyframe controls.">
+  <meta name="twitter:image" content="https://netvistastudio.com/editor/assets/studio-room-1672.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/brand/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/brand/favicon-48.png">
+  <link rel="apple-touch-icon" href="/assets/images/brand/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/editor/assets/site.css?v=11">
+  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=3">
+  <link rel="stylesheet" href="/assets/css/editor-overview.css?v=1">
+  <script src="/assets/public-domain.js"></script>
+  <script defer src="/assets/mobile-navigation.js?v=2"></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"Article","@id":"https://netvistastudio.com/video-editor/keyframes/#article","headline":"How to Zoom and Fade Video with Keyframes","description":"A Mac Beta 6 guide to animated scale, opacity fades, easing and keyframe timing in NetVista Studio.","datePublished":"2026-10-03","dateModified":"2026-10-03","author":{"@type":"Organization","name":"NetVista Studio","url":"https://netvistastudio.com/"},"publisher":{"@type":"Organization","@id":"https://netvistastudio.com/#organization","name":"NetVista Studio","url":"https://netvistastudio.com/","logo":"https://netvistastudio.com/assets/images/photos/netvistastudio-logo.png"},"image":"https://netvistastudio.com/editor/assets/studio-room-1672.jpg","mainEntityOfPage":"https://netvistastudio.com/video-editor/keyframes/","inLanguage":"en-GB"},
+    {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"NetVista Studio","item":"https://netvistastudio.com/"},{"@type":"ListItem","position":2,"name":"Video Editor","item":"https://netvistastudio.com/video-editor/"},{"@type":"ListItem","position":3,"name":"Keyframes","item":"https://netvistastudio.com/video-editor/keyframes/"}]}
+  ]}
+  </script>
+</head>
+<body class="seo-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nv-header" id="site-header" data-shared-navigation>
+    <a class="nv-brand" href="/" aria-label="NetVista Studio home"><span>netvista<span class="brand-accent">studio</span></span></a>
+    <button class="nv-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">+</span></button>
+    <nav class="nv-nav" id="primary-nav" aria-label="Main navigation"><a href="/#top">Index</a><a href="/#work">Work</a><a href="/#media">Media lab</a><a href="/#studio">Studio</a><a href="/applications/">Applications</a><a class="is-active" href="/video-editor/">Video Editor <span aria-hidden="true">↗</span></a></nav>
+    <div class="nv-actions nv-actions-placeholder" aria-hidden="true"></div>
+  </header>
+  <main class="shell guide-page" id="main" tabindex="-1">
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">NetVista Studio</a><span aria-hidden="true">/</span><a href="/video-editor/">Video Editor</a><span aria-hidden="true">/</span><span>Keyframes</span></nav>
+    <article class="guide-copy">
+      <p class="section-label">MOTION / MAC VIDEO EDITING GUIDE</p>
+      <h1 class="product-title guide-title">Zoom and fade video<br>with keyframes.</h1>
+      <p class="product-lead">A keyframe stores a value at a moment in a clip. Two different values can create a gradual zoom or fade without cutting the shot.</p>
+      <p class="quiet">By NetVista Studio · Updated <time datetime="2026-10-03">3 October 2026</time> · macOS · 1.4 Beta 6</p>
+      <nav class="guide-contents" aria-label="On this page"><strong>In this guide</strong><ol><li><a href="#prepare">Prepare one clip</a></li><li><a href="#zoom">Animate a smooth zoom</a></li><li><a href="#fade">Fade a video layer</a></li><li><a href="#timing">Adjust timing and easing</a></li><li><a href="#save">Save and check the result</a></li></ol></nav>
+      <section id="prepare"><h2>1. Prepare one timeline clip</h2><p>These instructions use the Mac Effects Studio in NetVista Studio 1.4 Beta 6. Windows and Linux have a different interface. If you have not made a sequence yet, follow the <a href="/video-editor/getting-started/">first-project editing guide</a>, then select one video clip on the timeline and open Effects.</p><p>Begin with a shot several seconds long. Turn off Auto Keyframe for this manual exercise: when it is enabled, changing an animatable control writes a point at the playhead. Selecting only one video clip avoids changing other selected shots.</p></section>
+      <section id="zoom"><h2>2. Add two scale keyframes for a zoom</h2><p>Choose Motion in the effect controls. Move the playhead to the start of the selected clip and set Scale / Zoom to 100%. In the keyframe editor, choose Scale under PROPERTY and Ease In / Out under CURVE, then press ◆ Add / Update.</p><p>Move the playhead about two seconds into the clip. Set Scale / Zoom to 120% and press ◆ Add / Update again. Play the sequence using the editor's transport controls to see the image gradually enlarge. A modest zoom helps you check the timing before using a stronger crop.</p><p>Scale changes the clip's image; the program monitor's −, Fit and + controls only change your inspection view. Use Position X and Position Y if you also want to animate where the subject sits in the frame.</p></section>
+      <section id="fade"><h2>3. Use opacity keyframes for a fade</h2><p>Choose Opacity &amp; Blend and select Opacity under PROPERTY. At the clip's start, set Opacity to 0% and add a keyframe. Move roughly one second later, set it to 100% and add another. For a fade out, reverse the values near the end.</p><p>Opacity reveals what is underneath the layer. With footage below it, the upper shot fades over that footage; without another visible layer, it fades against the sequence background. This changes picture opacity, not the linked audio volume.</p></section>
+      <section id="timing"><h2>4. Retiming, easing and removing points</h2><p>Use Previous and Next to reach existing points, or drag a diamond horizontally in the keyframe grid to retime it. Effects time is measured from the selected clip's timeline start, not from the beginning of the original source file.</p><p>Ease In / Out softens the change at both ends; Linear changes at a constant rate; Hold keeps the earlier value until the next point. Choose the curve before adding or updating the earlier keyframe: it controls the transition leaving that point. Remove Here deletes the current point; Clear Property removes that property's animation.</p></section>
+      <section id="save"><h2>5. Save and check your animation</h2><p>Adding a keyframe writes that property to the selected clip. Apply to Clip commits other previewed effect settings. Save the editable .netvistastudio project and make a short test using the <a href="/video-editor/export-settings/">MP4 and 4K export guide</a>. Check motion, layer order and sound in the exported movie.</p><p>To shape the shot's colour as well, continue with the <a href="/video-editor/colour-grading-luts/">colour grading and .cube LUT guide</a>. Keep backups while working in the beta.</p></section>
+      <div class="product-actions"><a class="button button-primary" href="/editor/">Sign in to get the NetVista beta ↗</a><a class="text-link" href="/video-editor/">Back to video editor features →</a></div>
+    </article>
+  </main>
+  <footer class="shell site-footer"><a class="footer-brand" href="/">netvistastudio</a><p>Independent films. Independent tools.</p><div class="footer-actions"><a href="/video-editor/">Video Editor</a><a href="/video-editor/getting-started/">Editing guide</a><a href="/applications/">Applications</a></div></footer>
+</body>
+</html>

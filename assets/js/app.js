@@ -37,7 +37,7 @@ function renderFilmCard(film, index) {
   article.innerHTML = `
     <span class="film-card-index">PROJECT / ${String(index + 1).padStart(2, '0')}</span>
     <button class="film-card-art" type="button" aria-label="Play ${film.title}">
-      <img src="${film.artwork}" alt="Artwork for ${film.title}" loading="eager" decoding="async">
+      <img src="${film.artwork}" alt="Artwork for ${film.title}" loading="lazy" decoding="async">
       <span class="film-card-overlay">
         <p>ORIGINAL MOVING IMAGE</p>
         <span class="play-disc" aria-hidden="true">▶</span>
