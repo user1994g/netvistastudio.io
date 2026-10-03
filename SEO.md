@@ -59,6 +59,12 @@ Do not assume that a sitemap file itself confirms submission or indexing.
 Google controls when pages are crawled and which searches they rank for.
 Domain ownership verification succeeded on 3 October 2026 using a Cloudflare
 DNS TXT record. Keep that record so Google can recheck ownership.
+On the same date Search Console read the sitemap successfully and discovered
+seven pages. The public video-editor overview passed Google's live test
+("URL is available to Google" / "Page can be indexed"), and its indexing request
+was accepted. These results confirm fetchability, not an indexing or ranking
+guarantee. The first sitemap read failed transiently; a retry succeeded without
+loosening the site's existing country-block security rule.
 
 References:
 - https://developers.google.com/search/docs/fundamentals/seo-starter-guide
