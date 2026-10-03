@@ -2,14 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://netvistastudio.com/</loc>
-    <lastmod>2026-07-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-10-03</lastmod>
   </url>
   <url>
     <loc>https://netvistastudio.com/applications/</loc>
-    <lastmod>2026-07-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-10-03</lastmod>
   </url>
+  <url><loc>https://netvistastudio.com/video-editor/</loc><lastmod>2026-10-03</lastmod></url>
+  <url><loc>https://netvistastudio.com/video-editor/getting-started/</loc><lastmod>2026-10-03</lastmod></url>
 </urlset>

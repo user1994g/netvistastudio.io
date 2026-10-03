@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /editor/account/
+Disallow: /account/
+Disallow: /tests/
 
 Sitemap: https://netvistastudio.com/sitemap.xml

@@ -1,0 +1,4 @@
+/editor/
+  X-Robots-Tag: noindex, follow
+/editor/account/*
+  X-Robots-Tag: noindex, nofollow

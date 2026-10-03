@@ -1,0 +1,36 @@
+.seo-page { overflow-x: clip; }
+.seo-page .nv-actions-placeholder { width: 44px; height: 44px; flex: none; }
+.product-hero, .guide-page { padding-top: 132px; }
+.breadcrumbs { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 38px; color: #a7a8af; font-size: 13px; }
+.breadcrumbs a { text-decoration: underline; text-underline-offset: 4px; }
+.product-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 8vw, 118px); line-height: .98; font-weight: 400; margin: 16px 0 26px; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.product-title span { color: #ff344c; }
+.product-lead { max-width: 780px; font-size: clamp(18px, 2vw, 22px); line-height: 1.65; color: #d7d7da; }
+.product-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin: 28px 0 36px; }
+.product-section { padding-top: 64px; padding-bottom: 46px; border-bottom: 1px solid #292a2d; scroll-margin-top: 100px; }
+.product-section h2, .guide-copy h2 { font-size: clamp(30px, 4vw, 52px); line-height: 1.15; margin: 15px 0 30px; }
+.overview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 48px; }
+.overview-grid article { min-width: 0; padding-top: 20px; border-top: 1px solid #37383c; }
+.overview-grid h3 { font-family: 'DM Sans', sans-serif; font-size: 21px; line-height: 1.3; margin: 0 0 12px; }
+.overview-grid p, .reading-copy, .product-faq p, .guide-copy section p { color: #b9bbc2; line-height: 1.8; font-size: 16px; }
+.reading-copy { max-width: 900px; margin-bottom: 30px; }
+.system-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.product-faq { max-width: 920px; }
+.product-faq details { border-top: 1px solid #37383c; padding: 20px 0; }
+.product-faq summary { cursor: pointer; font-size: 19px; font-weight: 600; line-height: 1.5; }
+.product-faq p a, .guide-copy p a, .guide-contents a { text-decoration: underline; text-underline-offset: 4px; }
+.guide-copy { max-width: 920px; }
+.guide-title { font-size: clamp(48px, 6.5vw, 90px); }
+.guide-copy section { padding: 26px 0; border-top: 1px solid #292a2d; scroll-margin-top: 110px; }
+.guide-copy section h2 { font-size: clamp(25px, 3vw, 38px); margin-bottom: 16px; }
+.guide-contents { padding: 25px; margin: 34px 0 40px; border: 1px solid #37383c; }
+.guide-contents ol { margin-bottom: 0; padding-left: 22px; line-height: 2; }
+.seo-page .site-footer { flex-wrap: wrap; }
+@media (max-width: 720px) {
+  .product-hero, .guide-page { padding-top: 105px; }
+  .overview-grid, .system-grid { grid-template-columns: minmax(0,1fr); gap: 22px; }
+  .product-section { padding-top: 38px; padding-bottom: 32px; }
+  .product-actions .button { width: 100%; justify-content: center; white-space: normal; text-align: center; }
+  .guide-contents { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .seo-page { scroll-behavior: auto; } }
