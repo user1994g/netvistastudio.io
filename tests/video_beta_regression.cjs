@@ -14,47 +14,51 @@ const decode = value => value.replaceAll('&amp;', '&').replaceAll('&quot;', '"')
 const attrs = tag => Object.fromEntries([...tag.matchAll(/([\w-]+)="([^"]*)"/g)].map(m => [m[1], decode(m[2])]));
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
 assert.equal(ids.length, new Set(ids).size, 'HTML IDs must be unique');
-const requiredIds = ['main', 'site-header', 'nav-toggle', 'primary-nav', 'download', 'download-modal',
-  'download-dialog-title', 'download-dialog-description', 'account-gate-modal', 'account-gate-title',
-  'account-gate-description', 'account-gate-status', 'gate-signin-tab', 'gate-signup-tab',
-  'gate-signin-form', 'gate-signup-form', 'gate-signin-email', 'gate-signin-password',
-  'gate-signup-name', 'gate-signup-email', 'gate-signup-password', 'gate-forgot-password',
-  'tool-search', 'tool-results', 'tool-rail', 'tool-empty', 'reset-tool-search'];
-requiredIds.forEach(id => assert(ids.includes(id), `Missing shared or browsing contract: #${id}`));
+const requiredIds = ['main', 'site-header', 'nav-toggle', 'primary-nav', 'home', 'films', 'my-list',
+  'beta', 'hero-art', 'hero-title', 'hero-format', 'hero-description', 'hero-watch', 'hero-details',
+  'hero-save', 'list-count', 'library-title', 'library-eyebrow', 'library-note', 'film-search',
+  'results-status', 'film-grid', 'film-empty', 'empty-title', 'empty-copy', 'reset-library',
+  'list-note', 'details-dialog', 'details-title', 'details-art', 'details-format',
+  'details-description', 'details-watch', 'details-save', 'player-dialog', 'player-title',
+  'video-frame', 'provider-link', 'year', 'toast'];
+requiredIds.forEach(id => assert(ids.includes(id), `Missing public Videos contract: #${id}`));
 for (const match of html.matchAll(/\b(?:aria-labelledby|aria-describedby|aria-controls|for)="([^"]+)"/g)) {
   match[1].split(/\s+/).forEach(id => assert(ids.includes(id), `Broken accessibility reference: #${id}`));
 }
-for (const name of ['download-link', 'releases-link', 'github-link', 'clone-url', 'repo-name', 'copy-button',
-  'download-dialog', 'account-gate-dialog']) {
-  assert(new RegExp(`class="[^"]*\\b${name}\\b`).test(html), `Missing shared class: ${name}`);
-}
-for (const attribute of ['data-shared-navigation', 'data-current-year', 'data-close-download', 'data-close-account-gate']) {
+for (const attribute of ['data-shared-navigation', 'data-view', 'data-watch', 'data-details',
+  'data-save', 'data-feature', 'data-collection', 'data-close', 'data-enhance']) {
   assert(html.includes(attribute), `Missing shared attribute: ${attribute}`);
 }
 assert.match(html, /<main\b[^>]*id="main"[^>]*tabindex="-1"/);
-assert.match(html, /<body class="editor-locked video-beta">/, 'Gate must be locked before scripts load');
-assert.match(css, /\.video-beta\.editor-locked main[^{}]*\{visibility:hidden\}/, 'Locked surfaces stay hidden');
-assert.match(read('editor/assets/site.css'), /\[hidden\]\{display:none!important\}/, 'Hidden states must beat layout rules');
+assert.match(html, /<body class="videos-site">/, 'Watching is a standalone public experience');
+assert(!/editor-locked|account-gate|download-modal|data-platform|type="password"/.test(html), 'Videos must not require editor authentication or downloads');
+assert(!/\/editor\/assets\/|auth-client|supabase/.test(html), 'Videos does not import the editor account gate or SDK');
+assert.match(css, /\.videos-site \[hidden\]\{display:none!important\}/, 'Hidden states must beat Videos layout rules');
+assert(!/editor-locked|visibility:hidden/.test(css), 'The public film library must not be hidden behind an account gate');
 assert.match(html, /name="robots" content="noindex, follow"/);
+assert.match(html, /<title>NetVista Videos — Beta<\/title>/);
 assert(html.includes(`rel="canonical" href="${videoOrigin}/"`));
 assert(html.includes(`property="og:url" content="${videoOrigin}/"`));
 assert.equal([...html.matchAll(/<h1\b/g)].length, 1, 'One main page heading');
-for (const statement of ['Still in development', 'not a finished release', 'Not production-ready.',
-  'Features can be incomplete', 'Keep backups', 'PLATFORM DIFFERENCES', 'Not an app screenshot', '1.4 Beta 6']) {
+for (const statement of ['WEBSITE BETA', 'not a finished streaming service', 'existing external film player',
+  'My List stays on your device', 'Account syncing, uploads and playback history are not available', 'Still in development']) {
   assert(html.includes(statement), `Missing honest beta disclosure: ${statement}`);
 }
-assert(!/BETA 4|Beta 4|v1\.4\.0-beta\.4|aggregateRating|ratingValue|\d+% Match/.test(html), 'No stale version or invented ratings');
-const forms = [...html.matchAll(/<form\b[^>]*>[\s\S]*?<\/form>/g)].map(m => m[0]);
-assert.equal(forms.length, 2, 'Only existing sign-in and signup forms');
-forms.forEach(form => {
-  assert.match(form, /method="post"/);
-  assert.match(form, /<fieldset disabled/, 'Auth forms fail closed while SDK unavailable');
-  for (const input of form.matchAll(/<input\b[^>]*>/g)) assert(!/\bname=/.test(input[0]), 'Native submit must not serialize credentials');
-});
-const platforms = [...html.matchAll(/<a\b[^>]*data-platform="[^"]+"[^>]*>/g)].map(m => attrs(m[0]));
-assert.deepEqual(platforms.map(p => p['data-platform']).sort(), ['linux', 'mac', 'windows']);
-platforms.forEach(p => assert(p.href.includes('/releases/download/v1.4.0-beta.6/'), 'Fallback downloads match release script'));
-assert.equal([...html.matchAll(/<script[^>]*src="[^"]*auth-client/g)].length, 0, 'Shared entry gate retains lazy auth loading');
+assert(!/v1\.4\.0-beta|aggregateRating|ratingValue|\d+% Match/.test(html), 'No editor release marketing or invented film ratings');
+assert.equal([...html.matchAll(/<form\b/g)].length, 0, 'Public Videos does not collect account credentials');
+assert.match(html, /<noscript>[\s\S]*watch links above still open the original films[\s\S]*<\/noscript>/, 'Watching retains a no-JavaScript fallback');
+assert.match(html, /<script type="module" src="\/video-beta\/assets\/cinema\.js\?v=2"><\/script>/);
+assert.match(html, /href="https:\/\/netvistastudio\.com\/editor\/"/, 'The editor remains a separate site link');
+assert.match(html, /<iframe\b[^>]*id="video-frame"[^>]*allowfullscreen/);
+const frame = [...html.matchAll(/<iframe\b[^>]*>/g)];
+assert.equal(frame.length, 1, 'There is one on-demand film player');
+assert(!/\bsrc=/.test(frame[0][0]), 'External playback must not load before a watch action');
+for (const match of html.matchAll(/data-close="([^"]+)"/g)) assert(ids.includes(match[1]), `Missing dialog close target: ${match[1]}`);
+for (const match of html.matchAll(/<a\b[^>]*target="_blank"[^>]*>/g)) {
+  const link = attrs(match[0]);
+  assert(link.rel?.split(/\s+/).includes('noopener'), 'External player links prevent opener access');
+  assert(link.rel?.split(/\s+/).includes('noreferrer'), 'External player links suppress the referring page');
+}
 assert(html.indexOf('cinema.css') > html.indexOf('studio-shared.css'), 'Video-only styles override shared styles locally');
 
 function localFile(url) {
@@ -62,8 +66,8 @@ function localFile(url) {
   if (url.origin === videoOrigin && pathname === '/') pathname = '/video-beta/';
   return path.join(root, pathname, pathname.endsWith('/') ? 'index.html' : '');
 }
-function checkLink(value) {
-  const url = new URL(decode(value), videoOrigin + '/');
+function checkLink(value, base = videoOrigin + '/') {
+  const url = new URL(decode(value), base);
   if (![videoOrigin, apexOrigin].includes(url.origin)) return;
   const filename = localFile(url);
   assert(fs.existsSync(filename), `Broken local reference: ${url.href}`);
@@ -76,7 +80,10 @@ for (const match of html.matchAll(/\bsrcset="([^"]+)"/g)) {
   for (const candidate of match[1].split(',')) checkLink(candidate.trim().split(/\s+/)[0]);
 }
 for (const match of html.matchAll(/<meta\b[^>]*property="og:image"[^>]*content="([^"]+)"/g)) checkLink(match[1]);
-for (const match of css.matchAll(/url\(['"]?([^)'"\s]+)['"]?\)/g)) checkLink(match[1]);
+for (const match of css.matchAll(/url\(['"]?([^)'"\s]+)['"]?\)/g)) checkLink(match[1], videoOrigin + '/video-beta/assets/cinema.css');
+for (const match of read('video-beta/assets/cinema.js').matchAll(/\bfrom\s+['"]([^'"]+)['"]/g)) {
+  checkLink(match[1], videoOrigin + '/video-beta/assets/cinema.js');
+}
 
 async function checkWorker() {
   const context = vm.createContext({ URL, Request, Response });
@@ -151,58 +158,100 @@ async function checkWorker() {
   }
 }
 
-function checkBrowsing() {
-  const nodes = new Map(), assigned = [], locked = new Set(['editor-locked']);
-  function node(name, dataset = {}, textContent = '') {
-    const handlers = {}, attributes = {};
-    const value = { dataset, textContent, value: '', hidden: false, focused: false,
-      setAttribute(key, value) { attributes[key] = value; }, getAttribute(key) { return attributes[key]; },
-      focus() { this.focused = true; }, addEventListener(type, callback, options) { (handlers[type] ||= []).push({ callback, options }); },
-      fire(type, key) { const event = { key, prevented: false, stopped: false, preventDefault() { this.prevented = true; }, stopImmediatePropagation() { this.stopped = true; } }; for (const handler of handlers[type] || []) { handler.callback(event); if (event.stopped) break; } return event; },
-      handlers };
-    nodes.set(name, value); return value;
+async function checkLibrary() {
+  const context = vm.createContext({ URL });
+  async function evaluate(filename) {
+    const module = new vm.SourceTextModule(read(filename), { context, identifier: filename });
+    await module.link(() => { throw Error(`${filename} must not import network dependencies`); });
+    await module.evaluate();
+    return module.namespace;
   }
-  const filters = ['all', 'edit', 'finish', '3d'].map(category => node(`filter-${category}`, { toolFilter: category }));
-  const cards = [...html.matchAll(/<article class="cinema-tool-card"([^>]*)>([\s\S]*?)<\/article>/g)].map((m, index) => {
-    const attributes = attrs(m[1]);
-    return node(`card-${index}`, { tool: attributes['data-tool'], search: attributes['data-search'] }, decode(m[2].replace(/<[^>]+>/g, ' ')));
-  });
-  for (const id of ['tool-search', 'tool-results', 'tool-empty', 'tool-rail', 'reset-tool-search', 'account-gate-modal']) node('#' + id);
-  const closeButtons = [node('gate-close'), node('gate-backdrop')];
-  const document = { body: { classList: { contains: name => locked.has(name) } },
-    querySelector: selector => nodes.get(selector) || null,
-    querySelectorAll: selector => selector === '[data-tool-filter]' ? filters : selector === '[data-tool]' ? cards : selector === '[data-close-account-gate]' ? closeButtons : [] };
-  new vm.Script(read('video-beta/assets/cinema.js')).runInNewContext({ document, window: { location: { assign: value => assigned.push(value) } } });
-  const search = nodes.get('#tool-search'), results = nodes.get('#tool-results');
-  const visible = () => cards.filter(card => !card.hidden);
-  assert.equal(visible().length, 4); assert.equal(results.textContent, '4 tools');
-  filters[2].fire('click'); assert.equal(visible().length, 2);
-  assert.equal(filters[2].getAttribute('aria-pressed'), 'true');
-  filters.filter(filter => filter !== filters[2]).forEach(filter => assert.equal(filter.getAttribute('aria-pressed'), 'false'));
-  search.value = '  CoLoUr  '; search.fire('input');
-  assert.equal(visible().length, 1); assert.equal(results.textContent, '1 tool matches your search');
-  search.value = '<script>synthetic</script>'; search.fire('input');
-  assert.equal(visible().length, 0); assert(!nodes.get('#tool-empty').hidden); assert(nodes.get('#tool-rail').hidden);
-  nodes.get('#reset-tool-search').fire('click');
-  assert.equal(search.value, ''); assert(search.focused); assert.equal(visible().length, 4);
-  assert(nodes.get('#tool-empty').hidden); assert(!nodes.get('#tool-rail').hidden);
-  assert.equal(filters[0].getAttribute('aria-pressed'), 'true');
-  filters[3].fire('click'); assert.equal(visible().length, 1);
-  search.value = 'lut'; search.fire('input'); assert.equal(visible().length, 0, 'Search and category are intersected');
-  closeButtons.forEach(button => { assert.equal(button.handlers.click[0].options.capture, true); const event = button.fire('click'); assert(event.prevented && event.stopped); });
-  const modal = nodes.get('#account-gate-modal');
-  assert.equal(modal.handlers.keydown[0].options.capture, true);
-  const escape = modal.fire('keydown', 'Escape'); assert(escape.prevented && escape.stopped);
-  assert.deepEqual(assigned, [apexOrigin + '/', apexOrigin + '/', apexOrigin + '/']);
-  const otherKey = modal.fire('keydown', 'Tab'); assert(!otherKey.prevented && !otherKey.stopped);
-  locked.clear();
-  closeButtons.forEach(button => { const event = button.fire('click'); assert(!event.prevented && !event.stopped); });
-  const unlockedEscape = modal.fire('keydown', 'Escape'); assert(!unlockedEscape.prevented && !unlockedEscape.stopped);
-  assert.equal(assigned.length, 3, 'Unlocked gate close remains owned by the shared auth flow');
+  const { films: catalogue } = await evaluate('assets/js/data/catalog.js');
+  const { LIST_KEY, playableFilms, readSaved, filterFilms, artworkURL, escapeHTML } = await evaluate('video-beta/assets/library.js');
+  const filmIDs = films => Array.from(films, film => film.id);
+  const savedIDs = saved => Array.from(saved);
+  const films = playableFilms(catalogue);
+  const expectedIDs = ['dark-echoes-1939', 'final-lesson-ap-1'];
+  assert.equal(LIST_KEY, 'netvista-videos-list-v1', 'Videos storage is separate from editor accounts');
+  assert.deepEqual(filmIDs(films), expectedIDs, 'Only existing, playable NetVista films populate the library');
+  assert.equal(catalogue.length, films.length, 'The current catalogue contains no fake or unavailable filler');
+  assert.equal([...html.matchAll(/<article class="film-card"/g)].length, films.length, 'Static watch fallbacks cover the whole existing collection');
+  const providerURLs = new Set(Array.from(films, film => film.videoUrl));
+  for (const film of films) {
+    assert(html.includes(film.title), `Missing static film title: ${film.id}`);
+    assert(html.includes(`href="${film.videoUrl}"`), `Missing direct watch fallback: ${film.id}`);
+    assert(fs.existsSync(localFile(new URL(artworkURL(film), videoOrigin))), `Missing film artwork: ${film.id}`);
+  }
+  for (const match of html.matchAll(/\bdata-(?:watch|details|save|feature)="([^"]+)"/g)) {
+    assert(expectedIDs.includes(match[1]), `Control references a non-catalogue film: ${match[1]}`);
+  }
+  for (const match of html.matchAll(/href="(https:\/\/clip-kingdom-play\.lovable\.app[^" ]*)"/g)) {
+    assert(providerURLs.has(decode(match[1])), 'Static player link must refer to an existing film');
+  }
+
+  const valid = { id: 'synthetic-film', title: 'Synthetic film', status: 'available',
+    description: 'A test story', format: 'Short film', artwork: 'assets/images/photos/final-lesson.jpg',
+    videoUrl: 'https://clip-kingdom-play.lovable.app/embed/synthetic-film' };
+  const invalidURLs = [undefined, '', 'not-a-url', 'javascript:alert(1)',
+    'http://clip-kingdom-play.lovable.app/embed/synthetic-film',
+    'https://other.example/embed/synthetic-film',
+    'https://clip-kingdom-play.lovable.app.evil.example/embed/synthetic-film',
+    'https://user@clip-kingdom-play.lovable.app/embed/synthetic-film',
+    'https://user:password@clip-kingdom-play.lovable.app/embed/synthetic-film',
+    'https://clip-kingdom-play.lovable.app:8443/embed/synthetic-film',
+    'https://clip-kingdom-play.lovable.app/watch/synthetic-film',
+    'https://clip-kingdom-play.lovable.app/embed/synthetic-film/'];
+  const candidates = [valid, ...invalidURLs.map(videoUrl => ({ ...valid, videoUrl })),
+    { ...valid, status: 'coming-soon' }, { ...valid, status: undefined },
+    { ...valid, id: '' }, { ...valid, title: '' }];
+  assert.deepEqual(filmIDs(playableFilms(candidates)), [valid.id], 'Unavailable films and unapproved player URLs must not be playable');
+  assert.equal(playableFilms([valid])[0], valid, 'Playable filtering does not rewrite catalogue metadata');
+  assert.deepEqual(filmIDs(playableFilms([])), []);
+
+  for (const serialized of [null, undefined, '', ' ', 'null', '{}', 'false', '42', '"a-film"', '[', 'not JSON']) {
+    assert.deepEqual(savedIDs(readSaved(serialized, films)), [], `Malformed or non-array saved data fails empty: ${serialized}`);
+  }
+  const mixedSaved = JSON.stringify([expectedIDs[1], expectedIDs[1], 'unknown-film', null, 4, {}, '__proto__', expectedIDs[0]]);
+  assert.deepEqual(savedIDs(readSaved(mixedSaved, films)), [expectedIDs[1], expectedIDs[0]], 'Saved lists deduplicate and discard unknown/non-string IDs');
+  assert.deepEqual(savedIDs(readSaved(JSON.stringify(expectedIDs), [])), [], 'Removed films do not survive a catalogue update');
+
+  const saved = readSaved(JSON.stringify([expectedIDs[1]]), films);
+  assert.deepEqual(filmIDs(filterFilms(films, '', saved)), expectedIDs, 'The public collection is not restricted by My List');
+  assert.deepEqual(filmIDs(filterFilms(films, null, saved)), expectedIDs);
+  assert.deepEqual(filmIDs(filterFilms(films, '  FiNaL LeSsOn  ', saved)), [expectedIDs[1]], 'Search is case-insensitive and trimmed');
+  assert.deepEqual(filmIDs(filterFilms(films, 'broadcast', saved)), [expectedIDs[0]], 'Search includes descriptions');
+  assert.deepEqual(filmIDs(filterFilms(films, 'feature film', saved)), expectedIDs, 'Search includes film formats');
+  assert.deepEqual(filmIDs(filterFilms(films, '1939', saved)), [expectedIDs[0]], 'Search safely stringifies titles and numeric-like queries');
+  assert.deepEqual(filmIDs(filterFilms(films, '<script>synthetic</script>', saved)), [], 'Search text is data, not markup');
+  assert.deepEqual(filmIDs(filterFilms(films, '', saved, true)), [expectedIDs[1]], 'My List contains only saved films');
+  assert.deepEqual(filmIDs(filterFilms(films, 'final', saved, true)), [expectedIDs[1]], 'Search and saved filtering intersect');
+  assert.deepEqual(filmIDs(filterFilms(films, 'broadcast', saved, true)), [], 'Search cannot reveal unsaved films in My List');
+  assert.deepEqual(filmIDs(filterFilms(films, '', readSaved('[]', films), true)), [], 'An empty saved list remains empty');
+  assert.deepEqual(savedIDs(saved), [expectedIDs[1]], 'Searching never mutates saved state');
+  assert.deepEqual(filmIDs(films), expectedIDs, 'Searching never mutates the catalogue');
+
+  assert.equal(escapeHTML('&<>"\''), '&amp;&lt;&gt;&quot;&#39;', 'All HTML-significant characters are escaped');
+  assert.equal(escapeHTML('<img src=x onerror="alert(1)">'), '&lt;img src=x onerror=&quot;alert(1)&quot;&gt;', 'Markup cannot become a rendered element');
+  assert.equal(escapeHTML(null), '');
+  assert.equal(escapeHTML(undefined), '');
+  assert.equal(escapeHTML(42), '42');
+  assert.equal(escapeHTML('The dark echo’s of 1939'), 'The dark echo’s of 1939', 'Ordinary film names remain readable');
+
+  const artwork = '/assets/images/photos/final-lesson.jpg';
+  for (const value of [artwork, artwork.slice(1), apexOrigin + artwork, apexOrigin + artwork + '?probe=1#ignored']) {
+    assert.equal(artworkURL({ artwork: value }), artwork, 'Approved artwork becomes a same-host static path without query or fragment');
+  }
+  const fallback = '/assets/images/brand/icon-512.png';
+  assert(fs.existsSync(localFile(new URL(fallback, videoOrigin))), 'Artwork fallback exists');
+  for (const value of ['https://other.example' + artwork, '//other.example' + artwork,
+    'https://netvistastudio.com.evil.example' + artwork, 'javascript:alert(1)', 'data:image/png;base64,AA==',
+    '/editor/assets/studio-room.png', 'assets/images/../../account/', 'assets/private.png', '']) {
+    assert.equal(artworkURL({ artwork: value }), fallback, `Unapproved artwork uses the safe local fallback: ${value}`);
+  }
 }
 
 (async () => {
   await checkWorker();
-  checkBrowsing();
-  console.log('PASS: video beta assets/anchors/IDs, fail-closed forms, honest beta/version/canonical, host-isolated GET/HEAD routing, account queries/resources, filters/search/reset, and locked/unlocked gate exits.');
+  await checkLibrary();
+  console.log('PASS: public Videos assets/anchors/IDs, independent watching/no-auth boundary, real film fallbacks, player URL allowlist, robust saved lists, search/saved intersection, HTML escaping/artwork paths, and unchanged host/account routing.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

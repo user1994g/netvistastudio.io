@@ -5,132 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#08090e">
   <meta name="robots" content="noindex, follow">
-  <meta name="description" content="Meet the NetVista Studio video editor public beta. Explore the editing tools, get a desktop download, and help shape an app still in development.">
-  <meta property="og:title" content="NetVista Studio Video — Public Beta">
-  <meta property="og:description" content="An independent editing room. A work in progress. Explore the NetVista Studio desktop editor beta.">
+  <meta name="description" content="NetVista Videos: an independent home for NetVista films. Browse, save and watch our original stories. This new video site is in beta and still being built.">
+  <meta property="og:title" content="NetVista Videos — Beta">
+  <meta property="og:description" content="Independent stories. A new place to watch. The NetVista Videos website is in beta.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://video.netvistastudio.com/">
-  <meta property="og:image" content="https://video.netvistastudio.com/video-beta/assets/coast-1536.jpg">
+  <meta property="og:image" content="https://video.netvistastudio.com/assets/images/photos/final-lesson.jpg">
   <link rel="canonical" href="https://video.netvistastudio.com/">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/brand/favicon-32.png">
+  <link rel="icon" type="image/png" href="/assets/images/brand/favicon-32.png">
   <link rel="apple-touch-icon" href="/assets/images/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
-  <meta name="referrer" content="no-referrer">
-  <title>NetVista Studio Video — Public Beta</title>
-  <link rel="stylesheet" href="/editor/assets/site.css?v=11">
-  <link rel="stylesheet" href="/editor/assets/account-ui.css?v=1">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>NetVista Videos — Beta</title>
   <link rel="stylesheet" href="/assets/css/studio-shared.css?v=3">
-  <link rel="stylesheet" href="/video-beta/assets/cinema.css?v=1">
+  <link rel="stylesheet" href="/video-beta/assets/cinema.css?v=2">
   <script defer src="/assets/mobile-navigation.js?v=2"></script>
-  <script defer src="/editor/assets/site.js?v=18"></script>
-  <script defer src="/video-beta/assets/cinema.js?v=1"></script>
-  <!-- Existing public-site analytics; no account fields are added to telemetry. -->
+  <script type="module" src="/video-beta/assets/cinema.js?v=2"></script>
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","yi9b33i0az");
   </script>
 </head>
-<body class="editor-locked video-beta">
-  <noscript><p>JavaScript is required for sign-in. <a href="https://netvistastudio.com/video-editor/">Read the public editor guide</a> or <a href="https://netvistastudio.com/">visit the studio</a>.</p></noscript>
-  <a class="skip-link" href="#main">Skip to content</a>
+<body class="videos-site">
+  <a class="skip-link" href="#main">Skip to films</a>
   <header class="nv-header" id="site-header" data-shared-navigation>
-    <a class="nv-brand" href="https://netvistastudio.com/" aria-label="NetVista Studio home"><span>netvista<span class="brand-accent">studio</span></span></a>
-    <button class="nv-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">+</span></button>
-    <nav class="nv-nav" id="primary-nav" aria-label="Main navigation">
-      <a href="https://netvistastudio.com/#top">Index</a>
-      <a href="https://netvistastudio.com/#work">Work</a>
-      <a href="https://netvistastudio.com/#media">Media lab</a>
-      <a href="https://netvistastudio.com/#studio">Studio</a>
-      <a href="https://netvistastudio.com/applications/">Applications</a>
-      <a class="is-active" href="#top" aria-current="page">Video Editor <span aria-hidden="true">↗</span></a>
+    <a class="nv-brand videos-brand" href="/#home" aria-label="NetVista Videos home"><span>netvista<span class="brand-accent">studio</span></span><small>VIDEOS <b>BETA</b></small></a>
+    <button class="nv-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
+    <nav class="nv-nav" id="primary-nav" aria-label="Videos navigation">
+      <a href="#home" data-view="home" class="is-active" aria-current="page">Home</a>
+      <a href="#films" data-view="films">Films</a>
+      <a href="#my-list" data-view="list">My List <span id="list-count" aria-label="Saved films">0</span></a>
+      <a href="#beta" data-view="about">About the beta</a>
+      <a class="editor-link" href="https://netvistastudio.com/editor/">Video Editor <span aria-hidden="true">↗</span></a>
     </nav>
-    <div class="nv-actions"><a class="cinema-nav-cta download-link" href="#download" aria-label="Get the beta">↓ <span>Get the beta</span></a></div>
   </header>
   <main id="main" tabindex="-1">
-    <section class="cinema-hero" id="top" aria-labelledby="hero-title">
-      <picture class="cinema-hero-art"><source type="image/webp" srcset="/video-beta/assets/coast-640.webp 640w, /video-beta/assets/coast-1280.webp 1280w, /video-beta/assets/coast-1536.webp 1536w" sizes="100vw"><img src="/video-beta/assets/coast-1536.jpg" width="1536" height="1024" alt="" fetchpriority="high" decoding="async"></picture>
-      <div class="cinema-hero-shade" aria-hidden="true"></div>
-      <div class="cinema-hero-copy">
-        <p class="cinema-eyebrow"><span class="cinema-n" aria-hidden="true">N</span> NETVISTA STUDIO / CREATIVE TOOLS</p>
-        <p class="cinema-beta-pill"><span aria-hidden="true"></span> Public beta · Still in development</p>
-        <h1 id="hero-title">Every frame.<br><em>Your story.</em></h1>
-        <div class="cinema-metadata"><span>Native desktop app</span><span>macOS</span><span>Windows</span><span>Linux</span></div>
-        <p class="cinema-lede">Find the rhythm. Shape the colour. Make the cut your own. An independent editing room for the stories you want to tell.</p>
-        <div class="cinema-button-row"><a class="cinema-button cinema-primary download-link" href="#download"><span aria-hidden="true">↓</span> Download beta</a><a class="cinema-button cinema-secondary" href="#tools"><span aria-hidden="true">⊞</span> Explore the tools</a></div>
-        <p class="cinema-hero-note">A work in progress, not a finished release. Keep backups of important work.</p>
+    <section class="watch-hero" id="home" aria-labelledby="hero-title">
+      <img class="hero-art" id="hero-art" src="/assets/images/photos/final-lesson.jpg" alt="" fetchpriority="high" decoding="async" width="2048" height="1536">
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="n-mark" aria-hidden="true">N</span> A NETVISTA ORIGINAL</p>
+        <p class="beta-tag">NETVISTA VIDEOS <span> / </span> WEBSITE BETA</p>
+        <h1 id="hero-title">The Final Lesson AP 1</h1>
+        <div class="film-meta"><span class="available">Now streaming</span><span id="hero-format">Feature film</span></div>
+        <p class="hero-description" id="hero-description">One last class reveals a lesson no one was meant to learn. What begins as an ordinary final session becomes a discovery that cannot be forgotten.</p>
+        <div class="button-row">
+          <a class="button primary" id="hero-watch" data-watch="final-lesson-ap-1" href="https://clip-kingdom-play.lovable.app/embed/878b4496-ab7a-47fe-8e0f-0b489311241c" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">▶</span> Watch film</a>
+          <button class="button secondary" id="hero-details" data-details="final-lesson-ap-1" type="button" data-enhance hidden><span aria-hidden="true">ⓘ</span> Details</button>
+          <button class="round-button" id="hero-save" data-save="final-lesson-ap-1" type="button" aria-label="Save The Final Lesson AP 1 to My List" aria-pressed="false" data-enhance hidden>+</button>
+        </div>
+        <p class="hero-note">A new home for our films. Still in beta, still growing.</p>
       </div>
-      <div class="cinema-hero-caption"><span>01 / MAKE SOMETHING YOURS</span><span>Concept artwork · Not an app screenshot</span></div>
-    </section>
-
-    <section class="cinema-tools cinema-shell" id="tools" aria-labelledby="tools-title">
-      <div class="cinema-section-head"><div><p class="cinema-eyebrow">INSIDE THE EDITING ROOM</p><h2 id="tools-title">A place for every part of the cut.</h2></div><a class="cinema-inline-link" href="https://netvistastudio.com/video-editor/">Read the editor guide <span aria-hidden="true">↗</span></a></div>
-      <div class="cinema-browse-bar">
-        <div class="cinema-filters" role="group" aria-label="Filter editing tools"><button type="button" data-tool-filter="all" aria-pressed="true">All tools</button><button type="button" data-tool-filter="edit" aria-pressed="false">Editing</button><button type="button" data-tool-filter="finish" aria-pressed="false">Finishing</button><button type="button" data-tool-filter="3d" aria-pressed="false">3D</button></div>
-        <label class="cinema-search"><span aria-hidden="true">⌕</span><span class="cinema-sr-only">Search editing tools</span><input id="tool-search" type="search" placeholder="Find a tool…" maxlength="80" autocomplete="off"></label>
+      <div class="hero-selector" role="group" aria-label="Featured film" data-enhance hidden>
+        <button type="button" data-feature="final-lesson-ap-1" aria-pressed="true"><span>01</span> The Final Lesson</button>
+        <button type="button" data-feature="dark-echoes-1939" aria-pressed="false"><span>02</span> Dark echoes</button>
       </div>
-      <p id="tool-results" class="cinema-sr-only" role="status" aria-live="polite">4 tools</p>
-      <div class="cinema-tool-rail" id="tool-rail">
-        <article class="cinema-tool-card" data-tool="edit" data-search="timeline video editing cut clips audio tracks trim split"><a href="https://netvistastudio.com/video-editor/getting-started/"><div class="cinema-card-art"><img src="/video-beta/assets/coast-640.webp" width="640" height="427" alt="A winding coastal road above the ocean" loading="lazy" decoding="async"><span class="cinema-card-tag">THE CUT</span><span class="cinema-card-arrow" aria-hidden="true">↗</span></div><div class="cinema-card-copy"><h3>Find your flow.</h3><p>Arrange clips, trim the edges, layer sound and build your sequence.</p><span>Timeline &amp; sound <b aria-hidden="true">→</b></span></div></a></article>
-        <article class="cinema-tool-card" data-tool="finish" data-search="colour grading color wheels lift gamma gain lut cube"><a href="https://netvistastudio.com/video-editor/colour-grading-luts/"><div class="cinema-card-art"><img src="/video-beta/assets/petals-640.webp" width="640" height="427" alt="Red petals lit with deep blue highlights" loading="lazy" decoding="async"><span class="cinema-card-tag">THE LOOK</span><span class="cinema-card-arrow" aria-hidden="true">↗</span></div><div class="cinema-card-copy"><h3>Colour outside the lines.</h3><p>Explore colour controls and .cube LUTs to give your footage its own voice.</p><span>Colour &amp; LUTs <b aria-hidden="true">→</b></span></div></a></article>
-        <article class="cinema-tool-card" data-tool="finish" data-search="effects opacity keyframe zoom scale transform animation"><a href="https://netvistastudio.com/video-editor/keyframes/"><div class="cinema-card-art"><img src="/editor/assets/studio-room-640.webp" width="640" height="360" alt="A warmly lit creative studio after dark" loading="lazy" decoding="async"><span class="cinema-card-tag">THE MOTION</span><span class="cinema-card-arrow" aria-hidden="true">↗</span></div><div class="cinema-card-copy"><h3>Let the frame move.</h3><p>Animate scale and opacity over time with the macOS keyframe tools.</p><span>Effects &amp; keyframes <b aria-hidden="true">→</b></span></div></a></article>
-        <article class="cinema-tool-card" data-tool="3d" data-search="3d scene model animation camera physics world"><a href="#development"><div class="cinema-card-art"><img src="/video-beta/assets/world-640.webp" width="640" height="360" alt="A stone gateway on an island above the sea" loading="lazy" decoding="async"><span class="cinema-card-tag">THE WORLD · EXPERIMENTAL</span><span class="cinema-card-arrow" aria-hidden="true">↗</span></div><div class="cinema-card-copy"><h3>Beyond the footage.</h3><p>Experiment with native 3D scenes on macOS. See the platform limitations below.</p><span>3D scenes <b aria-hidden="true">→</b></span></div></a></article>
+    </section>
+    <section class="film-library shell" id="films" aria-labelledby="library-title">
+      <span id="my-list" class="sr-only" aria-hidden="true"></span>
+      <div class="section-head"><div><p class="eyebrow" id="library-eyebrow">THE NETVISTA COLLECTION</p><h2 id="library-title">Stories worth staying for.</h2></div><p id="library-note">Two original films. A small collection, made our way.</p></div>
+      <div class="browse-bar" data-enhance hidden>
+        <div class="library-tabs" role="group" aria-label="Film collection"><button type="button" data-collection="all" aria-pressed="true">All films</button><button type="button" data-collection="saved" aria-pressed="false">My List</button></div>
+        <label class="film-search"><span aria-hidden="true">⌕</span><span class="sr-only">Search films</span><input id="film-search" type="search" placeholder="Search the collection…" maxlength="120" autocomplete="off"></label>
       </div>
-      <div class="cinema-empty" id="tool-empty" hidden><p>No tools match that search.</p><button class="cinema-button cinema-secondary" type="button" id="reset-tool-search">Show all tools</button></div>
-      <p class="cinema-art-note">Artwork sets the mood. The cards link to real guides, not simulated app demos.</p>
-    </section>
-
-    <section class="cinema-spotlight cinema-shell" aria-labelledby="spotlight-title">
-      <div class="cinema-spotlight-art" aria-hidden="true"><img src="/editor/assets/studio-room-1280.webp" width="1280" height="720" alt="" loading="lazy" decoding="async"></div>
-      <div class="cinema-spotlight-copy"><p class="cinema-eyebrow">YOUR PROJECT, YOUR COMPUTER</p><h2 id="spotlight-title">Stay in the story.<br>Not in a browser.</h2><p>This website introduces the tools. The editor itself is a native desktop app. Save an editable project, come back to the next idea, and keep your original media on your computer.</p><a class="cinema-button cinema-primary" href="https://netvistastudio.com/video-editor/getting-started/">Start your first edit <span aria-hidden="true">↗</span></a></div>
-    </section>
-
-    <section class="cinema-development cinema-shell" id="development" aria-labelledby="development-title">
-      <div class="cinema-section-head"><div><p class="cinema-eyebrow">OPEN ABOUT THE UNFINISHED BITS</p><h2 id="development-title">Built in the open.<br>Still being built.</h2></div><p>Try it. Explore it. Help us make it better.</p></div>
-      <div class="cinema-status-grid">
-        <article><span class="cinema-status-label">PUBLIC BETA</span><h3>Not production-ready.</h3><p>Features can be incomplete, controls can change, and bugs can happen. Test with copies of your media and keep backups of projects you care about.</p></article>
-        <article><span class="cinema-status-label">PLATFORM DIFFERENCES</span><h3>Not every tool is everywhere.</h3><p>The macOS beta has the most complete 3D and animation tools. Windows and Linux preserve scene data, but do not have all the same editing features yet.</p></article>
-        <article><span class="cinema-status-label">IN DEVELOPMENT</span><h3>A little patience helps.</h3><p>Complex effects, large scenes and high-resolution exports depend on your hardware. A resolution option is not a guarantee that every computer can render it.</p></article>
+      <p id="results-status" class="sr-only" role="status" aria-live="polite">2 films</p>
+      <div class="film-grid" id="film-grid">
+        <article class="film-card"><a class="film-art" href="https://clip-kingdom-play.lovable.app/embed/21230af6-5a84-4072-befc-276e5f349145" target="_blank" rel="noopener noreferrer"><img src="/assets/images/photos/dark-echoes.jpg" width="293" height="238" alt="Artwork for The dark echo’s of 1939" loading="lazy"><span class="card-play" aria-hidden="true">▶</span></a><div class="card-copy"><p class="card-label">NETVISTA ORIGINAL / 01</p><h3>The dark echo’s of 1939</h3><p>A buried broadcast, a vanished town, and one voice still echoing through the static. Uncover the story that history tried to erase.</p><a href="https://clip-kingdom-play.lovable.app/embed/21230af6-5a84-4072-befc-276e5f349145" target="_blank" rel="noopener noreferrer" class="text-link">Watch film →</a></div></article>
+        <article class="film-card"><a class="film-art" href="https://clip-kingdom-play.lovable.app/embed/878b4496-ab7a-47fe-8e0f-0b489311241c" target="_blank" rel="noopener noreferrer"><img src="/assets/images/photos/final-lesson.jpg" width="2048" height="1536" alt="Artwork for The Final Lesson AP 1" loading="lazy"><span class="card-play" aria-hidden="true">▶</span></a><div class="card-copy"><p class="card-label">NETVISTA ORIGINAL / 02</p><h3>The Final Lesson AP 1</h3><p>One last class reveals a lesson no one was meant to learn. What begins as an ordinary final session becomes a discovery that cannot be forgotten.</p><a href="https://clip-kingdom-play.lovable.app/embed/878b4496-ab7a-47fe-8e0f-0b489311241c" target="_blank" rel="noopener noreferrer" class="text-link">Watch film →</a></div></article>
       </div>
-      <div class="cinema-feedback"><span>Found a rough edge?</span><a href="https://github.com/user1994g/videoediterNetVistaStudio.github.io/issues" target="_blank" rel="noreferrer">Report a bug on GitHub <span aria-hidden="true">↗</span></a></div>
+      <div class="empty-state" id="film-empty" hidden><span aria-hidden="true">◇</span><h3 id="empty-title">No films found.</h3><p id="empty-copy">Try a different title or clear your search.</p><button class="button secondary" type="button" id="reset-library">Show all films</button></div>
+      <p class="list-note" id="list-note" hidden>My List is saved in this browser, not synced to an account. Clearing browser storage removes it.</p>
+      <noscript><p class="list-note">JavaScript adds search, My List and the in-page player. The watch links above still open the original films.</p></noscript>
     </section>
-
-    <section class="cinema-download cinema-shell" id="download" aria-labelledby="download-title">
-      <div class="cinema-download-copy"><p class="cinema-beta-pill"><span aria-hidden="true"></span> Public beta · 1.4 Beta 6</p><h2 id="download-title">Your next cut<br>starts here.</h2><p>Choose your desktop. Download the beta. Make something yours.</p><div class="cinema-button-row"><a class="cinema-button cinema-primary download-link" href="#download">↓ Choose your download</a><a class="cinema-button cinema-secondary releases-link" href="https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.6" target="_blank" rel="noreferrer">Release notes ↗</a></div><p class="cinema-install-note">macOS: Apple silicon, macOS 11+. This beta is ad-hoc signed, not Apple-notarized, so macOS may block its first launch. Windows / Linux: unzip the complete app folder before launching.</p></div>
-      <aside class="cinema-source"><p class="cinema-eyebrow">FOR THE CURIOUS</p><h3>The source is here, too.</h3><p>See how the desktop app is built, read the release notes, or help investigate a bug.</p><a class="cinema-inline-link github-link" href="https://github.com/user1994g/videoediterNetVistaStudio.github.io" target="_blank" rel="noreferrer">Explore the repository ↗</a><div class="cinema-terminal"><button class="copy-button" type="button">Copy</button><pre><code>git clone <span class="clone-url">https://github.com/user1994g/videoediterNetVistaStudio.github.io.git</span>
-cd <span class="repo-name">videoediterNetVistaStudio.github.io</span>
-# macOS: sh build_app.sh
-# Windows/Linux: cross_platform/README.md</code></pre></div></aside>
+    <section class="beta-section shell" id="beta" aria-labelledby="beta-title">
+      <div><p class="eyebrow">A NEW PLACE TO WATCH</p><h2 id="beta-title">Small collection.<br>Independent spirit.</h2></div>
+      <div class="beta-copy"><p>This is NetVista Videos: a separate space for watching our stories. The Video Editor, its downloads and your editing projects belong to the <a href="https://netvistastudio.com/editor/">separate editor page</a>.</p><p><strong>This website is a beta, not a finished streaming service.</strong> We’re starting with the existing NetVista film collection. More titles have not been announced yet.</p><p>Playback currently uses our existing external film player. My List stays on your device. Account syncing, uploads and playback history are not available here yet.</p><a class="text-link" href="mailto:jackmiller@netvistastudio.com">Send us feedback <span aria-hidden="true">↗</span></a></div>
     </section>
   </main>
-
-  <div class="download-modal" id="download-modal" hidden>
-    <button class="download-backdrop-button" type="button" data-close-download aria-label="Close download chooser"></button>
-    <section class="download-dialog" role="dialog" aria-modal="true" aria-labelledby="download-dialog-title" aria-describedby="download-dialog-description">
-      <button class="download-close" type="button" data-close-download aria-label="Close">×</button>
-      <p class="section-label">NETVISTA STUDIO 1.4 BETA 6 · IN DEVELOPMENT</p><h2 id="download-dialog-title">Choose your system.</h2>
-      <p id="download-dialog-description">Every download is an unfinished beta. Keep backups of important work.</p>
-      <div class="platform-grid">
-        <a class="platform-card" data-platform="mac" href="https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/download/v1.4.0-beta.6/NetVista-Studio-macOS-1.4-Beta-6.zip"><span class="platform-icon" aria-hidden="true">●</span><span><strong>macOS</strong><small>Apple silicon · macOS 11+</small></span><b>Download ↓</b></a>
-        <a class="platform-card" data-platform="windows" href="https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/download/v1.4.0-beta.6/NetVista-Studio-Windows-1.4-Beta-6.zip"><span class="platform-icon" aria-hidden="true">⊞</span><span><strong>Windows</strong><small>64-bit · Windows 10 or 11</small></span><b>Download ↓</b></a>
-        <a class="platform-card" data-platform="linux" href="https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/download/v1.4.0-beta.6/NetVista-Studio-Linux-1.4-Beta-6.zip"><span class="platform-icon" aria-hidden="true">◆</span><span><strong>Linux</strong><small>64-bit · modern distribution</small></span><b>Download ↓</b></a>
-      </div><p class="download-help">Unzip the complete Windows / Linux app folder before launching. macOS may block the first launch of this unnotarized beta.</p><a class="all-releases-link releases-link" href="https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.6" target="_blank" rel="noreferrer">Release notes and all downloads ↗</a>
-    </section>
-  </div>
-  <div class="account-gate-modal" id="account-gate-modal">
-    <button class="account-gate-backdrop" type="button" data-close-account-gate aria-label="Close account sign-in"></button>
-    <section class="account-gate-dialog" role="dialog" aria-modal="true" aria-labelledby="account-gate-title" aria-describedby="account-gate-description">
-      <button class="account-gate-close" type="button" data-close-account-gate aria-label="Close">×</button>
-      <aside class="auth-story" aria-label="NetVista Studio"><p class="auth-wordmark">netvistastudio<span>CREATIVE TOOLS / PUBLIC BETA</span></p><div class="auth-story-copy"><p class="section-label">AN INDEPENDENT EDITING ROOM</p><h2>Every frame.<br>Your story.</h2><p>A work in progress.<br>A space to make something yours.</p></div><p class="auth-story-footer">STILL IN DEVELOPMENT · KEEP PROJECT BACKUPS</p></aside>
-      <div class="account-gate-body"><p class="auth-eyebrow">YOUR NETVISTA ACCOUNT</p><h2 id="account-gate-title">Welcome back.</h2><p id="account-gate-description">Sign in to explore the Video Editor beta.</p>
-        <div class="account-gate-tabs" role="tablist" aria-label="Video Editor account access"><button type="button" class="account-gate-tab is-active" id="gate-signin-tab" role="tab" aria-selected="true" aria-controls="gate-signin-form">Sign in</button><button type="button" class="account-gate-tab" id="gate-signup-tab" role="tab" aria-selected="false" aria-controls="gate-signup-form">Create account</button></div>
-        <div id="account-gate-status" class="account-gate-status" role="status" aria-live="polite" hidden></div>
-        <form id="gate-signin-form" method="post" class="account-gate-form" role="tabpanel" aria-labelledby="gate-signin-tab"><fieldset disabled class="account-fields"><label for="gate-signin-email">Email address</label><input id="gate-signin-email" type="email" autocomplete="email" inputmode="email" required><label for="gate-signin-password">Password</label><input id="gate-signin-password" type="password" autocomplete="current-password" required><button class="account-gate-submit" type="submit">Sign in and continue <span aria-hidden="true">↗</span></button><button class="account-gate-text" id="gate-forgot-password" type="button">Forgot your password?</button></fieldset></form>
-        <form id="gate-signup-form" method="post" class="account-gate-form" role="tabpanel" aria-labelledby="gate-signup-tab" hidden><fieldset disabled class="account-fields"><label for="gate-signup-name">Display name <span>(optional)</span></label><input id="gate-signup-name" type="text" autocomplete="name" maxlength="80"><label for="gate-signup-email">Email address</label><input id="gate-signup-email" type="email" autocomplete="email" inputmode="email" required><label for="gate-signup-password">Password</label><input id="gate-signup-password" type="password" autocomplete="new-password" minlength="8" required><p class="account-gate-note">Use a unique password with at least 8 characters.</p><button class="account-gate-submit" type="submit">Create account and continue <span aria-hidden="true">↗</span></button></fieldset></form>
-        <p class="auth-local-note">Unfinished beta software. Your project files remain on your computer.</p><p class="account-gate-footnote">Secure sign-in by Supabase. App downloads and source are public on GitHub.</p>
-      </div>
-    </section>
-  </div>
-  <footer class="cinema-footer cinema-shell"><div><a class="nv-brand" href="https://netvistastudio.com/">netvistastudio</a><p>Independent stories. Independent tools.</p></div><nav aria-label="Footer navigation"><a href="https://netvistastudio.com/">Back to the studio</a><a href="https://netvistastudio.com/video-editor/">Editor guides</a><a class="releases-link" href="https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.6" target="_blank" rel="noreferrer">Beta release notes</a></nav><p>© <span data-current-year></span> NetVista Studio · Public beta</p></footer>
+  <footer class="videos-footer shell"><div><a class="nv-brand" href="https://netvistastudio.com/">netvistastudio</a><p>Independent stories. A new place to watch.</p></div><nav aria-label="Related NetVista sites"><a href="https://netvistastudio.com/">Main studio ↗</a><a href="https://netvistastudio.com/editor/">Video Editor ↗</a><a href="#beta">Beta information</a></nav><small>© <span id="year">2026</span> NetVista Studio · Videos website beta · Still in development</small></footer>
+  <dialog class="film-dialog" id="details-dialog" aria-labelledby="details-title"><button class="dialog-close" type="button" data-close="details-dialog" aria-label="Close film details">×</button><img class="details-art" id="details-art" alt=""><div class="details-copy"><p class="eyebrow">NETVISTA ORIGINAL</p><h2 id="details-title"></h2><p class="available">Now streaming · <span id="details-format"></span></p><p id="details-description"></p><div class="button-row"><a id="details-watch" class="button primary" target="_blank" rel="noopener noreferrer">▶ Watch film</a><button id="details-save" class="button secondary" type="button" aria-pressed="false">+ My List</button></div><p id="details-status" class="list-note" role="status" aria-live="polite" hidden></p></div></dialog>
+  <dialog class="player-dialog" id="player-dialog" aria-labelledby="player-title"><div class="player-head"><div><p class="eyebrow">NETVISTA VIDEOS / WATCHING</p><h2 id="player-title"></h2></div><button class="dialog-close" type="button" data-close="player-dialog" aria-label="Close video player">×</button></div><div class="player-surface"><iframe id="video-frame" title="Film player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div class="player-foot"><p>Our existing film player is hosted externally. If it does not load, open it directly.</p><a id="provider-link" class="text-link" target="_blank" rel="noopener noreferrer">Open original player ↗</a></div></dialog>
+  <p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
 </body>
 </html>

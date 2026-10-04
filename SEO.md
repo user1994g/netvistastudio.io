@@ -40,8 +40,8 @@ Original artwork remains unchanged. Run `node scripts/optimize-public-images.cjs
 regenerate them. Do not preload the inactive film slide or eagerly load all cards.
 
 Host routing was updated and verified on 4 October 2026:
-- `video.netvistastudio.com/` now serves the separate cinematic, account-gated
-  beta page through `_worker.js`. It is `noindex`; public editor guides and the
+- `video.netvistastudio.com/` now serves the separate public Videos/watch-film
+  beta page through `_worker.js`, not the Video Editor page. It is `noindex`; public editor guides and the
   sitemap remain on the main domain. The old video overview redirect is disabled.
 - Cloudflare's canonical-host redirect matches `www` only and preserves the path
   and query when redirecting to the apex with method-preserving HTTP 308.
