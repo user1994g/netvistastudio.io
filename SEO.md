@@ -40,13 +40,18 @@ Original artwork remains unchanged. Run `node scripts/optimize-public-images.cjs
 regenerate them. Do not preload the inactive film slide or eagerly load all cards.
 
 Host routing was updated and verified on 4 October 2026:
-- `video.netvistastudio.com/` now serves the separate public Videos/watch-film
-  beta page through `_worker.js`, not the Video Editor page. It is `noindex`; public editor guides and the
+- `video.netvistastudio.com/` serves the independent NetVista watch-film beta,
+  not the Video Editor page. It is unlisted (`noindex, nofollow`, own robots
+  disallow response and no sitemap/main-site links). This is not private access
+  control. Its source HTML cannot be opened on the apex, www or Pages hosts;
+  the watch site has no main/editor navigation. Public editor guides and the
   sitemap remain on the main domain. The old video overview redirect is disabled.
 - Cloudflare's canonical-host redirect matches `www` only and preserves the path
   and query when redirecting to the apex with method-preserving HTTP 308.
 - Video `/account/` redirects on the same host to `/editor/account/` with HTTP
   308, retaining callback queries and correct document-relative account assets.
+  Legacy `/editor/` exits redirect to the main editor host; other main-site HTML
+  is not served on the watch host. Existing account/settings sources are unchanged.
 - Account Bulk Redirect list `netvista_canonical_pages`: only the production
   `netvistastudio.pages.dev/` host redirects to the apex with subpath matching,
   path suffix and query preservation enabled. Include subdomains is disabled so

@@ -55,10 +55,10 @@ function renderLibrary() {
     return `<article class="film-card" data-film="${id}"><a class="film-art" data-watch="${id}" href="${escapeHTML(film.videoUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Watch ${escapeHTML(film.title)}"><img src="${escapeHTML(artworkURL(film))}" alt="Artwork for ${escapeHTML(film.title)}" loading="lazy" decoding="async"><span class="card-play" aria-hidden="true">▶</span></a><div class="card-copy"><p class="card-label">NETVISTA ORIGINAL / NOW STREAMING</p><h3>${escapeHTML(film.title)}</h3><p>${escapeHTML(film.description)}</p><div class="card-actions"><a class="text-link" data-watch="${id}" href="${escapeHTML(film.videoUrl)}" target="_blank" rel="noopener noreferrer">Watch film →</a><button class="text-link" data-details="${id}" type="button">Details</button><button class="text-link save-link" data-save="${id}" type="button" aria-pressed="false">+ My List</button></div></div></article>`;
   }).join('');
   const isSaved = collection === 'saved';
-  $('library-title').textContent = isSaved ? 'Your next watch.' : 'Stories worth staying for.';
-  $('library-eyebrow').textContent = isSaved ? 'MY LIST / SAVED ON THIS DEVICE' : 'THE NETVISTA COLLECTION';
+  $('library-title').textContent = isSaved ? 'My List' : 'NetVista Originals';
+  $('library-eyebrow').textContent = isSaved ? 'SAVED ON THIS DEVICE' : 'INDEPENDENT CINEMA';
   $('library-note').textContent = isSaved ? 'A little shelf for the stories you want to return to.'
-    : `${films.length} original ${films.length === 1 ? 'film' : 'films'}. A small collection, made our way.`;
+    : `${films.length} independent ${films.length === 1 ? 'film' : 'films'}. Pick a story and press play.`;
   $('results-status').textContent = `${matches.length} ${isSaved ? 'saved ' : ''}film${matches.length === 1 ? '' : 's'}${$('film-search').value.trim() ? (matches.length === 1 ? ' matches your search' : ' match your search') : ''}.`;
   $('film-empty').hidden = matches.length > 0;
   $('empty-title').textContent = isSaved && saved.size === 0 ? 'Your list starts here.' : 'No films found.';
@@ -166,6 +166,11 @@ document.addEventListener('click', event => {
   }
 });
 $('film-search').addEventListener('input', renderLibrary);
+$('browse-search').addEventListener('click', () => {
+  history.replaceState(null, '', '#films');
+  showView('films');
+  $('film-search').focus();
+});
 $('reset-library').addEventListener('click', () => {
   $('film-search').value = '';
   collection = 'all';

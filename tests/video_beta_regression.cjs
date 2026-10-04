@@ -35,8 +35,8 @@ assert(!/editor-locked|account-gate|download-modal|data-platform|type="password"
 assert(!/\/editor\/assets\/|auth-client|supabase/.test(html), 'Videos does not import the editor account gate or SDK');
 assert.match(css, /\.videos-site \[hidden\]\{display:none!important\}/, 'Hidden states must beat Videos layout rules');
 assert(!/editor-locked|visibility:hidden/.test(css), 'The public film library must not be hidden behind an account gate');
-assert.match(html, /name="robots" content="noindex, follow"/);
-assert.match(html, /<title>NetVista Videos — Beta<\/title>/);
+assert.match(html, /name="robots" content="noindex, nofollow"/);
+assert.match(html, /<title>NetVista — Watch Beta<\/title>/);
 assert(html.includes(`rel="canonical" href="${videoOrigin}/"`));
 assert(html.includes(`property="og:url" content="${videoOrigin}/"`));
 assert.equal([...html.matchAll(/<h1\b/g)].length, 1, 'One main page heading');
@@ -47,8 +47,13 @@ for (const statement of ['WEBSITE BETA', 'not a finished streaming service', 'ex
 assert(!/v1\.4\.0-beta|aggregateRating|ratingValue|\d+% Match/.test(html), 'No editor release marketing or invented film ratings');
 assert.equal([...html.matchAll(/<form\b/g)].length, 0, 'Public Videos does not collect account credentials');
 assert.match(html, /<noscript>[\s\S]*watch links above still open the original films[\s\S]*<\/noscript>/, 'Watching retains a no-JavaScript fallback');
-assert.match(html, /<script type="module" src="\/video-beta\/assets\/cinema\.js\?v=2"><\/script>/);
-assert.match(html, /href="https:\/\/netvistastudio\.com\/editor\/"/, 'The editor remains a separate site link');
+assert.match(html, /<script type="module" src="\/video-beta\/assets\/cinema\.js\?v=3"><\/script>/);
+assert.match(html, /href="\/video-beta\/assets\/cinema\.css\?v=3"/);
+for (const match of html.matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
+  const url = new URL(decode(match[1]), videoOrigin + '/');
+  assert(![apexOrigin, 'https://www.netvistastudio.com'].includes(url.origin), 'Film navigation must not lead to the main or editor site');
+  if (url.origin === videoOrigin) assert.equal(url.pathname, '/', 'Film navigation stays within the standalone film page');
+}
 assert.match(html, /<iframe\b[^>]*id="video-frame"[^>]*allowfullscreen/);
 const frame = [...html.matchAll(/<iframe\b[^>]*>/g)];
 assert.equal(frame.length, 1, 'There is one on-demand film player');
@@ -85,30 +90,88 @@ for (const match of read('video-beta/assets/cinema.js').matchAll(/\bfrom\s+['"](
   checkLink(match[1], videoOrigin + '/video-beta/assets/cinema.js');
 }
 
+function filesUnder(directory) {
+  const filenames = [];
+  for (const entry of fs.readdirSync(path.join(root, directory), { withFileTypes: true })) {
+    const filename = path.posix.join(directory, entry.name);
+    if (entry.isDirectory()) filenames.push(...filesUnder(filename));
+    else if (entry.isFile()) filenames.push(filename);
+  }
+  return filenames;
+}
+
+// Inspect only website source directories, never native/app/mobile copies.
+const publicHTML = ['index.html', '404.html', ...['applications', 'video-editor', 'editor', 'video-beta']
+  .flatMap(filesUnder).filter(filename => filename.endsWith('.html'))];
+for (const filename of publicHTML.filter(filename => !filename.startsWith('video-beta/'))) {
+  for (const match of read(filename).matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
+    const url = new URL(decode(match[1]), apexOrigin + '/' + filename);
+    assert.notEqual(url.hostname, 'video.netvistastudio.com', `Main/editor navigation must not link to the unlisted film site: ${filename}`);
+    assert(!/^\/video-beta(?:\/|$)/.test(url.pathname), `Main/editor navigation must not expose the film source path: ${filename}`);
+  }
+}
+assert(!read('sitemap.xml').includes('video.netvistastudio.com'), 'The main sitemap must not advertise the unlisted film host');
+assert(!read('sitemap.xml').includes('/video-beta'), 'The main sitemap must not advertise the film source path');
+
 async function checkWorker() {
-  const context = vm.createContext({ URL, Request, Response });
+  const context = vm.createContext({ URL, Request, Response, Headers });
   const module = new vm.SourceTextModule(read('_worker.js'), { context });
   await module.link(() => { throw Error('Worker must not import dependencies'); });
   await module.evaluate();
   const worker = module.namespace.default;
   const routes = JSON.parse(read('_routes.json'));
   assert.equal(routes.version, 1);
-  for (const value of ['/', '/index.html', '/account', '/account/*']) assert(routes.include.includes(value), `Route excluded from worker: ${value}`);
-  assert.deepEqual(routes.exclude, []);
+  assert.deepEqual(routes.include, ['/*'], 'Host isolation must cover all page requests, including future routes');
+  const excludedAssets = ['/assets/images/*', '/assets/css/*', '/assets/js/*',
+    '/assets/mobile-navigation.js', '/assets/public-domain.js', '/video-beta/assets/*', '/editor/assets/*'];
+  assert.deepEqual([...routes.exclude].sort(), [...excludedAssets].sort(), 'Only verified asset-only paths bypass the worker');
+  function matches(pattern, pathname) {
+    const star = pattern.indexOf('*');
+    return star === -1 ? pathname === pattern : pathname.startsWith(pattern.slice(0, star)) && pathname.endsWith(pattern.slice(star + 1));
+  }
+  function usesWorker(pathname) {
+    return routes.include.some(pattern => matches(pattern, pathname)) && !routes.exclude.some(pattern => matches(pattern, pathname));
+  }
+  for (const filename of publicHTML) {
+    assert(usesWorker('/' + filename), `Public HTML must not bypass host isolation: ${filename}`);
+    if (filename.endsWith('/index.html')) {
+      const directory = '/' + filename.slice(0, -'index.html'.length);
+      assert(usesWorker(directory), `Directory entry must not bypass host isolation: ${directory}`);
+      assert(usesWorker(directory.slice(0, -1)), `Slashless entry must not bypass host isolation: ${directory}`);
+    }
+  }
+  for (const pattern of excludedAssets) {
+    const filenames = pattern.endsWith('/*') ? filesUnder(pattern.slice(1, -2)) : [pattern.slice(1)];
+    assert(filenames.length, `Excluded asset path must exist: ${pattern}`);
+    for (const filename of filenames) {
+      assert(!/\.(?:html?|xhtml)$/i.test(filename), `Excluded directory must not contain HTML: ${filename}`);
+      assert(!usesWorker('/' + filename), `Verified static asset should avoid unnecessary Function requests: ${filename}`);
+    }
+  }
   async function route(url, method = 'GET') {
     const original = new Request(url, { method, headers: { 'x-regression': 'preserved' } });
     const calls = [];
-    const assetResponse = new Response(method === 'HEAD' ? null : 'static asset', { status: 200, headers: { 'x-asset-response': 'retained' } });
+    const assetResponse = new Response(method === 'HEAD' ? null : 'static asset', { status: 200,
+      headers: { 'x-asset-response': 'retained', 'content-type': 'text/html; charset=utf-8' } });
     const response = await worker.fetch(original, { ASSETS: { async fetch(request) { calls.push(request); return assetResponse; } } });
     return { original, calls, response, assetResponse };
   }
   for (const host of [apexOrigin, 'https://www.netvistastudio.com', 'https://preview.netvistastudio.pages.dev']) {
-    for (const pathname of ['/', '/index.html', '/account/?code=synthetic', '/applications/', '/editor/']) {
+    for (const pathname of ['/', '/index.html', '/account/?code=synthetic', '/applications/', '/editor/', '/video-editor/', '/robots.txt', '/sitemap.xml']) {
       for (const method of ['GET', 'HEAD']) {
         const result = await route(host + pathname, method);
         assert.equal(result.calls.length, 1);
         assert.equal(result.calls[0], result.original, 'Non-video host passes through the exact Request');
         assert.equal(result.response, result.assetResponse, 'Non-video response must be unchanged');
+      }
+    }
+    for (const pathname of ['/video-beta', '/video-beta/', '/video-beta/index.html', '/video-beta/unknown.html']) {
+      for (const method of ['GET', 'HEAD']) {
+        const result = await route(host + pathname + '?preview=synthetic', method);
+        assert.equal(result.response.status, 404, `Film HTML is not exposed on another host: ${host + pathname}`);
+        assert.equal(result.calls.length, 0, 'Blocked source paths must not fetch film HTML');
+        assert.equal(result.response.headers.get('location'), null, 'Another host must not advertise the film subdomain through a redirect');
+        if (method === 'HEAD') assert.equal(await result.response.text(), '', 'HEAD 404 has no body');
       }
     }
   }
@@ -118,12 +181,84 @@ async function checkWorker() {
       assert.equal(result.calls[0].url, videoOrigin + '/video-beta/?preview=a%2Fb&x=1');
       assert.equal(result.calls[0].method, method);
       assert.equal(result.calls[0].headers.get('x-regression'), 'preserved');
-      assert.equal(result.response, result.assetResponse, 'Rewrite retains the asset Response');
+      assert.equal(result.response.status, result.assetResponse.status, 'Film rewrite retains the asset status');
+      assert.equal(result.response.headers.get('x-asset-response'), 'retained', 'Film rewrite retains asset headers');
+      assert.equal(result.response.headers.get('content-type'), 'text/html; charset=utf-8', 'Film rewrite retains the HTML content type');
+      assert.equal(result.response.headers.get('x-robots-tag'), 'noindex, nofollow', 'The standalone film page stays unlisted');
+      assert.equal(await result.response.text(), method === 'HEAD' ? '' : 'static asset', 'Film rewrite preserves GET content and HEAD has no body');
     }
   }
-  for (const pathname of ['/editor/', '/assets/mobile-navigation.js', '/video-beta/assets/cinema.css', '/accounting/']) {
-    const result = await route(videoOrigin + pathname);
-    assert.equal(result.calls[0], result.original, `Unmatched video path unchanged: ${pathname}`);
+  for (const pathname of ['/video-beta', '/video-beta/', '/video-beta/index.html']) {
+    for (const method of ['GET', 'HEAD']) {
+      const originalURL = videoOrigin + pathname + '?preview=a%2Fb&x=1';
+      const result = await route(originalURL, method);
+      assert.equal(result.response.status, 308, 'Film source aliases canonicalize to the standalone root');
+      assert.equal(result.calls.length, 0);
+      assert.equal(result.response.headers.get('location'), videoOrigin + '/?preview=a%2Fb&x=1', 'Alias redirect preserves host and query');
+      if (method === 'HEAD') assert.equal(await result.response.text(), '', 'HEAD redirect has no body');
+    }
+  }
+  for (const pathname of ['/editor', '/editor/', '/editor/index.html']) {
+    assert(usesWorker(pathname), `Legacy editor exit must reach the worker: ${pathname}`);
+    for (const method of ['GET', 'HEAD']) {
+      const result = await route(videoOrigin + pathname + '?next=a%2Fb&x=1', method);
+      assert.equal(result.response.status, 308, 'Existing account-page editor exits redirect to the editor host');
+      assert.equal(result.calls.length, 0, 'The film host never fetches editor HTML');
+      assert.equal(result.response.headers.get('location'), apexOrigin + '/editor/?next=a%2Fb&x=1', 'Editor exit preserves its query and goes to the apex editor');
+      if (method === 'HEAD') assert.equal(await result.response.text(), '', 'HEAD editor exit has no body');
+    }
+  }
+  const blockedVideoPaths = ['/editor/unknown.html', '/editor/accounting/',
+    '/applications', '/applications/', '/applications/index.html', '/video-editor', '/video-editor/',
+    '/video-editor/getting-started/', '/404.html', '/sitemap.xml', '/accounting/', '/unknown-page/',
+    '/video-beta/unknown.html'];
+  for (const pathname of blockedVideoPaths) {
+    assert(usesWorker(pathname), `Blocked page must reach the worker: ${pathname}`);
+    for (const method of ['GET', 'HEAD']) {
+      const result = await route(videoOrigin + pathname, method);
+      assert.equal(result.response.status, 404, `The film host must not serve main/editor pages: ${pathname}`);
+      assert.equal(result.calls.length, 0, 'Blocked pages must not fetch main/editor HTML');
+      if (method === 'HEAD') assert.equal(await result.response.text(), '', 'HEAD 404 has no body');
+    }
+  }
+  for (const method of ['GET', 'HEAD']) {
+    const result = await route(videoOrigin + '/robots.txt', method);
+    assert.equal(result.response.status, 200);
+    assert.equal(result.calls.length, 0, 'Video robots policy is separate from the apex policy');
+    assert.match(result.response.headers.get('content-type'), /text\/plain/);
+    const body = await result.response.text();
+    if (method === 'HEAD') assert.equal(body, '', 'HEAD robots has no body');
+    else {
+      assert.match(body, /User-agent:\s*\*/i);
+      assert.match(body, /Disallow:\s*\/\s*(?:\n|$)/i);
+      assert(!/Sitemap:|netvistastudio\.com/i.test(body), 'Video robots does not advertise the main sitemap');
+    }
+  }
+  const preservedAssets = ['/assets/mobile-navigation.js', '/assets/public-domain.js',
+    '/assets/css/studio-shared.css', '/assets/js/data/catalog.js', '/assets/images/photos/final-lesson.jpg',
+    '/video-beta/assets/cinema.css', '/video-beta/assets/cinema.js', '/video-beta/assets/library.js',
+    '/editor/assets/site.css', '/editor/assets/account-ui.css', '/editor/assets/auth-client.js',
+    '/editor/assets/studio-room.png'];
+  for (const host of [videoOrigin, apexOrigin]) {
+    for (const pathname of preservedAssets) {
+      assert(fs.existsSync(localFile(new URL(host + pathname))), `Preserved asset exists: ${pathname}`);
+      for (const method of ['GET', 'HEAD']) {
+        const result = await route(host + pathname + '?v=synthetic', method);
+        assert.equal(result.calls.length, 1);
+        assert.equal(result.calls[0], result.original, `Shared film/account asset Request is unchanged: ${pathname}`);
+        assert.equal(result.response, result.assetResponse, `Shared film/account asset Response is unchanged: ${pathname}`);
+      }
+    }
+  }
+  for (const pathname of ['/editor/account', '/editor/account/', '/editor/account/index.html',
+    '/editor/account/account.js', '/editor/account/account.css']) {
+    assert(usesWorker(pathname), `Legacy account exception remains under explicit worker control: ${pathname}`);
+    for (const method of ['GET', 'HEAD']) {
+      const result = await route(videoOrigin + pathname + '?code=synthetic%2Fcode', method);
+      assert.equal(result.calls.length, 1);
+      assert.equal(result.calls[0], result.original, `Existing callback Request is unchanged: ${pathname}`);
+      assert.equal(result.response, result.assetResponse, `Existing callback Response is unchanged: ${pathname}`);
+    }
   }
   for (const pathname of ['/account', '/account/', '/account/account.js']) {
     for (const method of ['GET', 'HEAD', 'POST']) {
@@ -138,14 +273,30 @@ async function checkWorker() {
       if (pathname !== '/account/account.js') {
         const browserURL = destination;
         const accountHTML = read('editor/account/index.html');
-        for (const match of accountHTML.matchAll(/\b(?:href|src)="([^"#][^"]*)"/g)) {
+        // Legacy account navigation remains usable, without adding any editor
+        // navigation to Watch. Model browser fragment inheritance on redirects.
+        const resources = [...accountHTML.matchAll(/<(?:a|link|script|img)\b[^>]*\b(?:href|src)="([^"]+)"/g)];
+        for (const match of resources) {
           const resource = new URL(match[1], browserURL);
           if (resource.origin !== videoOrigin) continue;
-          const fetched = await route(resource.href);
-          const resourceURL = fetched.response.status === 308
-            ? new URL(fetched.response.headers.get('location'), resource)
-            : new URL(fetched.calls[0].url);
-          assert(fs.existsSync(localFile(resourceURL)), `Account-relative resource broken at browser URL ${browserURL.pathname}: ${resource.pathname}`);
+          let browserTarget = resource;
+          let fetched = await route(resource.origin + resource.pathname + resource.search);
+          if (fetched.response.status === 308) {
+            browserTarget = new URL(fetched.response.headers.get('location'), resource);
+            assert.equal(browserTarget.origin, apexOrigin, 'Legacy account editor exits reach the apex, not editor HTML on Watch');
+            assert.equal(browserTarget.pathname, '/editor/');
+            if (!browserTarget.hash) browserTarget.hash = resource.hash;
+            fetched = await route(browserTarget.origin + browserTarget.pathname + browserTarget.search);
+          }
+          assert.equal(fetched.response.status, 200, `Account navigation/resource remains reachable: ${resource.pathname}`);
+          assert.equal(fetched.calls.length, 1);
+          const resourceURL = new URL(fetched.calls[0].url);
+          resourceURL.hash = browserTarget.hash;
+          const filename = localFile(resourceURL);
+          assert(fs.existsSync(filename), `Account-relative navigation/resource broken at browser URL ${browserURL.pathname}: ${resource.pathname}`);
+          if (resourceURL.hash && filename.endsWith('.html')) {
+            assert(read(path.relative(root, filename)).includes(`id="${decodeURIComponent(resourceURL.hash.slice(1))}"`), `Account navigation anchor must exist, including Get the beta: ${resourceURL.pathname}${resourceURL.hash}`);
+          }
         }
         const scriptURL = new URL('account.js', browserURL);
         for (const match of read('editor/account/account.js').matchAll(/import\(['"]([^'"]+)['"]\)/g)) {
@@ -253,5 +404,5 @@ async function checkLibrary() {
 (async () => {
   await checkWorker();
   await checkLibrary();
-  console.log('PASS: public Videos assets/anchors/IDs, independent watching/no-auth boundary, real film fallbacks, player URL allowlist, robust saved lists, search/saved intersection, HTML escaping/artwork paths, and unchanged host/account routing.');
+  console.log('PASS: standalone film-only navigation, no main-site entry links, route coverage/asset exclusions, host-only film HTML, GET/HEAD isolation, unchanged legacy account callbacks/assets, film fallbacks, saved lists/search, escaping and player allowlist.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
