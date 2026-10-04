@@ -39,18 +39,21 @@ Original artwork remains unchanged. Run `node scripts/optimize-public-images.cjs
 --check` with `sharp` available to verify outputs; run without `--check` to
 regenerate them. Do not preload the inactive film slide or eagerly load all cards.
 
-Canonical host redirects are configured in Cloudflare, not `_redirects` (Pages
-does not support host matching there):
-- First: `video.netvistastudio.com/` redirects permanently to the public
-  `https://netvistastudio.com/video-editor/` overview.
-- Then: remaining `video` and `www` requests permanently redirect to the apex
-  with their path and query intact. Method-preserving 308 protects POST requests.
+Host routing was updated and verified on 4 October 2026:
+- `video.netvistastudio.com/` now serves the separate cinematic, account-gated
+  beta page through `_worker.js`. It is `noindex`; public editor guides and the
+  sitemap remain on the main domain. The old video overview redirect is disabled.
+- Cloudflare's canonical-host redirect matches `www` only and preserves the path
+  and query when redirecting to the apex with method-preserving HTTP 308.
+- Video `/account/` redirects on the same host to `/editor/account/` with HTTP
+  308, retaining callback queries and correct document-relative account assets.
 - Account Bulk Redirect list `netvista_canonical_pages`: only the production
   `netvistastudio.pages.dev/` host redirects to the apex with subpath matching,
   path suffix and query preservation enabled. Include subdomains is disabled so
   individual preview deployments remain available for QA.
-These redirects consolidate duplicate pages; do not create cloned keyword
-subdomains or doorway pages. Keep account/recovery paths and queries intact.
+The main public HTML and existing account sources are unchanged. Do not create
+cloned keyword subdomains or doorway pages. Keep account/recovery paths and
+queries intact. See `VIDEO_BETA.md` for deployment checks and routing rollback.
 
 For search visibility monitoring, use Google Search Console with the verified
 `netvistastudio.com` property. Submit `https://netvistastudio.com/sitemap.xml`,
