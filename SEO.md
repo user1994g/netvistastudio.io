@@ -39,11 +39,13 @@ Original artwork remains unchanged. Run `node scripts/optimize-public-images.cjs
 --check` with `sharp` available to verify outputs; run without `--check` to
 regenerate them. Do not preload the inactive film slide or eagerly load all cards.
 
-Host routing was updated and verified on 4 October 2026:
+Host routing was updated on 5 October 2026:
 - `video.netvistastudio.com/` serves the independent NetVista watch-film beta,
-  not the Video Editor page. It is unlisted (`noindex, nofollow`, own robots
-  disallow response and no sitemap/main-site links). This is not private access
-  control. Its source HTML cannot be opened on the apex, www or Pages hosts;
+  not the Video Editor page. Its public welcome is now indexable with its own
+  robots and sitemap (`https://video.netvistastudio.com/sitemap.xml`). Login is
+  required for the collection; private viewing history is not indexed. The
+  existing externally hosted films are still public outside Watch. Its source
+  HTML cannot be opened on the apex, www or Pages hosts;
   the watch site has no main/editor navigation. Public editor guides and the
   sitemap remain on the main domain. The old video overview redirect is disabled.
 - Cloudflare's canonical-host redirect matches `www` only and preserves the path
