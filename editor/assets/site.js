@@ -2,12 +2,14 @@
   const repository = 'videoediterNetVistaStudio.github.io';
   const repositoryURL = 'https://github.com/user1994g/videoediterNetVistaStudio.github.io';
   // Keep download links on a published release until the next assets exist.
-  const releaseTag = 'v1.4.0-beta.6';
+  const releaseTag = 'v1.4.0-beta.7';
   const releaseURL = `${repositoryURL}/releases/tag/${releaseTag}`;
   const downloads = {
-    mac: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-macOS-1.4-Beta-6.zip`,
-    windows: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Windows-1.4-Beta-6.zip`,
-    linux: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Linux-1.4-Beta-6.zip`
+    mac: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-macOS-1.4-Beta-7.zip`,
+    windows: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Windows-1.4-Beta-7.zip`,
+    linux: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Linux-1.4-Beta-7.zip`,
+    ipad: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-iPadOS-1.4-Beta-7.ipa`,
+    android: `${repositoryURL}/releases/download/${releaseTag}/NetVista-Studio-Android-1.4-Beta-7.apk`
   };
 
   document.querySelectorAll('.github-link').forEach((link) => { link.href = repositoryURL; });
@@ -107,9 +109,13 @@
     });
     return authReady;
   };
-  const preferredPlatform = /Win/i.test(navigator.platform + navigator.userAgent) ? 'windows'
-    : /Linux/i.test(navigator.platform + navigator.userAgent) && !/Android/i.test(navigator.userAgent) ? 'linux' : 'mac';
-  const preferredCard = downloadModal.querySelector(`[data-platform="${preferredPlatform}"]`);
+  const platformHint = `${navigator.platform} ${navigator.userAgent}`;
+  const androidDevice = /Android/i.test(platformHint);
+  const ipadDevice = /iPad/i.test(platformHint) || (/Mac/i.test(navigator.platform) && navigator.maxTouchPoints > 1);
+  const unsupportedMobile = /iPhone|iPod/i.test(platformHint);
+  const preferredPlatform = androidDevice ? 'android' : ipadDevice ? 'ipad' : unsupportedMobile ? null : /Win/i.test(platformHint) ? 'windows'
+    : /Linux/i.test(platformHint) ? 'linux' : 'mac';
+  const preferredCard = preferredPlatform ? downloadModal.querySelector(`[data-platform="${preferredPlatform}"]`) : null;
   preferredCard?.classList.add('recommended');
   preferredCard?.insertAdjacentHTML('afterbegin', '<em class="recommended-label">Recommended</em>');
   const closeDownload = () => {
@@ -123,7 +129,9 @@
     downloadModal.hidden = false;
     document.body.classList.add('overlay-open');
     backgroundSurfaces.forEach((element) => { element.inert = true; });
-    downloadDialog.querySelector(`[data-platform="${preferredPlatform}"]`)?.focus();
+    const firstControl = preferredPlatform ? downloadDialog.querySelector(`[data-platform="${preferredPlatform}"]`)
+      : downloadDialog.querySelector('[data-close-download]');
+    firstControl?.focus();
   };
   const setGateStatus = (message, tone = '') => {
     accountGateStatus.hidden = !message;
