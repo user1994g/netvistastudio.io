@@ -1,47 +1,168 @@
-// Both public pages use the same responsive navigation controller.
+/* Shared navigation and quick search for the public NetVista site. No account state. */
 (() => {
+  'use strict';
   const header = document.querySelector('[data-shared-navigation]');
   if (!header) return;
   const toggle = header.querySelector('#nav-toggle');
   const nav = header.querySelector('#primary-nav');
+  if (!toggle || !nav) return;
   const mobile = window.matchMedia('(max-width: 1100px)');
+  const searchToggle = header.querySelector('#search-toggle');
+  const searchPanel = document.querySelector('#search-panel');
+  const searchInput = document.querySelector('#search-input');
+  const searchClose = document.querySelector('#search-close');
+  const searchStatus = document.querySelector('#search-status');
+  let results = document.querySelector('#search-results');
+  if (searchPanel && !results) {
+    results = document.createElement('ul');
+    results.id = 'search-results';
+    searchPanel.append(results);
+  }
+  results?.classList.add('search-results');
   const backdrop = document.createElement('button');
   backdrop.className = 'navigation-backdrop';
+  backdrop.type = 'button';
   backdrop.setAttribute('aria-label', 'Close navigation');
   backdrop.tabIndex = -1;
   backdrop.hidden = true;
-  document.body.append(backdrop);
+  const searchBackdrop = document.createElement('button');
+  searchBackdrop.className = 'search-backdrop';
+  searchBackdrop.type = 'button';
+  searchBackdrop.setAttribute('aria-label', 'Close search');
+  searchBackdrop.tabIndex = -1;
+  searchBackdrop.hidden = true;
+  document.body.append(backdrop, searchBackdrop);
   let open = false;
-  function setOpen(value, restoreFocus = false) {
-    open = value && mobile.matches;
+  let searching = false;
+  let returnFocus = null;
+  // The Watch site's account screen shares this shell, not the studio's routes.
+  // Restrict rewriting to public navigation; auth callbacks remain untouched.
+  const studioOrigin = window.location.hostname === 'video.netvistastudio.com' ? 'https://netvistastudio.com' : '';
+  if (studioOrigin) {
+    document.querySelectorAll('.nv-header a[href], .site-footer a[href], .application-footer a[href]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href?.startsWith('/') && !href.startsWith('//')) link.href = studioOrigin + href;
+    });
+  }
+
+  const catalogue = [
+    { title: 'NetVista Studio Video Editor', kind: 'Creative tool', href: '/video-editor/', terms: 'timeline cut clips movie editing colour grading effects keyframes export windows mac linux ipad android samsung' },
+    { title: 'Download the public beta', kind: 'Native apps', href: '/editor/', terms: 'get install application downloads desktop mobile beta free' },
+    { title: 'The dark echo’s of 1939', kind: 'Film · Now streaming', href: '/#work', terms: 'dark echoes 1939 film watch cinema story' },
+    { title: 'The Final Lesson AP 1', kind: 'Film · Now streaming', href: '/#work', terms: 'final lesson film watch cinema' },
+    { title: 'Your first video project', kind: 'Getting-started guide', href: '/video-editor/getting-started/', terms: 'tutorial help learn import trim save editing start beginner' },
+    { title: 'Zoom and fade with keyframes', kind: 'Editing guide', href: '/video-editor/keyframes/', terms: 'effects animate scale opacity zoom fade animation' },
+    { title: 'Colour grading and LUTs', kind: 'Editing guide', href: '/video-editor/colour-grading-luts/', terms: 'color grading colour correction cube lut looks wheels node' },
+    { title: 'MP4 and 4K export settings', kind: 'Editing guide', href: '/video-editor/export-settings/', terms: 'render movie resolution fps frame rate export mp4 4k 1080' },
+    { title: 'Applications', kind: 'Join a production', href: '/applications/', terms: 'acting actors crew join apply cast casting application film production' },
+    { title: 'Media lab', kind: 'Studio experiments', href: '/#media', terms: 'experiments explore work creative media lab' },
+    { title: 'About NetVista Studio', kind: 'Independent film studio', href: '/#studio', terms: 'about contact studio independent team email' }
+  ];
+
+  const available = element => Boolean(element && !element.hidden && element.getClientRects().length);
+  const focusable = container => [...container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), [tabindex="0"]')].filter(available);
+  const focus = element => { if (available(element)) element.focus({ preventScroll: true }); };
+
+  function setMenu(value, restore = false) {
+    open = Boolean(value && mobile.matches);
+    if (open && searching) setSearch(false);
     header.classList.toggle('nav-open', open);
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    toggle.innerHTML = open ? 'Close <span aria-hidden="true">×</span>' : 'Menu <span aria-hidden="true">☰</span>';
+    const icon = document.createElement('span');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = open ? '×' : '☰';
+    toggle.replaceChildren(document.createTextNode(open ? 'Close ' : 'Menu '), icon);
     backdrop.hidden = !open;
     document.documentElement.classList.toggle('navigation-open', open);
-    if (restoreFocus) toggle.focus();
+    if (restore) focus(toggle);
   }
-  toggle.addEventListener('click', () => setOpen(!open));
-  header.querySelector('#search-toggle')?.addEventListener('click', () => setOpen(false));
-  backdrop.addEventListener('click', () => setOpen(false, true));
-  nav.addEventListener('click', event => {
-    const link = event.target.closest('a');
-    if (!link) return;
-    // Keep keyboard focus on an available control when the menu disappears.
-    setOpen(false, mobile.matches);
-  });
-  document.addEventListener('keydown', event => {
-    if (!open) return;
-    if (event.key === 'Escape') { event.preventDefault(); setOpen(false, true); }
-    if (event.key === 'Tab') {
-      const items = [toggle, ...nav.querySelectorAll('a[href]')];
-      const index = items.indexOf(document.activeElement);
-      if (event.shiftKey && index <= 0) { event.preventDefault(); items.at(-1).focus(); }
-      else if (!event.shiftKey && (index === items.length - 1 || index < 0)) { event.preventDefault(); toggle.focus(); }
+
+  function renderSearch() {
+    if (!results || !searchInput) return;
+    const words = searchInput.value.trim().toLocaleLowerCase('en-GB').split(/\s+/).filter(Boolean);
+    const matching = catalogue.filter(item => words.every(word => `${item.title} ${item.kind} ${item.terms}`.toLocaleLowerCase('en-GB').includes(word))).slice(0, words.length ? 9 : 5);
+    const children = matching.map(item => {
+      const row = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = studioOrigin + item.href;
+      const copy = document.createElement('span');
+      const title = document.createElement('strong');
+      title.textContent = item.title;
+      const kind = document.createElement('small');
+      kind.textContent = item.kind;
+      copy.append(title, kind);
+      const arrow = document.createElement('span');
+      arrow.textContent = '→';
+      arrow.setAttribute('aria-hidden', 'true');
+      link.append(copy, arrow);
+      row.append(link);
+      return row;
+    });
+    if (!children.length) {
+      const empty = document.createElement('li');
+      empty.className = 'search-empty';
+      empty.textContent = 'No matching pages. Try “video”, “colour” or “films”.';
+      children.push(empty);
+    }
+    results.replaceChildren(...children);
+    if (searchStatus) searchStatus.textContent = words.length ? `${matching.length} matching page${matching.length === 1 ? '' : 's'}.` : 'Find tools, films and editing guides.';
+  }
+
+  function setSearch(value, restore = false) {
+    if (!searchToggle || !searchPanel || !searchInput) return;
+    if (value && !searching) returnFocus = document.activeElement;
+    searching = Boolean(value);
+    if (searching && open) setMenu(false);
+    searchPanel.hidden = !searching;
+    searchBackdrop.hidden = !searching;
+    searchToggle.setAttribute('aria-expanded', String(searching));
+    document.documentElement.classList.toggle('search-open', searching);
+    if (searching) {
+      renderSearch();
+      focus(searchInput);
+    } else {
+      searchInput.value = '';
+      if (restore) focus(available(returnFocus) ? returnFocus : searchToggle);
+      returnFocus = null;
+    }
+  }
+
+  function trapTab(event, items) {
+    if (!items.length) return;
+    const index = items.indexOf(document.activeElement);
+    if (event.shiftKey && index <= 0) { event.preventDefault(); focus(items.at(-1)); }
+    else if (!event.shiftKey && (index < 0 || index === items.length - 1)) { event.preventDefault(); focus(items[0]); }
+  }
+
+  toggle.addEventListener('click', () => setMenu(!open));
+  backdrop.addEventListener('click', () => setMenu(false, true));
+  searchToggle?.addEventListener('click', () => setSearch(!searching, searching));
+  searchClose?.addEventListener('click', () => setSearch(false, true));
+  searchBackdrop.addEventListener('click', () => setSearch(false, true));
+  searchInput?.addEventListener('input', renderSearch);
+  searchInput?.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      const first = results?.querySelector('a[href]');
+      if (first) { event.preventDefault(); first.click(); }
     }
   });
-  mobile.addEventListener('change', () => setOpen(false));
-  window.addEventListener('pageshow', () => setOpen(false));
-  setOpen(false);
+  results?.addEventListener('click', event => { if (event.target.closest('a[href]')) setSearch(false, true); });
+  nav.addEventListener('click', event => {
+    if (!event.target.closest('a[href]')) return;
+    setMenu(false, mobile.matches);
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && searching) { event.preventDefault(); setSearch(false, true); }
+    else if (event.key === 'Escape' && open) { event.preventDefault(); setMenu(false, true); }
+    else if (event.key === 'Tab' && searching) trapTab(event, focusable(searchPanel));
+    else if (event.key === 'Tab' && open) trapTab(event, [toggle, ...focusable(nav)]);
+  });
+  mobile.addEventListener('change', () => setMenu(false));
+  window.addEventListener('resize', () => { if (open) setMenu(false); });
+  window.addEventListener('pageshow', () => { setMenu(false); setSearch(false); });
+  window.addEventListener('hashchange', () => { setMenu(false); setSearch(false); });
+  if (searchStatus) { searchStatus.setAttribute('role', 'status'); searchStatus.setAttribute('aria-live', 'polite'); }
+  setMenu(false);
+  if (searchPanel) { searchPanel.hidden = true; searchToggle?.setAttribute('aria-expanded', 'false'); }
 })();

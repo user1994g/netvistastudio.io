@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08090c">
+  <meta name="theme-color" content="#faf9f6">
   <title>How to Edit a Video with NetVista Studio | Getting Started</title>
   <meta name="description" content="Start your first NetVista Studio video project: import clips, trim the timeline, add sound and effects, save your edit, and export at 1080p or 4K.">
   <meta name="robots" content="index, follow, max-image-preview:large">
@@ -23,27 +23,36 @@
   <link rel="apple-touch-icon" href="/assets/images/brand/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=DM+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/editor/assets/site.css?v=11">
-  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=3">
-  <link rel="stylesheet" href="/assets/css/editor-overview.css?v=1">
   <script src="/assets/public-domain.js"></script>
-  <script defer src="/assets/mobile-navigation.js?v=2"></script>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@graph":[
     {"@type":"Article","@id":"https://netvistastudio.com/video-editor/getting-started/#article","headline":"How to Edit a Video with NetVista Studio","description":"A first-project guide to importing, trimming, adding sound, saving and exporting with NetVista Studio.","datePublished":"2026-10-03","dateModified":"2026-10-03","author":{"@type":"Organization","name":"NetVista Studio","url":"https://netvistastudio.com/"},"publisher":{"@type":"Organization","@id":"https://netvistastudio.com/#organization","name":"NetVista Studio","url":"https://netvistastudio.com/","logo":"https://netvistastudio.com/assets/images/photos/netvistastudio-logo.png"},"image":"https://netvistastudio.com/editor/assets/studio-room-1672.jpg","mainEntityOfPage":"https://netvistastudio.com/video-editor/getting-started/","inLanguage":"en-GB"},
     {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"NetVista Studio","item":"https://netvistastudio.com/"},{"@type":"ListItem","position":2,"name":"Video Editor","item":"https://netvistastudio.com/video-editor/"},{"@type":"ListItem","position":3,"name":"Getting started","item":"https://netvistastudio.com/video-editor/getting-started/"}]}
   ]}
   </script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=20261021">
+  <link rel="stylesheet" href="/assets/css/studio-product.css?v=20261021">
+  <script defer src="/assets/mobile-navigation.js?v=20261021"></script>
 </head>
-<body class="seo-page">
+<body class="nv-site seo-page">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="nv-header" id="site-header" data-shared-navigation>
-    <a class="nv-brand" href="/" aria-label="NetVista Studio home"><span>netvista<span class="brand-accent">studio</span></span></a>
-    <button class="nv-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">+</span></button>
-    <nav class="nv-nav" id="primary-nav" aria-label="Main navigation"><a href="/#top">Index</a><a href="/#work">Work</a><a href="/#media">Media lab</a><a href="/#studio">Studio</a><a href="/applications/">Applications</a><a class="is-active" href="/video-editor/">Video Editor <span aria-hidden="true">↗</span></a></nav>
-    <div class="nv-actions nv-actions-placeholder" aria-hidden="true"></div>
+    <a class="nv-brand" href="/" aria-label="NetVista Studio home"><img src="/assets/images/photos/netvistastudio-logo.png" width="30" height="30" alt=""><span class="nv-wordmark">NetVista <small>STUDIO</small></span></a>
+    <button class="nv-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
+    <nav class="nv-nav" id="primary-nav" aria-label="Primary navigation">
+      <a href="/video-editor/" class="is-active" aria-current="page">Creative tools</a>
+      <a href="/#work">Films</a>
+      <a href="/#media">Media lab</a>
+      <a href="/#studio">Studio</a>
+      <a href="/applications/">Applications</a>
+      <a class="nv-nav-mobile" href="/editor/">Get the free beta <span aria-hidden="true">↗</span></a><a class="nv-nav-mobile" href="/editor/account/">Your account</a>
+    </nav>
+    <div class="nv-actions"><button class="icon-button" id="search-toggle" type="button" aria-label="Search NetVista Studio" aria-expanded="false" aria-controls="search-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg></button><a class="nv-get" href="/editor/">Get the beta <span aria-hidden="true">↗</span></a></div>
   </header>
+  <section class="search-panel" id="search-panel" role="dialog" aria-modal="true" aria-labelledby="search-label" hidden>
+    <div class="search-inner"><div><label id="search-label" for="search-input">Find your next step.</label><p id="search-status">Find tools, films and editing guides.</p></div><input id="search-input" type="search" placeholder="Search NetVista Studio…" autocomplete="off"><button class="search-close" id="search-close" type="button" aria-label="Close search">×</button></div><ul class="search-results" id="search-results"></ul>
+  </section>
   <main class="shell guide-page" id="main" tabindex="-1">
     <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">NetVista Studio</a><span aria-hidden="true">/</span><a href="/video-editor/">Video Editor</a><span aria-hidden="true">/</span><span>Getting started</span></nav>
     <article class="guide-copy">
@@ -62,6 +71,10 @@
       <div class="product-actions"><a class="button button-primary" href="/editor/">Get the NetVista beta ↗</a><a class="text-link" href="/video-editor/">Back to video editor features →</a></div>
     </article>
   </main>
-  <footer class="shell site-footer"><a class="footer-brand" href="/">netvistastudio</a><p>Independent films. Independent tools.</p><div class="footer-actions"><a href="/video-editor/">Video Editor</a><a href="/video-editor/getting-started/">Editing guide</a><a href="/applications/">Applications</a></div></footer>
+  <footer class="site-footer">
+    <a class="footer-brand" href="/">NetVista Studio</a><p>Independent films. Independent tools.</p>
+    <nav class="footer-actions" aria-label="Footer navigation"><a href="/video-editor/">Creative tools</a><a href="/video-editor/getting-started/">Guides</a><a href="/applications/">Applications</a><a href="/editor/account/">Account</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
+    <p class="copyright">© <span data-current-year>2026</span> NetVista Studio. Public beta—features vary by platform.</p>
+  </footer>
 </body>
 </html>

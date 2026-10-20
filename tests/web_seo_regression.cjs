@@ -42,7 +42,7 @@ for (const pathname of publicPaths) {
   }
 }
 const restricted = fs.readFileSync(path.join(root, 'editor/index.html'), 'utf8');
-assert(restricted.includes('class="editor-locked"'), 'Existing download page gate stays intact');
+assert(/<body\b[^>]*class="[^"]*\beditor-locked\b/.test(restricted), 'Existing download page gate stays intact');
 assert(restricted.includes('name="robots" content="noindex, follow"'), 'Do not index the locked page');
 assert(!locations.some(p => /account|\/editor\//.test(p)), 'No private/auth pages in sitemap');
 assert(fs.readFileSync(path.join(root, 'robots.txt'), 'utf8').includes(`Sitemap: ${origin}/sitemap.xml`));

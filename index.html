@@ -4,7 +4,7 @@
   <script src="/assets/public-domain.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111111">
+  <meta name="theme-color" content="#faf9f6">
   <meta name="description" content="NetVista Studio makes independent films and a free beta video editor for Mac, Windows and Linux. Discover NetVista's creative tools, films and editing guides.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://netvistastudio.com/">
@@ -29,15 +29,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/images/photos/dark-echoes.jpg">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Silkscreen:wght@400;700&amp;family=Syne:wght@500;600;700;800&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css?v=9">
-  <link rel="stylesheet" href="assets/css/home.css?v=9">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/studio-theme.css?v=1">
-  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=3">
-  <script defer src="/assets/mobile-navigation.js?v=2"></script>
-
+  <link rel="preload" as="image" href="/assets/images/creative/coast-640.jpg" media="(max-width: 700px)">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -80,209 +72,79 @@
       ]
     }
   </script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=20261021">
+  <link rel="stylesheet" href="/assets/css/studio-home.css?v=20261021">
+  <script defer src="/assets/mobile-navigation.js?v=20261021"></script>
 </head>
-<body>
+<body class="nv-site home-page">
   <a class="skip-link" href="#main-content">Skip to selected work</a>
 
   <header class="nv-header" id="site-header" data-shared-navigation>
-    <a class="nv-brand" href="./" aria-label="netvistastudio home">
-      <span>netvista<span class="brand-accent">studio</span></span>
-    </a>
-
-    <button class="nv-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
-      Menu <span aria-hidden="true">+</span>
-    </button>
-
+    <a class="nv-brand" href="/" aria-label="NetVista Studio home"><img src="/assets/images/photos/netvistastudio-logo.png" width="30" height="30" alt=""><span class="nv-wordmark">NetVista <small>STUDIO</small></span></a>
+    <button class="nv-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
     <nav class="nv-nav" id="primary-nav" aria-label="Primary navigation">
-      <a class="is-active" href="#top">Index</a>
-      <a href="#work">Work</a>
-      <a href="#media">Media lab</a>
-      <a href="#studio">Studio</a>
-      <a href="applications/">Applications</a>
-      <a href="/editor/">Video Editor <span aria-hidden="true">↗</span></a>
+      <a href="/video-editor/">Creative tools</a>
+      <a href="/#work">Films</a>
+      <a href="/#media">Media lab</a>
+      <a href="/#studio">Studio</a>
+      <a href="/applications/">Applications</a>
+      <a class="nv-nav-mobile" href="/editor/">Get the free beta <span aria-hidden="true">↗</span></a><a class="nv-nav-mobile" href="/editor/account/">Your account</a>
     </nav>
-
-    <div class="nv-actions">
-      <button class="icon-button" id="search-toggle" type="button" aria-label="Search projects" aria-expanded="false" aria-controls="search-panel">
-        <span aria-hidden="true">⌕</span>
-      </button>
-    </div>
+    <div class="nv-actions"><button class="icon-button" id="search-toggle" type="button" aria-label="Search NetVista Studio" aria-expanded="false" aria-controls="search-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg></button><a class="nv-get" href="/editor/">Get the beta <span aria-hidden="true">↗</span></a></div>
   </header>
-
-  <section class="search-panel" id="search-panel" aria-label="Search projects" hidden>
-    <div class="search-inner">
-      <div>
-        <label for="search-input">Search the work</label>
-        <p id="search-status">Search the released film portfolio.</p>
-      </div>
-      <input id="search-input" type="search" placeholder="Type a project title…" autocomplete="off">
-      <button class="icon-button search-close" id="search-close" type="button" aria-label="Close search">×</button>
-    </div>
+  <section class="search-panel" id="search-panel" role="dialog" aria-modal="true" aria-labelledby="search-label" hidden>
+    <div class="search-inner"><div><label id="search-label" for="search-input">Find your next step.</label><p id="search-status">Find tools, films and editing guides.</p></div><input id="search-input" type="search" placeholder="Search NetVista Studio…" autocomplete="off"><button class="search-close" id="search-close" type="button" aria-label="Close search">×</button></div><ul class="search-results" id="search-results"></ul>
   </section>
 
   <main id="main-content">
-    <section class="hero" id="top" aria-labelledby="page-title">
-      <div class="hero-grid">
-        <div class="hero-intro">
-          <p class="pixel-label">INDEPENDENT FILMS. INDEPENDENT TOOLS.</p>
-          <h1 id="page-title"><span class="masthead-name">NetVista</span>STUDIO<span class="masthead-stop">.</span></h1>
-          <p class="hero-statement">STRANGE STORIES.<br>MADE TO MOVE.</p>
-          <p class="hero-lead">netvistastudio is a small creative studio building atmospheric films, visual experiments and new ways to tell a story on screen.</p>
-          <div class="hero-intro-actions">
-            <a class="button button-primary" href="#work">Explore the work <span aria-hidden="true">↓</span></a>
-            <a class="scribble-link" href="#media">Enter the media lab <span aria-hidden="true">↗</span></a>
-          </div>
-          <div class="hero-coordinate" aria-hidden="true">
-            <span>52.6369° N</span>
-            <span>001.1398° W</span>
-          </div>
+    <section class="home-hero shell" id="top" aria-labelledby="page-title">
+      <p class="eyebrow">INDEPENDENT FILMS. INDEPENDENT TOOLS.</p>
+      <h1 id="page-title">Make something<br>worth seeing.</h1>
+      <p class="home-lead">Independent films and creative tools, made under one roof.<br class="desktop-break"> Find a story to watch. Make a story of your own.</p>
+      <div class="home-actions"><a class="button button-primary" href="/video-editor/">Explore the tools <span aria-hidden="true">↗</span></a><a class="button button-secondary" href="#work">Watch our films <span aria-hidden="true">↓</span></a></div>
+      <div class="creative-gallery" aria-label="Explore NetVista Studio">
+        <a class="gallery-tile gallery-cinema" href="/video-editor/"><img src="/assets/images/creative/coast-1280.jpg" srcset="/assets/images/creative/coast-640.jpg 640w, /assets/images/creative/coast-1280.jpg 1280w" sizes="(max-width: 700px) 92vw, 49vw" alt="A winding coastal road above the Pacific at golden hour" width="1280" height="853" fetchpriority="high"><span class="gallery-caption"><span>01 / MOVING IMAGE</span><strong>Make the cut.</strong><i aria-hidden="true">↗</i></span></a>
+        <a class="gallery-tile gallery-photo" href="/video-editor/#workspaces"><img src="/assets/images/creative/petals-960.jpg" alt="Sculptural red poppy petals in vivid close-up" width="960" height="640" decoding="async"><span class="gallery-caption"><span>02 / PHOTOGRAPHY</span><strong>Find your perspective.</strong><i aria-hidden="true">↗</i></span></a>
+        <a class="gallery-tile gallery-world" href="/video-editor/#workspaces"><img src="/assets/images/creative/world-1280.jpg" alt="A sunlit stone archway on a fantastical island" width="1280" height="720" decoding="async"><span class="gallery-caption"><span>03 / WORLD BUILDING</span><strong>Go somewhere new.</strong><i aria-hidden="true">↗</i></span></a>
+      </div>
+      <div class="home-caption"><span>NETVISTA STUDIO / CREATIVE TOOLS</span><span>Native apps. A free public beta. Your own point of view.</span></div>
+    </section>
+
+    <section class="home-tools shell" id="creative-tools" aria-labelledby="tools-title">
+      <div class="home-section-head"><div><p class="eyebrow">THE CREATIVE WORKSPACE</p><h2 id="tools-title">Your ideas, in good hands.<br>Your hands.</h2></div><p>Edit picture and sound, work with images and build 3D scenes. Start with the NetVista Studio desktop beta, then make it your own.</p></div>
+      <div class="studio-feature">
+        <figure><img src="/editor/assets/studio-room-1280.webp" width="1280" height="720" alt="A camera and photographs beside an editing monitor" loading="lazy" decoding="async"><figcaption>A little room for the next big idea.</figcaption></figure>
+        <div class="studio-feature-copy"><span class="app-label"><img src="/assets/images/photos/netvistastudio-logo.png" width="36" height="36" alt=""> NetVista Studio <span class="beta-label">BETA</span></span><h3>From a first cut<br>to a final frame.</h3><p>Arrange clips, shape colour, animate effects and keep an editable project for your next session. Your footage stays on your device.</p><ul class="plain-checks"><li>Video, sound and keyframe editing</li><li>Photo and 3D workspaces on Mac</li><li>Desktop and standalone mobile beta editions</li></ul><div class="home-actions"><a class="button button-primary" href="/video-editor/">Meet the editor <span aria-hidden="true">→</span></a><a class="text-link" href="/video-editor/getting-started/">Read the first-project guide</a></div><p class="platform-note">Features differ by platform. Beta software—keep backups of important work.</p></div>
+      </div>
+    </section>
+
+    <section class="home-films" id="work" aria-labelledby="films-title">
+      <div class="shell"><div class="home-section-head"><div><p class="eyebrow">FROM OUR STUDIO</p><h2 id="films-title">A story stays with you.</h2></div><p>Original films from NetVista. Pick a title and watch here, with no account required.</p></div>
+        <div class="hero film-spotlight">
+          <article class="featured-project" aria-labelledby="hero-title">
+            <div class="film-spotlight-art"><div id="hero-backdrop" aria-hidden="true"></div><span class="film-spotlight-number" aria-hidden="true">FEATURED / <span id="hero-index">01</span></span></div>
+            <div class="film-spotlight-copy"><p class="eyebrow">NETVISTA ORIGINAL</p><h2 id="hero-title">The dark echo’s of 1939</h2><div class="title-meta"><span class="availability">Watch now</span><span id="hero-year">1939</span><span class="certificate" id="hero-rating">15</span><span id="hero-format">Feature film</span></div><p id="hero-description">A buried broadcast, a vanished town, and one voice still echoing through the static. Uncover the story that history tried to erase.</p><div class="home-actions"><button class="button button-primary" id="hero-play" type="button"><span aria-hidden="true">▶</span> Watch film</button><button class="text-button" id="hero-details" type="button">About this film <span aria-hidden="true">↗</span></button></div><div id="hero-switcher" aria-label="Choose featured project"></div></div>
+          </article>
         </div>
-
-        <article class="featured-project" aria-labelledby="hero-title">
-          <div class="project-window">
-            <div class="project-window-bar">
-              <span>FEATURED_PROJECT.mov</span>
-              <span>● ● ●</span>
-            </div>
-            <div class="hero-backdrop" id="hero-backdrop" aria-hidden="true"></div>
-            <div class="hero-vignette" aria-hidden="true"></div>
-            <div class="pixel-cursor" aria-hidden="true"><span>PLAY</span></div>
-            <div class="project-number" aria-hidden="true">/<span id="hero-index">01</span></div>
-          </div>
-
-          <div class="hero-content">
-            <div>
-              <p class="original-label">FEATURED / NOW AVAILABLE</p>
-              <h2 id="hero-title">The dark echo’s of 1939</h2>
-            </div>
-            <div class="title-meta">
-              <span class="availability">Watch now</span>
-              <span id="hero-year">1939</span>
-              <span class="certificate" id="hero-rating">15</span>
-              <span id="hero-format">Feature film</span>
-            </div>
-            <p class="hero-description" id="hero-description">A buried broadcast, a vanished town, and one voice still echoing through the static. Uncover the story that history tried to erase.</p>
-            <div class="hero-actions">
-              <button class="button button-primary" id="hero-play" type="button"><span aria-hidden="true">▶</span> Watch film</button>
-              <button class="button button-secondary" id="hero-details" type="button">Project notes <span aria-hidden="true">↗</span></button>
-            </div>
-          </div>
-
-          <div class="hero-switcher" id="hero-switcher" aria-label="Choose featured project"></div>
-        </article>
-      </div>
-
-      <div class="hero-ticker" aria-hidden="true">
-        <div>ORIGINAL FILM&nbsp; ✦ &nbsp;VISUAL STORYTELLING&nbsp; ✦ &nbsp;STRANGE SIGNALS&nbsp; ✦ &nbsp;INDEPENDENT MEDIA&nbsp; ✦ &nbsp;ORIGINAL FILM&nbsp; ✦ &nbsp;VISUAL STORYTELLING&nbsp; ✦ &nbsp;STRANGE SIGNALS&nbsp; ✦ &nbsp;INDEPENDENT MEDIA&nbsp; ✦ &nbsp;</div>
+        <div class="film-grid" id="film-grid" aria-label="All released films"></div>
       </div>
     </section>
 
-    <section class="catalog-section selected-work" id="work" aria-labelledby="films-title">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">01 / SELECTED WORK</p>
-          <h2 id="films-title">Films with a pulse.</h2>
-        </div>
-        <p>Two released projects from the netvistastudio archive. Each film opens in the full-size player—no account, no detour.</p>
-      </div>
-      <div class="film-grid" id="film-grid"></div>
+    <section class="home-media shell" id="media" aria-labelledby="media-title">
+      <div class="home-section-head"><div><p class="eyebrow">THE MEDIA LAB</p><h2 id="media-title">There is more than<br>one way to see it.</h2></div><p>A place for locations, textures and visual experiments. The things that happen before the finished frame.</p></div>
+      <div class="media-editorial"><figure><img src="/assets/images/brand/studio-pixel-night-1280.webp" width="1280" height="720" alt="A pixel-art studio inside a chapel at night" loading="lazy" decoding="async"><figcaption><span>VISUAL EXPLORATION / 01</span><strong>A studio, reimagined.</strong></figcaption></figure><figure><img src="/assets/images/photos/dark-echoes.jpg" width="960" height="640" alt="An atmospheric church interior from The dark echo’s of 1939" loading="lazy" decoding="async"><figcaption><span>ON LOCATION / 02</span><strong>Every room has a story.</strong></figcaption></figure></div>
     </section>
 
-    <section class="media-lab" id="media" aria-labelledby="media-title">
-      <div class="section-heading media-heading">
-        <div>
-          <p class="section-kicker">02 / MEDIA LAB</p>
-          <h2 id="media-title">Where the picture gets weird.</h2>
-        </div>
-        <p>A moving scrapbook of locations, textures and digital experiments behind the studio’s visual world.</p>
-      </div>
+    <section class="home-studio" id="studio" aria-labelledby="studio-title"><div class="shell studio-intro"><div><p class="eyebrow">INDEPENDENT BY DESIGN</p><h2 id="studio-title">Small studio.<br>Open possibilities.</h2></div><div><p>NetVista brings filmmaking and creative software under one roof. We make atmospheric films, explore new visual ideas and build tools for the process.</p><p>There is no one right way to make something. We like finding our own—and giving you room to find yours.</p><a class="text-link" href="/applications/">Get to know the studio <span aria-hidden="true">↗</span></a></div></div></section>
 
-      <div class="media-board">
-        <figure class="media-still media-still-wide">
-          <picture><source type="image/webp" srcset="/assets/images/brand/studio-pixel-night-640.webp 640w, /assets/images/brand/studio-pixel-night-1280.webp 1280w, /assets/images/brand/studio-pixel-night-1672.webp 1672w" sizes="(max-width: 700px) 90vw, 53vw"><img src="/assets/images/brand/studio-pixel-night-1672.jpg" width="1672" height="941" alt="Pixel-art film studio glowing inside a chapel at night" loading="lazy" decoding="async"></picture>
-          <figcaption><span>VISUAL EXPERIMENT / 001</span><strong>Where the edit never sleeps.</strong></figcaption>
-        </figure>
-
-        <article class="pixel-art-card">
-          <div class="pixel-canvas" aria-hidden="true">
-            <i class="pixel-moon"></i>
-            <i class="pixel-star pixel-star-one"></i>
-            <i class="pixel-star pixel-star-two"></i>
-            <i class="pixel-star pixel-star-three"></i>
-            <i class="pixel-building"></i>
-            <i class="pixel-window pixel-window-one"></i>
-            <i class="pixel-window pixel-window-two"></i>
-            <i class="pixel-door"></i>
-            <i class="pixel-person"></i>
-          </div>
-          <div class="pixel-card-copy">
-            <span>EXPERIMENT / 8-BIT NIGHT</span>
-            <h3>Small pixels.<br>Big atmosphere.</h3>
-          </div>
-        </article>
-
-        <figure class="media-still media-still-tall">
-          <img src="assets/images/photos/dark-echoes.jpg" alt="Church interior used as artwork for The dark echo’s of 1939" loading="lazy" decoding="async">
-          <figcaption><span>LOCATION / 002</span><strong>Listen for the echo.</strong></figcaption>
-        </figure>
-
-        <a class="editor-card" href="/video-editor/">
-          <span class="editor-card-index">TOOL / 01</span>
-          <div class="editor-timeline" aria-hidden="true">
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-          </div>
-          <h3>Cut your own sequence.</h3>
-          <p>Explore the NetVista Studio video editor <span aria-hidden="true">↗</span></p>
-        </a>
-      </div>
-    </section>
-
-    <section class="studio-process" id="studio" aria-labelledby="studio-title">
-      <div class="process-intro">
-        <p class="section-kicker">03 / STUDIO PROCESS</p>
-        <h2 id="studio-title">From a signal<br>to the screen.</h2>
-        <p>The work stays small enough to be personal and ambitious enough to leave a mark.</p>
-      </div>
-      <ol class="process-list">
-        <li><span>01</span><div><strong>Find the signal</strong><p>Start with one image, place or feeling that refuses to disappear.</p></div></li>
-        <li><span>02</span><div><strong>Build the world</strong><p>Shape the visual language through writing, locations and experimentation.</p></div></li>
-        <li><span>03</span><div><strong>Make it move</strong><p>Turn the idea into film, sound and an experience made for the screen.</p></div></li>
-      </ol>
-    </section>
-
-    <section class="catalog-section" id="creative-tools" aria-labelledby="tools-title">
-      <div class="section-heading">
-        <div><p class="section-kicker">04 / CREATIVE TOOLS</p><h2 id="tools-title">A video editor from NetVista Studio.</h2></div>
-        <p>NetVista is our home for independent films and the tools used to shape them.</p>
-      </div>
-      <p>NetVista Studio is a native desktop video editor for macOS, Windows and Linux, available as a free public beta. Cut clips on a multitrack timeline, work with sound, adjust colour, animate effects with keyframes and save an editable project for your next session.</p>
-      <p>The Mac app also includes a photo workspace and 3D scene tools. Features differ between platforms while the beta develops. Explore the <a href="/video-editor/">video editor features and system options</a>, or follow our <a href="/video-editor/getting-started/">getting-started video editing guide</a>.</p>
-      <p>Go further with practical Mac guides to <a href="/video-editor/keyframes/">video zoom and fade keyframes</a>, <a href="/video-editor/colour-grading-luts/">colour grading with .cube LUTs</a>, and <a href="/video-editor/export-settings/">MP4 and 4K video export settings</a>.</p>
-      <a class="button button-primary" href="/video-editor/">Explore the video editor <span aria-hidden="true">↗</span></a>
-    </section>
-
-    <section class="studio-callout" aria-labelledby="studio-callout-title">
-      <div class="callout-pixel" aria-hidden="true">✦</div>
-      <div>
-        <p class="section-kicker">OPEN CALL / CREATIVE PEOPLE</p>
-        <h2 id="studio-callout-title">Bring us the idea you cannot stop thinking about.</h2>
-      </div>
-      <div>
-        <p>Writers, directors, editors and creative collaborators can introduce themselves through the Applications page.</p>
-        <a class="button button-primary" href="applications/">Start an application <span aria-hidden="true">↗</span></a>
-      </div>
-    </section>
+    <section class="home-collaborate shell" aria-labelledby="collaborate-title"><p class="eyebrow">MAKE SOMETHING TOGETHER</p><h2 id="collaborate-title">Different crafts.<br>Shared curiosity.</h2><p>Writers, directors, editors, performers and creative collaborators: show us what you make.</p><a class="button button-primary" href="/applications/">Introduce yourself <span aria-hidden="true">↗</span></a></section>
   </main>
 
   <footer class="site-footer">
-    <a class="footer-brand" href="./">netvista<span>studio</span></a>
-    <p>Independent film and media made after dark.</p>
-    <div class="footer-actions">
-      <a href="#work">Selected work</a>
-      <a href="applications/">Applications</a>
-      <a href="/editor/">Video Editor ↗</a>
-    </div>
-    <p class="copyright">© <span data-current-year>2026</span> netvistastudio / ALL SIGNALS RESERVED</p>
+    <a class="footer-brand" href="/">NetVista Studio</a><p>Independent films. Independent tools.</p>
+    <nav class="footer-actions" aria-label="Footer navigation"><a href="/video-editor/">Creative tools</a><a href="/video-editor/getting-started/">Guides</a><a href="/applications/">Applications</a><a href="/editor/account/">Account</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
+    <p class="copyright">© <span data-current-year>2026</span> NetVista Studio. Public beta—features vary by platform.</p>
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -337,6 +199,6 @@
       caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
     }
   </script>
-  <script type="module" src="assets/js/app.js?v=10"></script>
+  <script type="module" src="assets/js/app.js?v=20261021"></script>
 </body>
 </html>

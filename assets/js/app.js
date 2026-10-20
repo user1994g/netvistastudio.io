@@ -170,45 +170,4 @@ document.querySelector('#details-play').addEventListener('click', (event) => {
   openPlayer(detailsFilm, document.querySelector('#hero-play'));
 });
 
-const searchPanel = document.querySelector('#search-panel');
-const searchToggle = document.querySelector('#search-toggle');
-const searchClose = document.querySelector('#search-close');
-const searchInput = document.querySelector('#search-input');
-const searchStatus = document.querySelector('#search-status');
-
-function filterCatalogue(query) {
-  const normalized = query.trim().toLowerCase();
-  let matches = 0;
-
-  document.querySelectorAll('.catalog-item').forEach((item) => {
-    const matchesQuery = !normalized || item.dataset.title.includes(normalized);
-    item.hidden = !matchesQuery;
-    if (matchesQuery) matches += 1;
-  });
-
-  document.querySelector('#work').hidden = Boolean(normalized) && ![...filmGrid.children].some((item) => !item.hidden);
-  searchStatus.textContent = normalized
-    ? `${matches} title${matches === 1 ? '' : 's'} found.`
-    : 'Search the released film portfolio.';
-}
-
-function setSearchOpen(open, { restoreFocus = false } = {}) {
-  searchPanel.hidden = !open;
-  searchToggle.setAttribute('aria-expanded', String(open));
-  if (open) {
-    stopHero();
-    searchInput.focus();
-  } else {
-    searchInput.value = '';
-    filterCatalogue('');
-    scheduleHero();
-    if (restoreFocus) searchToggle.focus();
-  }
-}
-
-searchToggle.addEventListener('click', () => setSearchOpen(searchPanel.hidden));
-searchClose.addEventListener('click', () => setSearchOpen(false, { restoreFocus: true }));
-searchInput.addEventListener('input', () => filterCatalogue(searchInput.value));
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && !searchPanel.hidden) setSearchOpen(false, { restoreFocus: true });
-});
+// Shared mobile-navigation.js owns navigation and site-wide search.

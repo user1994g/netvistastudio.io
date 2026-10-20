@@ -1,17 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <script src="/assets/public-domain.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08090c">
+  <meta name="theme-color" content="#faf9f6">
   <meta name="description" content="NetVista Studio account sign in and setup.">
+  <meta name="robots" content="noindex, follow">
   <title>Account — NetVista Studio</title>
   <link rel="icon" type="image/png" href="/assets/images/photos/netvistastudio-logo.png">
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" href="../assets/site.css?v=11">
   <link rel="stylesheet" href="account.css?v=1">
-  <link rel="stylesheet" href="../assets/account-ui.css?v=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/editor/assets/account-ui.css?v=20261021">
   <!-- Microsoft Clarity analytics for the public NetVista Studio site. -->
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -20,32 +24,41 @@
       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "yi9b33i0az");
   </script>
+  <script defer src="/assets/mobile-navigation.js?v=20261021"></script>
+  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=20261021">
 </head>
-<body class="account-page">
+<body class="nv-site account-page">
   <a class="skip-link" href="#main">Skip to content</a>
-  <header class="site-header" id="site-header">
-    <a class="brand" href="/" aria-label="NetVista Studio home"><span>netvistastudio</span></a>
-    <nav class="primary-nav" aria-label="Main navigation">
-      <a href="/">Home</a>
-      <a href="/editor/">Editor</a>
-      <a class="is-active" href="./" aria-current="page">Account</a>
+  <header class="nv-header" id="site-header" data-shared-navigation>
+    <a class="nv-brand" href="https://netvistastudio.com/" aria-label="NetVista Studio home"><img src="/assets/images/photos/netvistastudio-logo.png" width="30" height="30" alt=""><span class="nv-wordmark">NetVista <small>STUDIO</small></span></a>
+    <button class="nv-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">Menu <span aria-hidden="true">☰</span></button>
+    <nav class="nv-nav" id="primary-nav" aria-label="Primary navigation">
+      <a href="https://netvistastudio.com/video-editor/">Creative tools</a>
+      <a href="https://netvistastudio.com/#work">Films</a>
+      <a href="https://netvistastudio.com/#media">Media lab</a>
+      <a href="https://netvistastudio.com/#studio">Studio</a>
+      <a href="https://netvistastudio.com/applications/">Applications</a>
+      <a class="nv-nav-mobile" href="https://netvistastudio.com/editor/">Get the free beta <span aria-hidden="true">↗</span></a><a class="nv-nav-mobile" href="https://netvistastudio.com/editor/account/">Your account</a>
     </nav>
-    <div class="header-actions"><a class="header-app-button" href="/editor/#download"><span>↓</span><span>Get the beta</span></a></div>
+    <div class="nv-actions"><button class="icon-button" id="search-toggle" type="button" aria-label="Search NetVista Studio" aria-expanded="false" aria-controls="search-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg></button><a class="nv-get" href="https://netvistastudio.com/editor/">Get the beta <span aria-hidden="true">↗</span></a></div>
   </header>
+  <section class="search-panel" id="search-panel" role="dialog" aria-modal="true" aria-labelledby="search-label" hidden>
+    <div class="search-inner"><div><label id="search-label" for="search-input">Find your next step.</label><p id="search-status">Find tools, films and editing guides.</p></div><input id="search-input" type="search" placeholder="Search NetVista Studio…" autocomplete="off"><button class="search-close" id="search-close" type="button" aria-label="Close search">×</button></div><ul class="search-results" id="search-results"></ul>
+  </section>
 
   <main id="main" class="account-main">
     <div class="account-intro">
-      <p class="section-label">YOUR NEXT CHAPTER</p>
-      <h1>Make something<br><span>only you could make.</span></h1>
-      <p class="account-lede">One account for your NetVista tools.<br>A whole studio for your ideas.</p>
-      <figure class="auth-studio-image"><img src="../assets/studio-room.png" alt="An intimate creative studio with a camera, desk and editing monitor"><figcaption>INDEPENDENT TOOLS. INDEPENDENT STORIES.</figcaption></figure>
+      <p class="section-label">NETVISTA STUDIO ACCOUNT</p>
+      <h1>Your account.<br><span>Your creative space.</span></h1>
+      <p class="account-lede">Sign in to access the editor and app downloads, or create your free NetVista account.</p>
+      <figure class="auth-studio-image"><img src="/assets/images/creative/coast-1280.jpg" alt="A sunlit coastal road above the ocean" width="1280" height="720" decoding="async"><figcaption>A new perspective starts here.</figcaption></figure>
     </div>
 
     <section class="account-card" aria-labelledby="account-title">
       <div class="account-card-head">
         <p class="auth-eyebrow">YOUR NETVISTA ACCOUNT</p>
         <h2 id="account-title">Welcome back.</h2>
-        <p id="account-subtitle">Sign in to NetVista Studio, or make a new account in a minute.</p>
+        <p id="account-subtitle">Sign in to your NetVista Studio account.</p>
       </div>
 
       <div class="account-tabs" role="tablist" aria-label="Account actions">
@@ -102,16 +115,15 @@
         </div>
       </section>
 
-      <p class="auth-local-note">Your projects stay yours. Files remain on your computer.</p>
+      <p class="auth-local-note">Your editing projects remain on your device unless you choose to share or export them.</p>
       <p class="account-privacy">Secure sign-in by Supabase. Passwords are sent over HTTPS and never saved by this page. <a href="https://supabase.com/privacy" target="_blank" rel="noreferrer">Privacy ↗</a></p>
     </section>
   </main>
 
-  <footer class="site-footer account-footer">
-    <a class="footer-brand" href="/">netvistastudio</a>
-    <p>Independent stories after dark.</p>
-    <div class="footer-actions"><a href="/editor/">Editor</a><a href="https://github.com/user1994g/videoediterNetVistaStudio.github.io" target="_blank" rel="noreferrer">Source ↗</a></div>
-    <p class="copyright">© <span id="year"></span> netvistastudio</p>
+  <footer class="site-footer">
+    <a class="footer-brand" href="https://netvistastudio.com/">NetVista Studio</a><p>Independent films. Independent tools.</p>
+    <nav class="footer-actions" aria-label="Footer navigation"><a href="https://netvistastudio.com/video-editor/">Creative tools</a><a href="https://netvistastudio.com/video-editor/getting-started/">Guides</a><a href="https://netvistastudio.com/applications/">Applications</a><a href="https://netvistastudio.com/editor/account/">Account</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
+    <p class="copyright">© <span id="year" data-current-year>2026</span> NetVista Studio. Public beta—features vary by platform.</p>
   </footer>
 
   <script type="module" src="account.js?v=3"></script>
