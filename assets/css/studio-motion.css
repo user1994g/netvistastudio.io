@@ -1,0 +1,87 @@
+/* Quiet feedback, not decoration. No hidden-content or layout-dependent effects. */
+.nv-site:not(.account-page):not(.editor-locked) {
+  --nv-ease-out: cubic-bezier(.2, .7, .25, 1);
+  --nv-feedback-fast: 160ms;
+  --nv-feedback-enter: 420ms;
+}
+
+.nv-site:not(.account-page):not(.editor-locked) :is(.button, .nv-get) {
+  transition: background-color var(--nv-feedback-fast), border-color var(--nv-feedback-fast),
+    color var(--nv-feedback-fast), box-shadow var(--nv-feedback-fast),
+    transform var(--nv-feedback-fast) var(--nv-ease-out);
+  -webkit-tap-highlight-color: #d9363620;
+}
+
+/* A pressed control gives immediate feedback on touch as well as mouse. */
+.nv-site:not(.account-page):not(.editor-locked) :is(.button, .nv-get):active:not(:disabled):not([disabled]):not([aria-disabled="true"]) {
+  transform: translateY(0) scale(.985);
+  box-shadow: inset 0 1px 2px #24232318;
+}
+.nv-site:not(.account-page):not(.editor-locked) :is(.button, .nv-get):focus-visible {
+  outline: 3px solid #285c70;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px var(--nv-bg, #faf9f6);
+}
+.nv-site:not(.account-page):not(.editor-locked) :is(.button, .nv-get):is(:disabled, [disabled], [aria-disabled="true"]) {
+  cursor: not-allowed;
+  opacity: .58;
+  transform: none;
+  box-shadow: none;
+}
+
+.nv-site:not(.account-page):not(.editor-locked) [data-nv-arrow] {
+  display: inline-block;
+  transition: transform 200ms var(--nv-ease-out);
+}
+.nv-site:not(.account-page):not(.editor-locked) .text-link {
+  text-underline-offset: 4px;
+  transition: color var(--nv-feedback-fast), border-color var(--nv-feedback-fast);
+}
+.nv-site:not(.account-page):not(.editor-locked) :is(.gallery-tile img, .studio-feature figure img, .product-hero-image img, .workspace-grid article > img, .film-card-art img) {
+  transition: transform 500ms var(--nv-ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nv-site:not(.account-page):not(.editor-locked) :is(.button, .nv-get):hover:not(:active):not(:disabled):not([disabled]):not([aria-disabled="true"]) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px #24232312;
+  }
+  .nv-site:not(.account-page):not(.editor-locked) :is(.button-primary, .nv-get):hover [data-nv-arrow="right"] { transform: translateX(3px); }
+  .nv-site:not(.account-page):not(.editor-locked) :is(.button-primary, .nv-get):hover [data-nv-arrow="external"] { transform: translate(2px, -2px); }
+  .nv-site:not(.account-page):not(.editor-locked) :is(.button-primary, .nv-get):hover [data-nv-arrow="down"] { transform: translateY(3px); }
+  .nv-site:not(.account-page):not(.editor-locked) :is(.gallery-tile:hover img, .studio-feature:hover figure img, .product-hero-image:hover img, .workspace-grid article:hover > img, .film-card-art:hover img) {
+    transform: scale(1.025);
+  }
+}
+
+/* Override legacy hover zoom on touch so it cannot remain stuck after a tap. */
+@media (hover: none), (pointer: coarse) {
+  .nv-site:not(.account-page):not(.editor-locked) :is(.gallery-tile:hover img, .studio-feature:hover figure img, .product-hero-image:hover img, .workspace-grid article:hover > img, .film-card-art:hover img) {
+    transform: none;
+  }
+}
+
+/* Nodes receive this class only once they enter the viewport. The default and
+   every failure/no-script path are fully visible. No opacity:0 staging state. */
+.nv-site:not(.account-page):not(.editor-locked) .nv-entered {
+  animation: nv-enter var(--nv-feedback-enter) var(--nv-ease-out) 1;
+}
+.nv-site:not(.account-page):not(.editor-locked) .nv-entered:focus-within {
+  animation: none;
+}
+@keyframes nv-enter {
+  from { opacity: .76; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nv-site:not(.account-page):not(.editor-locked) :is(.button, .nv-get, [data-nv-arrow], .gallery-tile img, .studio-feature figure img, .product-hero-image img, .workspace-grid article > img, .film-card-art img) {
+    transition: none !important;
+    transform: none !important;
+  }
+  .nv-site:not(.account-page):not(.editor-locked) .nv-entered { animation: none !important; }
+}
+
+@media print {
+  .nv-site .nv-entered { animation: none !important; opacity: 1 !important; transform: none !important; }
+}

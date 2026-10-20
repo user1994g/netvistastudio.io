@@ -30,6 +30,36 @@ Run `node tests/web_seo_regression.cjs` and the existing authentication/download
 regression checks before publication. Verify the live public URLs, sitemap and
 robots file after Cloudflare finishes deploying.
 
+## Search and social polish — 21 October 2026
+
+The public pages now expose a consistent `WebPage` identity linked to the
+`WebSite`, organisation and each page's main subject. Guide articles link to
+their own page, primary image and breadcrumb entities; their original publication
+and editorial update dates remain 3 October because a visual refresh is not a
+new editorial revision. Home-page site-name alternatives include the actual
+brand spellings and the domain, not unrelated search keywords.
+
+Open Graph and Twitter previews include matching image descriptions, locale,
+file type and verified pixel dimensions. The collaborator application uses the
+editing-room artwork that represents its filmmaking purpose, not an app-store or
+job-listing schema. Public download metadata continues to describe the published
+1.4 Beta 7 release and its platform limitations.
+
+The sitemap records 21 October for the redesigned home, collaborator application
+and product overview. Guide content dates are not bumped just to imply freshness.
+No account, callback, private Watch collection, duplicate keyword page or new
+subdomain was added to search indexing. Robots and access protections are
+unchanged.
+
+Run `node tests/seo-polish-regression.cjs` as well as the existing SEO regression.
+It checks schema relationships, social image dimensions against the JPEG assets,
+canonical identities, guide date consistency, and the public-only sitemap. These
+checks validate the source contract; they do not replace Google's Rich Results
+Test or Search Console URL Inspection and do not promise rankings. Monitor real
+search queries, impressions and useful visitor actions in Search Console after
+Google recrawls the deployed pages. Do not manipulate reviews or add keyword
+subdomains in an attempt to manufacture authority.
+
 The root `404.html` is intentional: Cloudflare otherwise treats this static site
 as an SPA and returns the homepage with a 200 for missing URLs. Keep real missing
 paths at 404, and keep the error page out of the sitemap.
@@ -79,6 +109,10 @@ loosening the site's existing country-block security rule.
 References:
 - https://developers.google.com/search/docs/fundamentals/seo-starter-guide
 - https://developers.google.com/search/docs/appearance/site-names
+- https://developers.google.com/search/docs/appearance/structured-data/organization
+- https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
+- https://developers.google.com/search/docs/appearance/structured-data/sd-policies
+- https://developers.google.com/search/docs/appearance/page-experience
 - https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap
 - https://developers.google.com/search/help/crawling-index-faq
 - https://developers.cloudflare.com/pages/configuration/serving-pages/

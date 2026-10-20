@@ -160,7 +160,7 @@ async function checkWorker() {
   assert.equal(routes.version, 1);
   assert.deepEqual(routes.include, ['/*'], 'Host isolation must cover all page requests, including future routes');
   const excludedAssets = ['/assets/images/*', '/assets/css/*',
-    '/assets/mobile-navigation.js', '/assets/public-domain.js', '/video-beta/assets/*', '/editor/assets/*'];
+    '/assets/mobile-navigation.js', '/assets/public-domain.js', '/assets/studio-motion.js', '/assets/studio-look-demo.js', '/video-beta/assets/*', '/editor/assets/*'];
   assert.deepEqual([...routes.exclude].sort(), [...excludedAssets].sort(), 'Only verified asset-only paths bypass the worker');
   function matches(pattern, pathname) {
     const star = pattern.indexOf('*');
