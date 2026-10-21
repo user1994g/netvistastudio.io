@@ -18,3 +18,31 @@ Publish a short summary in the app repository's **Announcements** discussion cat
 ## What SEO can and cannot do
 
 Use helpful, specific articles with verifiable sources, self-canonical URLs, visible authorship and dates, connected article/breadcrumb/image metadata, crawlable internal links and an accurate sitemap. These help search engines understand the site; they do not guarantee indexing or a particular position for competitive phrases such as “video editor”. Avoid invented reviews, fake historical dates and near-duplicate keyword pages.
+
+## News-only advertising (prepared, not active)
+
+A single responsive Google AdSense display unit is prepared for the News hub
+only. The site is awaiting Google's approval and live consent-message validation.
+Both `newsAdvertising.enabled` and `newsAdvertising.consentReviewed` in
+`scripts/build-news.mjs` are deliberately `false`: there is no Google advertising
+request, CMP initialization or empty ad space while either switch is off.
+The publisher and ad-unit IDs are public identifiers, not credentials.
+
+Before enabling: confirm the site's AdSense status is **Ready**, keep Auto Ads
+**off**, publish and test Google's certified consent message (including a clear
+Do not consent option), and review `/news/privacy.html`. Never replace this with
+a cosmetic cookie popup or enable ads merely because a code snippet exists.
+Google controls approval and ad availability; this integration guarantees neither.
+
+When both reviewed switches are enabled and the News pages are rebuilt, the
+controller permits only `https://netvistastudio.com/news/` (plus the equivalent
+`/news/index.html` file route). Articles, the homepage, editor/account/download,
+Watch, localhost and Pages previews never initialize this unit. It uses no Auto
+Ads command, retries or ad-blocker workaround. Script failures leave the News
+content usable. Google's documented `CONSENT_API_READY` callback reveals the
+Privacy and cookie settings button; that button invokes
+`googlefc.showRevocationMessage()` to let visitors revisit their choice.
+
+Run `node tests/news-ads-regression.cjs` along with the full site regression suite.
+Do not click live ads during testing. Rebuild with `node scripts/build-news.mjs`
+after changing the two switches. Advertising is not an SEO ranking shortcut.

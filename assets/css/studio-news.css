@@ -19,6 +19,15 @@
 .news-date-note p { margin: 0; }
 .news-date-note p:first-child { color: var(--nv-ink); font-weight: 600; }
 .news-highlights { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; gap: 28px; padding-block: 52px 74px; }
+/* Reserve ad space only after the production-only, reviewed configuration is
+   enabled. Pending/blocked advertising must not leave an empty banner. */
+.news-ad-placement[hidden], .news-ad-privacy button[hidden] { display: none !important; }
+.news-ad-placement:not([hidden]) { min-height: 280px; margin-bottom: 18px; padding: 16px 0; border-block: 1px solid var(--nv-line); }
+.news-ad-label { margin: 0 0 12px; color: var(--nv-muted); font-size: 11px; text-align: center; }
+.news-ad-placement .adsbygoogle { display: block; min-width: 0; width: 100%; }
+.news-ad-privacy { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 28px; color: var(--nv-muted); font-size: 12px; }
+.news-ad-privacy button { appearance: none; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+.news-ad-privacy :is(a, button):focus-visible { outline: 2px solid var(--nv-red); outline-offset: 4px; }
 .news-preview { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(28px, 3.7vw, 52px); border: 1px solid #252525; border-radius: 12px; background: #242323; color: #fff; }
 .news-label-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
 .news-preview .news-label-row { width: 100%; margin-bottom: 34px; }

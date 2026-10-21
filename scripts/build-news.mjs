@@ -9,6 +9,14 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const origin = 'https://netvistastudio.com';
 const discussionURL = 'https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions';
+// Keep both switches off until the site is approved and its published Google
+// consent message has been checked on the live News hub. These are public IDs.
+const newsAdvertising = Object.freeze({
+  enabled: false,
+  consentReviewed: false,
+  publisher: 'ca-pub-8954463256155993',
+  slot: '8464033041'
+});
 const check = process.argv.includes('--check');
 assert(process.argv.slice(2).every(argument => argument === '--check'), 'Usage: node scripts/build-news.mjs [--check]');
 
@@ -205,10 +213,10 @@ function document({ pathname, title, description, image, graph, content, post })
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/studio-shared.css?v=20261021">
-  <link rel="stylesheet" href="/assets/css/studio-news.css?v=1">
+  <link rel="stylesheet" href="/assets/css/studio-news.css?v=2">
   <script src="/assets/public-domain.js"></script>
   <script defer src="${escape(navScript)}"></script>
-  <script type="application/ld+json">
+${pathname === '/news/' ? '  <script defer src="/assets/news-advertising.js?v=1"></script>\n' : ''}  <script type="application/ld+json">
 ${json({ '@context': 'https://schema.org', '@graph': graph }).split('\n').map(line => '    ' + line).join('\n')}
   </script>
 </head>
@@ -282,6 +290,13 @@ function renderHub() {
     <section class="shell news-highlights" aria-label="Released and in-development highlights">
 ${highlights}
     </section>
+    <div class="shell news-advertising-block">
+      <aside id="news-advertising" class="news-ad-placement" aria-label="Advertisement" data-enabled="${newsAdvertising.enabled}" data-consent-reviewed="${newsAdvertising.consentReviewed}" data-ad-state="pending" hidden>
+        <p class="news-ad-label">Advertisement</p>
+        <ins id="news-display-ad" class="adsbygoogle" data-ad-client="${newsAdvertising.publisher}" data-ad-slot="${newsAdvertising.slot}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      </aside>
+      <p class="news-ad-privacy"><a href="/news/privacy.html">Privacy and advertising</a><button id="news-ad-cookie-settings" type="button" hidden>Privacy and cookie settings</button></p>
+    </div>
     <section class="shell news-archive" aria-labelledby="archive-title"><div class="news-section-head"><div><p class="eyebrow">THE DEVELOPMENT ARCHIVE</p><h2 id="archive-title">One milestone at a time.</h2></div><p>${posts.length} stories. Most recent milestone first.<br>Publication dates are shown on each story.</p></div><ol class="news-archive-list">
 ${posts.map((post, index) => `      <li><article class="news-archive-entry"><div class="news-entry-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</div><div class="news-entry-date"><p class="eyebrow">MILESTONE</p>${milestoneTime(post)}<span class="news-status${post.status === 'development' ? ' news-status-development' : ''}">${statusLabel(post)}</span></div><div class="news-entry-copy"><p class="eyebrow">${escape(post.kind)} / ${escape(post.version)}</p><h3><a href="${articlePath(post)}">${escape(post.title)}</a></h3><p>${escape(post.description)}</p><a class="news-entry-link" href="${articlePath(post)}">Read the story <span aria-hidden="true">→</span></a></div></article></li>`).join('\n')}
     </ol></section>
