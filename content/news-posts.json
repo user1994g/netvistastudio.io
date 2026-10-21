@@ -49,7 +49,8 @@
         "label": "Start your first editing project",
         "href": "/video-editor/getting-started/"
       },
-      "status": "released"
+      "status": "released",
+      "discussionURL": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions/12"
     },
     {
       "slug": "windows-linux-animated-3d-and-mods",
@@ -103,7 +104,8 @@
         "label": "Explore the desktop editing workflow",
         "href": "/video-editor/getting-started/"
       },
-      "status": "released"
+      "status": "released",
+      "discussionURL": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions/13"
     },
     {
       "slug": "clearer-and-more-reliable-video-export",
@@ -157,7 +159,8 @@
         "label": "Choose MP4 and 4K export settings",
         "href": "/video-editor/export-settings/"
       },
-      "status": "released"
+      "status": "released",
+      "discussionURL": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions/14"
     },
     {
       "slug": "beta-3-separate-native-photo-workspace",
@@ -203,7 +206,8 @@
         "label": "Learn the colour and LUT workflow",
         "href": "/video-editor/colour-grading-luts/"
       },
-      "status": "released"
+      "status": "released",
+      "discussionURL": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions/15"
     },
     {
       "slug": "beta-4-creative-tools-and-safer-updates",
@@ -249,7 +253,8 @@
         "label": "Practice video motion and opacity keyframes",
         "href": "/video-editor/keyframes/"
       },
-      "status": "released"
+      "status": "released",
+      "discussionURL": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions/16"
     },
     {
       "slug": "beta-6-studio-home-and-quieter-startup",
@@ -299,7 +304,8 @@
         "label": "Get comfortable with Studio and your first edit",
         "href": "/video-editor/getting-started/"
       },
-      "status": "released"
+      "status": "released",
+      "discussionURL": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions/17"
     },
     {
       "slug": "beta-7-mobile-editing-and-dedicated-3d",
@@ -353,7 +359,8 @@
         "label": "Choose the public beta for your device",
         "href": "/editor/#download"
       },
-      "status": "released"
+      "status": "released",
+      "discussionURL": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions/18"
     },
     {
       "slug": "october-20-native-mobile-development-preview",
@@ -408,7 +415,8 @@
         "label": "Read the published beta's download information",
         "href": "/editor/#download"
       },
-      "status": "development"
+      "status": "development",
+      "discussionURL": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/discussions/19"
     }
   ]
 }
