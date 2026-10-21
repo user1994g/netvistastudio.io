@@ -1,0 +1,26 @@
+'use strict';
+// Source contracts only. No advertising, payment, account or network requests.
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+const root = path.resolve(__dirname, '..');
+const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+const html = read('video-beta/index.html');
+const scripts = read('video-beta/assets/cinema.js') + read('video-beta/assets/library.js');
+const plans = html.match(/<section\b[^>]*id="plans"[^>]*>[\s\S]*?<\/section>/)?.[0];
+assert(plans, 'The Watch site has its own publicly readable Plans section');
+assert(/id="free-plan-title"[^>]*>Free plan with ads</.test(plans));
+assert(plans.includes('£0'), 'The available plan is free, not a hidden trial');
+assert(plans.includes('Advertising is planned; ads are not active in this beta yet.'), 'Do not falsely claim active Watch advertising');
+assert(/id="free-plan-action"[^>]*data-auth="signup"|data-auth="signup"[^>]*id="free-plan-action"/.test(plans), 'The only available plan joins the existing account flow');
+assert(plans.includes('NOT RELEASED') && plans.includes('Other plans are not available, and you cannot subscribe to or buy them right now.'), 'Future plans cannot be mistaken for available products');
+const future = plans.slice(plans.indexOf('id="future-plans-title"'));
+assert(future.includes('No prices, launch dates or paid features have been announced.'), 'No invented paid features or dates');
+assert(!/<button\b|href="(?:https?:)?\/\/[^\"]*(?:checkout|stripe|paypal)/i.test(future), 'Future plans have no actionable purchase control');
+assert(!/checkout\.stripe|Stripe\(|paypal\.com|create-checkout|payment_intent|adsbygoogle|google_ad_client|googlesyndication/.test(html + scripts), 'No payment integration or advertising rollout is introduced');
+assert(!html.includes('Bebas+Neue') && !html.includes('family=Outfit'), 'Use the new NetVista typography, not the old condensed streamer branding');
+assert(html.includes('href="#plans"'), 'Plans can be reached on the Watch page without leaving the subdomain');
+assert(/rel="canonical" href="https:\/\/video\.netvistastudio\.com\/"/.test(html), 'The redesign stays on the requested Watch domain');
+assert(/id="authenticated-app"[^>]*\bhidden/.test(html), 'Plans do not weaken the initial catalogue gate');
+assert(!/\/news\/|netvistastudio\.com\/editor\//.test(plans), 'Plans are not the News ads setup or the editor download flow');
+console.log('PASS: original Watch design contracts, public free-with-ads plan, honest inactive ads, unavailable future plans and no checkout or broader ad rollout');

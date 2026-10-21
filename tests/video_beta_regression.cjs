@@ -623,7 +623,9 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 async function flush() { for (let index = 0; index < 8; index++) await tick(); }
 async function controller(options = {}) {
   const nodes = new Map(), calls = [], documentHandlers = {}, windowHandlers = {}, timers = new Map();
-  let timerID = 0, changed, releaseSDK, releaseSession, releaseCatalog;
+  let timerID = 0, changed, releaseSDK, releaseSession, releaseCatalog, createdID = 0;
+  let writeFailures = options.writeFailures || 0;
+  const pendingWrites = [];
   let now = Date.now();
   class ClockDate extends Date {
     constructor(...args) { super(...(args.length ? args : [now])); }
@@ -638,13 +640,14 @@ async function controller(options = {}) {
     const handlers = {}, tag = elementTag(id);
     const attributes = new Map(Object.entries(attrs(tag)));
     const element = { id, value: '', hidden: /\bhidden\b/.test(tag), disabled: id.endsWith(':fieldset'),
-      textContent: '', innerHTML: '', dataset: {}, open: false, src: '', poster: '', currentTime: 0,
+      textContent: '', innerHTML: '', dataset: {}, children: [], checked: /\bchecked\b/.test(tag), open: false, src: '', poster: '', currentTime: 0,
       duration: 100, ended: false, paused: true, isConnected: true,
       classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
       setAttribute(name, value) { attributes.set(name, String(value)); },
       getAttribute(name) { return attributes.get(name) ?? null; },
       removeAttribute(name) { attributes.delete(name); if (name === 'src') this.src = ''; },
-      replaceChildren() { this.innerHTML = ''; },
+      append(...items) { this.children.push(...items); },
+      replaceChildren(...items) { this.innerHTML = ''; this.children = []; this.append(...items); },
       querySelector(selector) { return selector === 'fieldset' ? node(id + ':fieldset') : node(id + ':' + selector); },
       querySelectorAll() { return []; }, contains() { return false; }, closest() { return this; },
       getClientRects() { return [{}]; }, getBoundingClientRect() { return { left: 0, top: 0, right: 100, bottom: 100 }; },
@@ -667,6 +670,12 @@ async function controller(options = {}) {
   });
   const document = { body: node('body'), activeElement: node('initial-focus'), hidden: false,
     getElementById: node, querySelector(selector) { return node(selector); },
+    createElement() {
+      const element = node('created:' + ++createdID);
+      let elementID = element.id;
+      Object.defineProperty(element, 'id', { get() { return elementID; }, set(value) { elementID = value; nodes.set(value, element); } });
+      return element;
+    },
     querySelectorAll(selector) { return selector === '#authenticated-app [data-enhance]' ? enhancements : []; },
     addEventListener(type, handler) { (documentHandlers[type] ||= []).push(handler); } };
   const location = { origin: videoOrigin, pathname: '/', hash: '', replace(value) { calls.push(['replace', value]); } };
@@ -693,9 +702,18 @@ async function controller(options = {}) {
         if (this.kind === 'upsert') {
           const copy = JSON.parse(JSON.stringify(this.row));
           calls.push(['upsert', table, copy, this.conflict]);
-          const previous = history.get(copy.user_id) || [];
-          history.set(copy.user_id, [...previous.filter(row => row.film_id !== copy.film_id), copy]);
-          return Promise.resolve({ data: null, error: null }).then(resolve, reject);
+          const finish = (forcedError = false) => {
+            if (forcedError || writeFailures > 0) {
+              if (writeFailures > 0) writeFailures--;
+              return { data: null, error: Error('Synthetic progress sync unavailable') };
+            }
+            const previous = history.get(copy.user_id) || [];
+            const old = previous.find(row => row.film_id === copy.film_id) || {};
+            history.set(copy.user_id, [...previous.filter(row => row.film_id !== copy.film_id), { ...old, ...copy }]);
+            return { data: null, error: null };
+          };
+          const operation = options.deferWrites ? new Promise(complete => pendingWrites.push(error => complete(finish(error)))) : Promise.resolve(finish());
+          return operation.then(resolve, reject);
         }
         calls.push(['select', table, this.filters]);
         const owner = this.filters.find(([field]) => field === 'user_id')?.[1];
@@ -713,7 +731,13 @@ async function controller(options = {}) {
     clearTimeout(id) { timers.delete(id); }, setInterval() { return ++timerID; }, clearInterval() {},
     fetch: async (url, init = {}) => {
       calls.push(['fetch', url, init]);
-      if (String(url).startsWith(supabaseURL + '/rest/v1/watch_progress')) return new Response(null, { status: 201 });
+      if (String(url).startsWith(supabaseURL + '/rest/v1/watch_progress')) {
+        const copy = JSON.parse(init.body);
+        const previous = history.get(copy.user_id) || [];
+        const old = previous.find(row => row.film_id === copy.film_id) || {};
+        history.set(copy.user_id, [...previous.filter(row => row.film_id !== copy.film_id), { ...old, ...copy }]);
+        return new Response(null, { status: 201 });
+      }
       assert.equal(url, '/api/watch/catalog', 'Browser catalog fetch is same-host');
       if (options.pendingCatalog && !releaseCatalog) await new Promise(resolve => { releaseCatalog = resolve; });
       return new Response(JSON.stringify({ films: fixtures }), { status: options.catalogStatus || 200 });
@@ -740,11 +764,22 @@ async function controller(options = {}) {
   if (!options.pendingSDK && !options.pendingSession && !options.pendingCatalog) await evaluation;
   async function click(dataset) {
     const target = node('synthetic-click'); target.dataset = dataset;
+    document.activeElement = target;
     const event = { target, preventDefault() {} };
     for (const handler of documentHandlers.click || []) await handler(event);
     await flush();
   }
-  return { node, calls, click, fixtures, auth, evaluation, firstUser, history, enhancements,
+  async function change(dataset, checked) {
+    const target = node('synthetic-change'); target.dataset = dataset; target.checked = checked;
+    document.activeElement = target;
+    const event = { target, preventDefault() {} };
+    for (const handler of documentHandlers.change || []) await handler(event);
+    await flush();
+  }
+  return { node, calls, click, change, fixtures, auth, evaluation, firstUser, history, enhancements,
+    failNextWrite() { writeFailures++; },
+    pendingWriteCount() { return pendingWrites.length; },
+    async releaseWrite(error = false) { assert(pendingWrites.length, 'A deferred write must be pending'); pendingWrites.shift()(error); await flush(); },
     advance(milliseconds) { now += milliseconds; },
     releaseSDK: () => releaseSDK(), releaseSession: () => releaseSession(), releaseCatalog: () => releaseCatalog(),
     async changeUser(next) { session = next ? { user: next, access_token: 'synthetic.next.token' } : null; changed?.(next ? 'SIGNED_IN' : 'SIGNED_OUT', session); await flush(); },
@@ -757,6 +792,10 @@ async function checkController() {
   assert(guest.node('authenticated-app').hidden && !guest.node('welcome').hidden);
   assert.equal(guest.node('film-grid').innerHTML, '');
   assert(!guest.calls.some(call => call[0] === 'fetch' || call[0] === 'select'), 'Guests cannot request a catalog or viewing history');
+  await guest.click({ view: 'plans' });
+  assert(!guest.node('auth-dialog').open, 'Guests can inspect plans without submitting credentials');
+  assert.equal(guest.node('free-plan-action').textContent, 'Join for free');
+  assert(!guest.calls.some(call => call[0] === 'fetch' || call[0] === 'select'), 'Public Plans do not expose the catalogue');
   assert((await guest.node('signin-form').fire('submit')).prevented, 'All form events prevent native credential submission');
   assert(!guest.node('authenticated-app').hidden, 'Successful same-project sign-in opens the Watch library');
   const failed = await controller({ sdkFailure: true });
@@ -783,6 +822,7 @@ async function checkController() {
   assert(normal.calls.some(call => call[0] === 'select' && call[1] === 'watch_progress' && call[2].some(([key, value]) => key === 'user_id' && value === normal.firstUser.id)), 'Viewing state selects only the current account');
   assert(normal.node('continue-grid').innerHTML.includes(firstID));
   assert(normal.node('saved-grid').innerHTML.includes(firstID));
+  assert(normal.node('free-plan-action').disabled, 'Signed-in accounts already have the free plan; there is no second signup');
   await normal.click({ watch: firstID });
   assert(normal.node('player-dialog').open);
   assert.equal(normal.node('native-player').src, normal.fixtures[0].mediaUrl);
@@ -848,6 +888,65 @@ async function checkController() {
   assert.equal(brokenHistory.node('film-grid').innerHTML, '', 'Failed history load cannot overwrite unknown server state with an empty local history');
   await brokenHistory.click({ save: firstID });
   assert(!brokenHistory.calls.some(call => call[0] === 'upsert'), 'Failed history load prevents progress/list writes until retry');
+
+  const progress = { film_id: firstID, position_seconds: 42, duration_seconds: 100, completed: false, saved: true, last_watched_at: '2026-01-01T12:00:00Z' };
+  const untick = await controller({ rows: [progress] });
+  const stored = app => app.history.get(app.firstUser.id).find(row => row.film_id === firstID);
+  await untick.change({ continue: firstID }, false);
+  assert(!untick.node('continue-grid').innerHTML.includes(firstID), 'Unticking removes the film from Continue watching');
+  assert(untick.node('saved-grid').innerHTML.includes(firstID), 'Unticking does not remove My List membership');
+  assert.equal(stored(untick).position_seconds, 42); assert.equal(stored(untick).duration_seconds, 100);
+  assert.equal(stored(untick).last_watched_at, null); assert.equal(stored(untick).saved, true);
+  await untick.node('toast-undo').fire();
+  assert(untick.node('continue-grid').innerHTML.includes(firstID), 'Successful removal offers working Undo');
+  assert.equal(stored(untick).position_seconds, 42);
+  await untick.change({ continue: firstID }, false);
+  await untick.click({ details: firstID });
+  assert(untick.node('details-watch').textContent.includes('Resume'), 'Dismissed films retain a useful Resume action');
+  await untick.click({ watch: firstID });
+  await untick.node('native-player').fire('loadedmetadata');
+  assert.equal(untick.node('native-player').currentTime, 42, 'Starting a new session resumes the retained position');
+  await untick.node('native-player').fire('playing');
+  assert(untick.node('continue-grid').innerHTML.includes(firstID), 'A deliberate new playback session opts the film back in');
+  untick.node('native-player').currentTime = 61;
+  await untick.change({ continue: firstID }, false);
+  for (const event of ['timeupdate', 'pause', 'seeked']) {
+    untick.advance(15000); await untick.node('native-player').fire(event);
+    assert.equal(stored(untick).last_watched_at, null, event + ' must not resurrect an unticked film');
+  }
+  await untick.pagehide();
+  assert.equal(stored(untick).last_watched_at, null, 'Page exit keepalive respects the latest Continue choice');
+  assert.equal(stored(untick).position_seconds, 61, 'Checkpoints still save progress after dismissal');
+  untick.node('player-dialog').close(); await flush();
+  assert.equal(stored(untick).last_watched_at, null, 'Closing the player respects dismissal');
+  assert.equal(stored(untick).saved, true);
+
+  const failedChoice = await controller({ rows: [progress], writeFailures: 1 });
+  await failedChoice.change({ continue: firstID }, false);
+  assert(failedChoice.node('continue-grid').innerHTML.includes(firstID), 'A failed removal restores shelf membership');
+  assert(failedChoice.node('toast').textContent.includes('restored'), 'Failed saves give an actionable explanation');
+  assert.equal(stored(failedChoice).position_seconds, 42);
+  await failedChoice.change({ continue: firstID }, false);
+  assert(!failedChoice.node('continue-grid').innerHTML.includes(firstID), 'The user can retry a failed removal');
+
+  const race = await controller({ rows: [progress], deferWrites: true });
+  await race.click({ watch: firstID }); await race.node('native-player').fire('loadedmetadata');
+  await race.node('native-player').fire('playing');
+  assert.equal(race.pendingWriteCount(), 1);
+  race.node('native-player').currentTime = 61;
+  await race.change({ continue: firstID }, false); await race.pagehide();
+  assert.equal(race.pendingWriteCount(), 1, 'No manual/keepalive write races an in-flight checkpoint');
+  await race.releaseWrite();
+  assert.equal(race.pendingWriteCount(), 1, 'The dismissal is next in the shared queue');
+  await race.releaseWrite();
+  assert.equal(stored(race).last_watched_at, null, 'An earlier checkpoint cannot overwrite the later dismissal');
+  assert.equal(stored(race).position_seconds, 61); assert.equal(stored(race).saved, true);
+  const staleChoice = await controller({ rows: [progress], deferWrites: true });
+  await staleChoice.change({ continue: firstID }, false);
+  await staleChoice.changeUser(secondUser); await staleChoice.releaseWrite();
+  assert.equal(staleChoice.node('toast').textContent, '', 'Previous-account completion cannot show Undo in another account');
+  assert.equal(staleChoice.node('continue-grid').innerHTML, '');
+  assert.equal(staleChoice.node('saved-grid').innerHTML, '');
 }
 
 (async () => {

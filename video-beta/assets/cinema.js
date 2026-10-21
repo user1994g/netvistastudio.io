@@ -1,4 +1,4 @@
-import { playableFilms, filterFilms, artworkURL, escapeHTML, trustedMediaURL, playbackState, continueRows } from './library.js?v=4';
+import { playableFilms, filterFilms, artworkURL, escapeHTML, trustedMediaURL, playbackState, continueRows, continueChoice, createProgressWriter } from './library.js?v=5';
 
 const $ = id => document.getElementById(id);
 const forms = ['signin-form', 'signup-form', 'reset-form'].map($);
@@ -7,7 +7,9 @@ const video = $('native-player');
 let client, authRedirect, apiURL, apiKey, ready = false, user = null;
 let films = [], rows = new Map(), collection = 'all', current, playing, didPlay = false, restored = false;
 let generation = 0, authRun = 0, authMode = 'signin', toastTimer, lastSave = 0, accessToken = '';
-let writing = Promise.resolve(), checking = false, queuedCheck = false;
+let checking = false, queuedCheck = false, detailFilm = null;
+const continuePending = new Map(), continueIntents = new Map(), suppressed = new Set();
+let undoAction = null;
 const openers = new Map();
 const RESET_KEY = 'netvista-watch-reset-after';
 for (const id of ['account-controls', 'authenticated-app', 'auth-dialog', 'details-dialog', 'player-dialog']) $(id).setAttribute('data-clarity-mask', '');
@@ -20,10 +22,19 @@ function status(message, error = false) {
   $('auth-status').hidden = !message;
   $('auth-status').classList.toggle('is-error', error);
 }
-function notify(message) {
+function notify(message, undo = null) {
   clearTimeout(toastTimer);
-  $('toast').textContent = message; $('toast').hidden = false;
-  toastTimer = setTimeout(() => { $('toast').hidden = true; }, 5000);
+  undoAction = undo;
+  $('toast').textContent = message;
+  if (undo) {
+    const button = document.createElement('button');
+    button.id = 'toast-undo'; button.type = 'button'; button.className = 'text-link';
+    button.textContent = 'Undo';
+    button.addEventListener('click', () => { const action = undoAction; undoAction = null; action?.(); });
+    $('toast').append(' ', button);
+  }
+  $('toast').hidden = false;
+  toastTimer = setTimeout(() => { $('toast').hidden = true; undoAction = null; }, undo ? 12000 : 6000);
 }
 function mode(value) {
   authMode = ['signin', 'signup', 'reset'].includes(value) ? value : 'signin';
@@ -45,7 +56,9 @@ function lock() {
   if (player.open) player.close();
   if (details.open) details.close();
   video.pause(); video.removeAttribute('src'); video.load();
-  user = null; accessToken = ''; films = []; rows.clear(); current = null; playing = null;
+  user = null; accessToken = ''; films = []; rows.clear(); current = null; playing = null; detailFilm = null;
+  continuePending.clear(); continueIntents.clear(); suppressed.clear();
+  clearTimeout(toastTimer); undoAction = null; $('toast').hidden = true; $('toast').textContent = '';
   generation++;
   if ($('nav-toggle').getAttribute('aria-expanded') === 'true') $('nav-toggle').click();
   for (const id of ['film-grid', 'continue-grid', 'saved-grid']) $(id).replaceChildren();
@@ -57,10 +70,24 @@ function lock() {
   $('guest-controls').hidden = false;
   document.querySelector('meta[name="robots"]').content = 'index, follow';
   $('site-header').classList.remove('is-watching');
+  updatePlan();
+}
+function updatePlan() {
+  const action = $('free-plan-action'); if (!action) return;
+  action.disabled = Boolean(user); action.textContent = user ? 'Current plan' : 'Join for free';
+  if (user) action.removeAttribute('data-auth'); else action.dataset.auth = 'signup';
 }
 async function deadline(operation) {
   let timer;
   try { return await Promise.race([operation(), new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Connection timed out. Please try again.')), 20000); })]); }
+  finally { clearTimeout(timer); }
+}
+async function writeDeadline(operation) {
+  // Abort the request itself, not only a Promise.race: otherwise a timed-out
+  // old write can land after the next queued membership change.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20000);
+  try { return await operation(controller.signal); }
   finally { clearTimeout(timer); }
 }
 function rowFor(id) { return rows.get(id) || { film_id: id, position_seconds: 0, duration_seconds: 0, completed: false, saved: false, last_watched_at: null }; }
@@ -72,7 +99,23 @@ function time(value) {
 function card(film, continued = false) {
   const id = escapeHTML(film.id), row = rowFor(film.id);
   const percentage = row.duration_seconds > 0 ? Math.min(100, row.position_seconds / row.duration_seconds * 100) : 0;
-  return `<article class="film-card" data-film="${id}"><button class="film-art" type="button" data-watch="${id}" aria-label="${continued ? 'Resume' : 'Watch'} ${escapeHTML(film.title)}"><img src="${escapeHTML(artworkURL(film))}" alt="" loading="lazy" decoding="async"><span class="card-play" aria-hidden="true">▶</span><span class="card-original">NETVISTA ORIGINAL</span></button>${continued ? `<div class="progress-track" role="progressbar" aria-label="Playback progress" aria-valuenow="${Math.round(percentage)}" aria-valuemin="0" aria-valuemax="100"><span style="width:${percentage}%"></span></div>` : ''}<div class="card-copy"><h3>${escapeHTML(film.title)}</h3><p class="card-label">${continued ? 'Resume at ' + time(row.position_seconds) : row.completed ? 'Watched · Play again' : 'NetVista Original'}</p><div class="card-actions"><button class="text-link" data-watch="${id}" type="button">${continued ? 'Resume' : 'Play'} <span aria-hidden="true">▶</span></button><button class="text-link" data-details="${id}" type="button">Details</button><button class="text-link save-link" data-save="${id}" type="button" aria-pressed="${row.saved}">${row.saved ? '✓ Saved' : '+ My List'}</button>${continued ? `<button class="text-link" type="button" data-forget="${id}" aria-label="Remove ${escapeHTML(film.title)} from Continue watching">×</button>` : ''}</div></div></article>`;
+  const resume = !row.completed && row.position_seconds > 0;
+  return `<article class="film-card" data-film="${id}"><button class="film-art" type="button" data-watch="${id}" aria-label="${resume ? 'Resume' : 'Watch'} ${escapeHTML(film.title)}"><img src="${escapeHTML(artworkURL(film))}" alt="" loading="lazy" decoding="async"><span class="card-play" aria-hidden="true">▶</span><span class="card-original">NETVISTA ORIGINAL</span></button>${continued ? `<div class="progress-track" role="progressbar" aria-label="Playback progress" aria-valuenow="${Math.round(percentage)}" aria-valuemin="0" aria-valuemax="100"><span style="width:${percentage}%"></span></div>` : ''}<div class="card-copy"><h3>${escapeHTML(film.title)}</h3><p class="card-label">${resume ? 'Resume at ' + time(row.position_seconds) : row.completed ? 'Watched · Play again' : 'NetVista Original'}</p><div class="card-actions"><button class="text-link" data-watch="${id}" type="button">${resume ? 'Resume' : 'Play'} <span aria-hidden="true">▶</span></button><button class="text-link" data-details="${id}" type="button">Details</button><button class="text-link save-link" data-save="${id}" type="button" aria-pressed="${row.saved}">${row.saved ? '✓ Saved' : '+ My List'}</button></div>${continued ? `<label class="continue-choice"><input class="continue-toggle" type="checkbox" data-continue="${id}" checked aria-label="Keep ${escapeHTML(film.title)} in Continue watching"><span>Keep in Continue watching</span></label>` : ''}</div></article>`;
+}
+function updateContinueControls() {
+  for (const [element, film] of [[$('details-continue'), detailFilm], [$('player-continue'), playing]]) {
+    if (!element) continue;
+    const row = film && rowFor(film.id);
+    element.dataset.continue = film?.id || '';
+    const available = row && !row.completed && (row.duration_seconds > 0 || row.position_seconds > 0 || row.last_watched_at || playing?.id === film.id);
+    element.closest('.continue-choice').hidden = !available;
+  }
+  document.querySelectorAll('[data-continue]').forEach(input => {
+    const id = input.dataset.continue; if (!id) return;
+    input.checked = Boolean(rowFor(id).last_watched_at) && !rowFor(id).completed;
+    input.disabled = continuePending.has(id);
+    input.closest('.continue-choice')?.setAttribute('aria-busy', String(input.disabled));
+  });
 }
 function updateSavedControls() {
   $('list-count').textContent = savedIds().size;
@@ -104,6 +147,7 @@ function renderLibrary() {
   $('empty-copy').textContent = collection === 'saved' && !saved.size ? 'Save a film with + My List to find it here.' : 'Try another title or clear your search.';
   document.querySelectorAll('[data-collection]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.collection === collection)));
   updateSavedControls();
+  updateContinueControls();
 }
 function featureFilm(id) {
   const film = films.find(item => item.id === id); if (!film) return;
@@ -111,32 +155,86 @@ function featureFilm(id) {
   $('hero-title').textContent = film.title; $('hero-description').textContent = film.description;
   $('hero-format').textContent = film.format;
   $('hero-watch').dataset.watch = id; $('hero-details').dataset.details = id; $('hero-save').dataset.save = id;
-  $('hero-watch').textContent = rowFor(id).last_watched_at && !rowFor(id).completed ? '▶ Continue watching' : '▶ Play film';
+  $('hero-watch').textContent = rowFor(id).position_seconds > 0 && !rowFor(id).completed ? '▶ Resume film' : '▶ Play film';
   document.querySelectorAll('[data-feature]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.feature === id)));
   updateSavedControls();
 }
-function persist(row, message = false) {
-  if (!user) return Promise.resolve(false);
-  const owner = user.id, version = generation;
-  const snapshot = { user_id: owner, film_id: row.film_id, position_seconds: row.position_seconds, duration_seconds: row.duration_seconds, completed: row.completed, saved: row.saved, last_watched_at: row.last_watched_at };
-  const task = writing.catch(() => {}).then(async () => {
-    if (!user || user.id !== owner || generation !== version) return false;
-    try {
-      const result = await deadline(() => client.from('watch_progress').upsert(snapshot, { onConflict: 'user_id,film_id' }));
-      if (generation !== version) return false;
+const progressWriter = createProgressWriter({
+  identity: () => user ? { id: user.id, generation, accessToken } : null,
+  rowFor,
+  async write(row, owner, { keepalive = false } = {}) {
+    const snapshot = { user_id: owner.id, film_id: row.film_id, position_seconds: row.position_seconds, duration_seconds: row.duration_seconds, completed: row.completed, saved: row.saved, last_watched_at: row.last_watched_at };
+    if (keepalive) {
+      // Keepalives share the same queue as SDK writes; they must never race a
+      // removal or carry an older full-row snapshot over a newer user choice.
+      const response = await writeDeadline(signal => fetch(apiURL + '/rest/v1/watch_progress?on_conflict=user_id,film_id', {
+        method: 'POST', keepalive: true, signal, headers: { apikey: apiKey, Authorization: 'Bearer ' + owner.accessToken,
+          'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
+        body: JSON.stringify(snapshot)
+      }));
+      if (!response.ok) throw new Error('Playback sync failed.');
+    } else {
+      const result = await writeDeadline(signal => {
+        const request = client.from('watch_progress').upsert(snapshot, { onConflict: 'user_id,film_id' });
+        return typeof request.abortSignal === 'function' ? request.abortSignal(signal) : request;
+      });
       if (result.error) throw result.error;
-      $('player-status').textContent = 'Playback position saved to your account.';
-      if (message) notify('My List saved to your account.');
-      return true;
-    } catch {
-      if (generation === version) {
-        $('player-status').textContent = 'Could not sync yet. Keep this page open and try again.';
-        notify('Account sync failed. Your changes are kept for this visit; try again when connected.');
-      }
-      return false;
     }
+  }
+});
+async function persist(row, options = {}) {
+  if (options === true) options = { message: true };
+  const result = await progressWriter.enqueue(row.film_id, options);
+  if (result.stale) return false;
+  if (result.ok) {
+    $('player-status').textContent = 'Playback position saved to your account.';
+    if (options.message) notify('My List saved to your account.');
+  } else if (!options.quiet) {
+    $('player-status').textContent = 'Could not sync yet. Keep this page open and try again.';
+    notify('Account sync failed. Please try again when connected.');
+  }
+  return result.ok;
+}
+function restoreContinueFocus(original, id) {
+  // Undo is about to be replaced by the success message. Return its focus to
+  // the restored shelf control instead of leaving focus on a detached button.
+  if (original?.id !== 'toast-undo' && original?.isConnected && original.getClientRects().length && !original.disabled) { original.focus(); return; }
+  const visible = [...document.querySelectorAll('[data-continue]')].find(input => input.dataset.continue === id && input.getClientRects().length && !input.disabled);
+  if (visible) visible.focus();
+  else if (!details.open && !player.open) ($('continue-grid').querySelector('button') || $('continue-empty')).focus();
+}
+async function chooseContinue(id, keep, { undo = false } = {}) {
+  if (!user || !films.some(film => film.id === id)) return;
+  const owner = user.id, version = generation, intent = (continueIntents.get(id) || 0) + 1;
+  continueIntents.set(id, intent);
+  const original = document.activeElement, previous = rowFor(id).last_watched_at;
+  const wasSuppressed = suppressed.has(id);
+  if (keep) suppressed.delete(id); else suppressed.add(id);
+  const next = continueChoice(rowFor(id), keep);
+  rows.set(id, next); continuePending.set(id, intent);
+  renderLibrary(); if (current) featureFilm(current.id);
+  // The card disappears immediately, so keyboard focus moves to the next
+  // available resume control. Detail/player checkboxes stay in place.
+  restoreContinueFocus(original, id);
+  const ok = await persist(next, { quiet: true });
+  if (!user || user.id !== owner || generation !== version || continueIntents.get(id) !== intent) return;
+  continuePending.delete(id);
+  if (!ok) {
+    // Restore only membership, retaining playback/checkpoint and My List edits
+    // made while the network request was in flight.
+    rows.set(id, { ...rowFor(id), last_watched_at: previous });
+    if (wasSuppressed) suppressed.add(id); else suppressed.delete(id);
+    renderLibrary(); if (current) featureFilm(current.id);
+    restoreContinueFocus(original, id);
+    notify('Could not save that change. Your Continue watching choice was restored; please try again.');
+    return;
+  }
+  renderLibrary(); if (current) featureFilm(current.id);
+  restoreContinueFocus(original, id);
+  if (keep) notify(undo ? 'Restored to Continue watching.' : 'Added to Continue watching.');
+  else notify('Removed from Continue watching. Your resume point and My List are unchanged.', () => {
+    if (user?.id === owner && generation === version && continueIntents.get(id) === intent) chooseContinue(id, true, { undo: true });
   });
-  writing = task; return task;
 }
 async function saveFilm(id) {
   if (!user || !films.some(film => film.id === id)) return;
@@ -153,15 +251,17 @@ async function saveFilm(id) {
 }
 function openDetails(id) {
   const film = films.find(item => item.id === id); if (!film || !user) return;
+  detailFilm = film;
   openers.set(details, document.activeElement);
   $('details-title').textContent = film.title; $('details-description').textContent = film.description;
   $('details-format').textContent = film.format; $('details-art').src = artworkURL(film); $('details-art').alt = '';
   $('details-watch').dataset.watch = id; $('details-save').dataset.save = id;
-  updateSavedControls(); details.showModal();
+  $('details-watch').textContent = rowFor(id).position_seconds > 0 && !rowFor(id).completed ? '▶ Resume film' : '▶ Play film';
+  updateSavedControls(); updateContinueControls(); details.showModal();
 }
 function snapshotPlayback(ended = video.ended) {
   if (!user || !playing || !didPlay) return null;
-  const row = { ...rowFor(playing.id), ...playbackState(video.currentTime, video.duration, ended), last_watched_at: new Date().toISOString() };
+  const row = { ...rowFor(playing.id), ...playbackState(video.currentTime, video.duration, ended), last_watched_at: suppressed.has(playing.id) ? null : new Date().toISOString() };
   rows.set(playing.id, row); return row;
 }
 function savePlayback(force = false) {
@@ -171,11 +271,16 @@ function savePlayback(force = false) {
 }
 function watchFilm(id) {
   const film = films.find(item => item.id === id); if (!film || !user || !trustedMediaURL(film.mediaUrl)) return;
-  if (player.open) { savePlayback(true); video.pause(); }
+  if (player.open) { savePlayback(true); playing = null; didPlay = false; video.pause(); }
   openers.set(player, document.activeElement); if (details.open) details.close();
   playing = film; didPlay = false; restored = false; lastSave = 0;
+  // A deliberate new playback session opts the film back in; pause/resume and
+  // checkpoints inside a session never override an unticked choice.
+  suppressed.delete(id);
+  continueIntents.set(id, (continueIntents.get(id) || 0) + 1); continuePending.delete(id);
   $('player-title').textContent = film.title; $('player-status').textContent = 'Your playback position will save automatically.';
   video.src = trustedMediaURL(film.mediaUrl); video.poster = artworkURL(film);
+  updateContinueControls();
   if (!player.open) player.showModal();
   video.load(); // Native controls remain usable if autoplay is restricted.
   video.play().catch(() => { $('player-status').textContent = 'Press play to start. Your position saves automatically.'; });
@@ -199,19 +304,15 @@ function keepaliveProgress() {
   const row = snapshotPlayback(); if (!row || !accessToken) return;
   // On page exit an ordinary SDK request may be cancelled. Keepalive is best
   // effort, backed by the 15-second checkpoints and pause/close saves.
-  fetch(apiURL + '/rest/v1/watch_progress?on_conflict=user_id,film_id', {
-    method: 'POST', keepalive: true, headers: { apikey: apiKey, Authorization: 'Bearer ' + accessToken,
-      'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' },
-    body: JSON.stringify({ user_id: user.id, ...row, updated_at: undefined })
-  }).catch(() => {});
+  persist(row, { keepalive: true, quiet: true });
 }
-document.addEventListener('visibilitychange', () => { if (document.hidden) { savePlayback(true); keepaliveProgress(); } });
+document.addEventListener('visibilitychange', () => { if (document.hidden) keepaliveProgress(); });
 window.addEventListener('pagehide', keepaliveProgress);
 
 for (const dialog of [authDialog, details, player]) {
   dialog.addEventListener('close', () => {
     if (dialog === authDialog) { $('signin-password').value = ''; $('signup-password').value = ''; }
-    if (dialog === player) { savePlayback(true); playing = null; didPlay = false; video.pause(); video.removeAttribute('src'); video.load(); }
+    if (dialog === player) { savePlayback(true); playing = null; didPlay = false; video.pause(); video.removeAttribute('src'); video.load(); updateContinueControls(); }
     requestAnimationFrame(() => {
       if ([authDialog, details, player].some(item => item.open)) return;
       const opener = openers.get(dialog);
@@ -225,18 +326,18 @@ for (const dialog of [authDialog, details, player]) {
   dialog.addEventListener('click', event => { if (backdrop && event.target === dialog && outside(event)) dialog.close(); backdrop = false; });
 }
 function showView(view, scroll = true) {
-  if (!user) { openAuth('signin'); return; }
-  collection = view === 'list' ? 'saved' : 'all'; renderLibrary();
+  if (!user && view !== 'plans') { openAuth('signin'); return; }
+  if (user) { collection = view === 'list' ? 'saved' : 'all'; renderLibrary(); }
   document.querySelectorAll('[data-view]').forEach(link => {
     const active = link.dataset.view === view; link.classList.toggle('is-active', active);
     if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
   });
-  const id = { list: 'my-list', films: 'films', continue: 'continue-watching', about: 'beta', home: 'home' }[view] || 'home';
+  const id = { list: 'my-list', films: 'films', continue: 'continue-watching', about: 'beta', plans: 'plans', home: 'home' }[view] || 'home';
   if (scroll) $(id).scrollIntoView({ behavior: 'instant', block: 'start' });
 }
-function viewFromHash() { return ({ '#my-list': 'list', '#films': 'films', '#continue-watching': 'continue', '#beta': 'about' })[location.hash] || 'home'; }
+function viewFromHash() { return ({ '#my-list': 'list', '#films': 'films', '#continue-watching': 'continue', '#beta': 'about', '#plans': 'plans' })[location.hash] || 'home'; }
 document.addEventListener('click', async event => {
-  const target = event.target.closest('[data-watch],[data-details],[data-save],[data-forget],[data-feature],[data-close],[data-collection],[data-view],[data-auth],[data-auth-mode]');
+  const target = event.target.closest('[data-watch],[data-details],[data-save],[data-feature],[data-close],[data-collection],[data-view],[data-auth],[data-auth-mode]');
   if (!target) return;
   if (target.dataset.auth) { event.preventDefault(); openAuth(target.dataset.auth); }
   else if (target.dataset.authMode) { mode(target.dataset.authMode); status(''); }
@@ -244,19 +345,18 @@ document.addEventListener('click', async event => {
   else if (target.dataset.watch) { event.preventDefault(); watchFilm(target.dataset.watch); }
   else if (target.dataset.details) openDetails(target.dataset.details);
   else if (target.dataset.save) saveFilm(target.dataset.save);
-  else if (target.dataset.forget && user) {
-    const id = target.dataset.forget; if (!films.some(film => film.id === id)) return;
-    if (playing?.id === id) player.close();
-    const row = { ...rowFor(id), position_seconds: 0, completed: false, last_watched_at: null };
-    rows.set(id, row); renderLibrary(); if (await persist(row)) notify('Removed from Continue watching.');
-  } else if (target.dataset.feature) featureFilm(target.dataset.feature);
+  else if (target.dataset.feature) featureFilm(target.dataset.feature);
   else if (target.dataset.collection) { collection = target.dataset.collection; renderLibrary(); }
-  else if (target.dataset.view) { event.preventDefault(); const hash = { home: 'home', films: 'films', list: 'my-list', continue: 'continue-watching', about: 'beta' }[target.dataset.view]; if (hash) { history.replaceState(null, '', '#' + hash); showView(target.dataset.view); } }
+  else if (target.dataset.view) { event.preventDefault(); const hash = { home: 'home', films: 'films', list: 'my-list', continue: 'continue-watching', about: 'beta', plans: 'plans' }[target.dataset.view]; if (hash) { history.replaceState(null, '', '#' + hash); showView(target.dataset.view); } }
+});
+document.addEventListener('change', event => {
+  const input = event.target.closest('input[data-continue]');
+  if (input && !input.disabled && input.dataset.continue) chooseContinue(input.dataset.continue, input.checked);
 });
 $('film-search').addEventListener('input', renderLibrary);
 $('browse-search').addEventListener('click', () => { showView('films'); $('film-search').focus(); });
 $('reset-library').addEventListener('click', () => { $('film-search').value = ''; collection = 'all'; renderLibrary(); $('film-search').focus(); });
-window.addEventListener('hashchange', () => { if (user) showView(viewFromHash()); });
+window.addEventListener('hashchange', () => { if (user || viewFromHash() === 'plans') showView(viewFromHash()); });
 
 async function refreshAccount() {
   if (!ready) return;
@@ -283,6 +383,7 @@ async function refreshAccount() {
     for (const id of ['primary-nav', 'browse-search', 'account-controls', 'nav-toggle']) $(id).hidden = false;
     $('guest-controls').hidden = true; $('account-email').textContent = user.email || 'NetVista account';
     $('site-header').classList.add('is-watching');
+    updatePlan();
     document.querySelector('meta[name="robots"]').content = 'noindex, nofollow';
     if (authDialog.open) authDialog.close();
     if (films.length && !changed) return;

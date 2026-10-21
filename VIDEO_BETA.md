@@ -1,10 +1,24 @@
 # NetVista Watch public beta
 
 The standalone film site is `https://video.netvistastudio.com/`. It is not the
-Video Editor marketing/download page. It uses original NetVista branding (no
-Netflix N mark), a public welcome page, and a signed-in cinematic library.
-Only the two existing published originals appear; no fake films, ratings,
-subscriptions or release claims are used. The native app is unchanged.
+Video Editor marketing/download page. Its editorial independent-cinema design
+uses a warm paper palette, teal accents, framed artwork and original NetVista
+typography rather than a red condensed streaming-service wordmark. It has a
+public welcome and Plans section, and a signed-in cinematic library. Only the
+two existing published originals appear; no fake films, ratings or release
+claims are used. The native app and main website are unchanged.
+
+## Plans
+
+The only available option is **Free plan with ads**, at £0. Existing Watch
+accounts already use that plan; guests join through the existing NetVista
+account flow. There is no paid subscription, payment form, checkout, trial or
+new subscription database. The public page explicitly states that advertising
+is planned and **is not active in this Watch beta yet**. This is not a deployment
+of the separate News-page AdSense feature onto Watch.
+
+The future-plans panel is information only: other plans have not been released
+and cannot be bought or joined. No prices, dates or paid features are promised.
 
 ## Accounts and private history
 
@@ -41,6 +55,16 @@ has a best-effort keepalive checkpoint. Redirected signed storage URLs expire
 and are never stored. Completed films leave Continue watching but stay playable;
 users can restart or remove a film from that rail without removing it from My List.
 
+Unchecking **Keep in Continue watching** only clears the nullable membership
+timestamp. It retains the exact resume position, duration, completion and My List
+choice. A successful save offers Undo; a failed save restores membership and
+explains how to retry. Detail/player controls reflect the same choice. Playback
+checkpoints, close and page-exit writes cannot re-add an unticked film in that
+session. Deliberately opening a new playback session or rechecking adds it back.
+SDK writes and keepalives share a single queue which reads the latest state;
+stale account operations cannot update another account's UI. No new schema or
+subscription records are required.
+
 **Boundary:** these films were already public on the main site/provider.
 Login gates the Watch experience; it does not turn the external files into
 private/DRM media. Native streams may fail if the external provider is unavailable.
@@ -75,6 +99,8 @@ A previous browser-cached permanent redirect may require a fresh session or
 
 ```sh
 node --experimental-vm-modules tests/video_beta_regression.cjs
+node --experimental-vm-modules tests/watch-progress-regression.cjs
+node tests/watch-design-regression.cjs
 node --experimental-vm-modules tests/web_auth_regression.cjs
 node --experimental-vm-modules tests/web_download_gate.cjs
 node tests/web_seo_regression.cjs

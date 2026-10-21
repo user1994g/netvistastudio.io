@@ -19,6 +19,37 @@ export function continueRows(rows) {
   return rows.filter(row => row.last_watched_at && !row.completed && Number.isFinite(Date.parse(row.last_watched_at)))
     .sort((a, b) => Date.parse(b.last_watched_at) - Date.parse(a.last_watched_at));
 }
+// Membership is independent of the resume point and My List. Removing a film
+// must never erase how far someone watched or silently unsave it.
+export function continueChoice(row, keep, now = new Date().toISOString()) {
+  return { ...row, last_watched_at: keep ? now : null };
+}
+// One writer for checkpoints, manual changes and page-exit keepalives. Read the
+// latest row when a queued write starts, not when it was scheduled: an old pause
+// snapshot can otherwise resurrect a film just removed from Continue watching.
+export function createProgressWriter({ identity, rowFor, write }) {
+  let chain = Promise.resolve();
+  const same = owner => {
+    const current = identity();
+    return owner && current && owner.id === current.id && owner.generation === current.generation;
+  };
+  return {
+    enqueue(id, options = {}) {
+      const owner = identity();
+      if (!owner) return Promise.resolve({ ok: false, stale: true });
+      const task = chain.catch(() => {}).then(async () => {
+        if (!same(owner)) return { ok: false, stale: true };
+        const snapshot = { ...rowFor(id) };
+        try {
+          await write(snapshot, owner, options);
+          return same(owner) ? { ok: true } : { ok: false, stale: true };
+        } catch { return same(owner) ? { ok: false } : { ok: false, stale: true }; }
+      });
+      chain = task;
+      return task;
+    }
+  };
+}
 export function playableFilms(catalogue) {
   return catalogue.filter(film => {
     if (film.status !== 'available' || !film.id || !film.title) return false;
