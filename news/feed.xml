@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>NetVista Studio News</title>
+    <link>https://netvistastudio.com/news/</link>
+    <description>Development notes, released beta milestones and clearly labelled previews from NetVista Studio.</description>
+    <language>en-GB</language>
+    <lastBuildDate>Wed, 21 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="https://netvistastudio.com/news/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Development preview: native mobile creative workspaces after Beta 7</title>
+      <link>https://netvistastudio.com/news/october-20-native-mobile-development-preview/</link>
+      <guid isPermaLink="true">https://netvistastudio.com/news/october-20-native-mobile-development-preview/</guid>
+      <description>Newer source adds native mobile creative workspaces and stronger checks. These development previews do not replace the public Beta 7 downloads. Development preview—not a downloadable release. Recorded milestone: 20 October 2026. First published: 21 October 2026.</description>
+      <category>Development preview</category>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>NetVista Studio Beta 7: standalone mobile editing and a dedicated 3D workspace</title>
+      <link>https://netvistastudio.com/news/beta-7-mobile-editing-and-dedicated-3d/</link>
+      <guid isPermaLink="true">https://netvistastudio.com/news/beta-7-mobile-editing-and-dedicated-3d/</guid>
+      <description>Beta 7 paired a dedicated Mac modelling workspace with first standalone iPad and Android video editors, each with a clearly defined scope. Development retrospective. Recorded milestone: 7 October 2026. First published: 21 October 2026.</description>
+      <category>Release retrospective</category>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Beta 6 makes Studio Home clearer and startup quieter</title>
+      <link>https://netvistastudio.com/news/beta-6-studio-home-and-quieter-startup/</link>
+      <guid isPermaLink="true">https://netvistastudio.com/news/beta-6-studio-home-and-quieter-startup/</guid>
+      <description>Game Maker became easier to reach from Studio Home, recent games gained a filter, and background account reads stopped prompting at startup. Development retrospective. Recorded milestone: 29 September 2026. First published: 21 October 2026.</description>
+      <category>Release retrospective</category>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Beta 4 expands photo, colour, 3D and Game Maker tools</title>
+      <link>https://netvistastudio.com/news/beta-4-creative-tools-and-safer-updates/</link>
+      <guid isPermaLink="true">https://netvistastudio.com/news/beta-4-creative-tools-and-safer-updates/</guid>
+      <description>Mac photo, grading, scene and game workflows expanded, with recovery-aware in-place updating and explicit limits for other editions. Development retrospective. Recorded milestone: 19 September 2026. First published: 21 October 2026.</description>
+      <category>Release retrospective</category>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Beta 3 brings a separate native photo workspace to Mac</title>
+      <link>https://netvistastudio.com/news/beta-3-separate-native-photo-workspace/</link>
+      <guid isPermaLink="true">https://netvistastudio.com/news/beta-3-separate-native-photo-workspace/</guid>
+      <description>Layered photo documents gained their own native Mac workspace, while effects browsing, grading feedback and export presentation improved. Development retrospective. Recorded milestone: 3 September 2026. First published: 21 October 2026.</description>
+      <category>Release retrospective</category>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Two focused betas make video export clearer and more reliable</title>
+      <link>https://netvistastudio.com/news/clearer-and-more-reliable-video-export/</link>
+      <guid isPermaLink="true">https://netvistastudio.com/news/clearer-and-more-reliable-video-export/</guid>
+      <description>Resolution selection moved earlier, export progress became easier to follow, and longer Windows/Linux renders received a reliability fix. Development retrospective. Recorded milestone: 20–28 August 2026. First published: 21 October 2026.</description>
+      <category>Release retrospective</category>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Windows and Linux join NetVista Studio as 3D animation develops</title>
+      <link>https://netvistastudio.com/news/windows-linux-animated-3d-and-mods/</link>
+      <guid isPermaLink="true">https://netvistastudio.com/news/windows-linux-animated-3d-and-mods/</guid>
+      <description>Native Windows and Linux packages expanded desktop access, while the next beta developed Mac scene animation and checked, data-only Mods. Development retrospective. Recorded milestone: 13–14 August 2026. First published: 21 October 2026.</description>
+      <category>Release retrospective</category>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>NetVista Studio&#39;s first public source and Mac beta</title>
+      <link>https://netvistastudio.com/news/first-public-source-and-mac-beta/</link>
+      <guid isPermaLink="true">https://netvistastudio.com/news/first-public-source-and-mac-beta/</guid>
+      <description>The earliest public source already contained a native Mac editor. Its first packaged beta followed with timeline, colour and 3D tools. Development retrospective. Recorded milestone: 10–13 August 2026. First published: 21 October 2026.</description>
+      <category>Release retrospective</category>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

@@ -60,7 +60,7 @@ function setup({ small = true, hostname = 'netvistastudio.com' } = {}) {
   header = make('header', 'site-header', body);
   toggle = make('button', 'nav-toggle', header);
   nav = make('nav', 'primary-nav', header);
-  const navLinks = ['/video-editor/', '/#work', '/#media', '/#studio', '/applications/'].map((href, index) => { const link = make('a', `nav-${index}`, nav); link.href = href; return link; });
+  const navLinks = ['/video-editor/', '/#work', '/#media', '/#studio', '/news/', '/applications/'].map((href, index) => { const link = make('a', `nav-${index}`, nav); link.href = href; return link; });
   const searchToggle = make('button', 'search-toggle', header);
   const searchPanel = make('section', 'search-panel', body);
   const searchStatus = make('p', 'search-status', searchPanel);
@@ -119,8 +119,8 @@ assert(!site.header.classList.contains('nav-open') && !site.searchPanel.hidden &
 assert.equal(site.active(), site.searchInput, 'Opening search focuses its input');
 assert.equal(site.searchResults.children.length, 5, 'Search provides a useful initial set of pages');
 site.searchInput.value = 'colour'; site.searchInput.fire('input');
-assert.equal(site.searchResults.children.length, 2, 'Search spans tool and guide pages');
-assert(site.searchStatus.textContent.includes('2 matching pages'));
+assert(site.searchResults.children.length >= 2, 'Search spans tools, guides and related news');
+assert(site.searchStatus.textContent.includes(`${site.searchResults.children.length} matching pages`));
 const found = site.searchResults.querySelectorAll('a[href]');
 assert(found.some(link => link.href === '/video-editor/colour-grading-luts/'));
 const last = found.at(-1); last.focus();

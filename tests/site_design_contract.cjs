@@ -3,7 +3,8 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const pages = ['index.html','applications/index.html','editor/index.html','editor/account/index.html','404.html','video-editor/index.html',...['getting-started','keyframes','colour-grading-luts','export-settings'].map(p=>`video-editor/${p}/index.html`)];
+const newsPosts = JSON.parse(read('content/news-posts.json')).posts;
+const pages = ['index.html','applications/index.html','editor/index.html','editor/account/index.html','404.html','video-editor/index.html',...['getting-started','keyframes','colour-grading-luts','export-settings'].map(p=>`video-editor/${p}/index.html`),'news/index.html',...newsPosts.map(p=>`news/${p.slug}/index.html`)];
 const headers=[];
 for (const file of pages) {
  const html=read(file), ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
@@ -11,7 +12,7 @@ for (const file of pages) {
  for (const match of html.matchAll(/\b(?:for|aria-controls|aria-labelledby|aria-describedby)="([^"]+)"/g)) for(const id of match[1].split(/\s+/)) assert(ids.includes(id),`${file}: missing referenced element ${id}`);
  for(const id of ['site-header','nav-toggle','primary-nav','search-toggle','search-panel','search-input','search-close','search-results'])assert(ids.includes(id),`${file}: shared shell ${id}`);
  assert(html.includes('class="nv-wordmark">NetVista <small>STUDIO</small>'),`${file}: consistent wordmark`);
- assert(html.includes('mobile-navigation.js?v=20261021'),`${file}: current navigation controller`);
+ assert(html.includes('mobile-navigation.js?v=20261021-news1'),`${file}: current navigation controller`);
  const header=html.match(/<header\b[\s\S]*?<\/header>/)[0];
  headers.push(header.replaceAll('https://netvistastudio.com','').replaceAll(' class="is-active" aria-current="page"',''));
 }

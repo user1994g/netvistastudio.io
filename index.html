@@ -9,6 +9,7 @@
   <meta name="description" content="NetVista Studio makes independent films and a free beta video editor for Mac, Windows and Linux. Discover NetVista's creative tools, films and editing guides.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://netvistastudio.com/">
+  <link rel="alternate" type="application/rss+xml" title="NetVista Studio News" href="https://netvistastudio.com/news/feed.xml">
   <title>NetVista Studio | Video Editor &amp; Independent Films</title>
 
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/brand/favicon-32.png">
@@ -97,9 +98,11 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/studio-shared.css?v=20261021">
   <link rel="stylesheet" href="/assets/css/studio-home.css?v=20261021">
-  <script defer src="/assets/mobile-navigation.js?v=20261021"></script>
+  <script defer src="/assets/mobile-navigation.js?v=20261021-news1"></script>
   <link rel="stylesheet" href="/assets/css/studio-motion.css?v=1">
   <script defer src="/assets/studio-motion.js?v=1"></script>
+  <link rel="stylesheet" href="/assets/css/studio-cut-study.css?v=1">
+  <script defer src="/assets/studio-cut-study.js?v=1"></script>
 </head>
 <body class="nv-site home-page">
   <a class="skip-link" href="#main-content">Skip to selected work</a>
@@ -112,6 +115,7 @@
       <a href="/#work">Films</a>
       <a href="/#media">Media lab</a>
       <a href="/#studio">Studio</a>
+      <a href="/news/">News</a>
       <a href="/applications/">Applications</a>
       <a class="nv-nav-mobile" href="/editor/">Get the free beta <span aria-hidden="true">↗</span></a><a class="nv-nav-mobile" href="/editor/account/">Your account</a>
     </nav>
@@ -132,7 +136,7 @@
         <a class="gallery-tile gallery-photo" href="/video-editor/#workspaces"><img src="/assets/images/creative/petals-960.jpg" alt="Sculptural red poppy petals in vivid close-up" width="960" height="640" decoding="async"><span class="gallery-caption"><span>02 / PHOTOGRAPHY</span><strong>Find your perspective.</strong><i aria-hidden="true">↗</i></span></a>
         <a class="gallery-tile gallery-world" href="/video-editor/#workspaces"><img src="/assets/images/creative/world-1280.jpg" alt="A sunlit stone archway on a fantastical island" width="1280" height="720" decoding="async"><span class="gallery-caption"><span>03 / WORLD BUILDING</span><strong>Go somewhere new.</strong><i aria-hidden="true">↗</i></span></a>
       </div>
-      <div class="home-caption"><span>NETVISTA STUDIO / CREATIVE TOOLS</span><span>Native apps. A free public beta. Your own point of view.</span></div>
+      <div class="home-caption"><span>NETVISTA STUDIO / CREATIVE TOOLS</span><a class="home-play-link" href="#media">A little room to play <span aria-hidden="true">↓</span></a></div>
     </section>
 
     <section class="home-tools shell" id="creative-tools" aria-labelledby="tools-title">
@@ -156,18 +160,40 @@
     </section>
 
     <section class="home-media shell" id="media" aria-labelledby="media-title">
-      <div class="home-section-head"><div><p class="eyebrow">THE MEDIA LAB</p><h2 id="media-title">There is more than<br>one way to see it.</h2></div><p>A place for locations, textures and visual experiments. The things that happen before the finished frame.</p></div>
-      <div class="media-editorial"><figure><img src="/assets/images/brand/studio-pixel-night-1280.webp" width="1280" height="720" alt="A pixel-art studio inside a chapel at night" loading="lazy" decoding="async"><figcaption><span>VISUAL EXPLORATION / 01</span><strong>A studio, reimagined.</strong></figcaption></figure><figure><img src="/assets/images/photos/dark-echoes.jpg" width="960" height="640" alt="An atmospheric church interior from The dark echo’s of 1939" loading="lazy" decoding="async"><figcaption><span>ON LOCATION / 02</span><strong>Every room has a story.</strong></figcaption></figure></div>
+      <div class="home-section-head"><div><p class="eyebrow">THE MEDIA LAB / A SMALL EXPERIMENT</p><h2 id="media-title">Every story starts<br>with a little “what if?”</h2></div><p>Three images. Six seconds. Give them a title, change the order and see how the feeling changes. No right answer. Just your eye.</p></div>
+      <div class="cut-study" data-cut-study data-clarity-mask="true" aria-labelledby="cut-study-title">
+        <div class="cut-monitor">
+          <div class="cut-monitor-bar"><h3 id="cut-study-title"><span class="cut-lamp" aria-hidden="true"></span>YOUR FIRST CUT</h3><span>01 / NETVISTA PLAY STUDIES</span></div>
+          <div class="cut-viewer"><img data-cut-image src="/assets/images/creative/coast-1280.jpg" width="1280" height="853" alt="A winding coastline at golden hour" loading="lazy" decoding="async"><div class="cut-frame-caption"><span>A SIX-SECOND DAYDREAM</span><p data-cut-title data-clarity-mask="true">Somewhere new.</p></div><span class="cut-frame-mark" aria-hidden="true">NV / 001</span></div>
+          <div class="cut-transport"><span data-cut-position>01 / THE COAST</span><span data-cut-time role="timer" aria-live="off" aria-label="Study timecode in minutes, seconds and frames at 24 frames per second">00:00:00</span></div>
+        </div>
+        <div class="cut-workbench">
+          <div class="cut-workbench-heading"><span class="cut-step">A LITTLE CREATIVE FREEDOM</span><span class="cut-duration">00:06 / SILENT STUDY</span></div>
+          <div class="cut-title-field"><label for="cut-title-input">What would you call it?</label><input id="cut-title-input" data-cut-title-input value="Somewhere new." placeholder="Somewhere new." type="text" maxlength="40" autocomplete="off" spellcheck="false" data-clarity-mask="true" disabled aria-describedby="cut-title-note"><p id="cut-title-note">No upload. No account. Just a little experiment.</p></div>
+          <div class="cut-sequence-heading"><label for="cut-scrub">Find your moment</label><span>CLICK A SHOT OR SCRUB BELOW</span></div>
+          <div class="cut-strip" data-cut-strip role="group" aria-label="Your three-shot sequence">
+            <button class="cut-shot" data-cut-shot="coast" type="button" aria-pressed="true" aria-label="Go to shot 1: The coast" disabled><img src="/assets/images/creative/coast-640.jpg" width="640" height="427" alt="" loading="lazy" decoding="async"><span><b data-cut-number>01</b><span data-cut-name>The coast</span></span></button>
+            <button class="cut-shot" data-cut-shot="petals" type="button" aria-pressed="false" aria-label="Go to shot 2: The detail" disabled><img src="/assets/images/creative/petals-960.jpg" width="960" height="640" alt="" loading="lazy" decoding="async"><span><b data-cut-number>02</b><span data-cut-name>The detail</span></span></button>
+            <button class="cut-shot" data-cut-shot="world" type="button" aria-pressed="false" aria-label="Go to shot 3: Elsewhere" disabled><img src="/assets/images/creative/world-1280.jpg" width="1280" height="720" alt="" loading="lazy" decoding="async"><span><b data-cut-number>03</b><span data-cut-name>Elsewhere</span></span></button>
+          </div>
+          <div class="cut-scrub"><input id="cut-scrub" data-cut-scrub type="range" min="0" max="6" step="0.01" value="0" aria-label="Find your moment in the six-second film study" disabled><span aria-hidden="true"><span>00:00</span><span>00:02</span><span>00:04</span><span>00:06</span></span></div>
+          <div class="cut-actions"><button data-cut-play type="button" disabled>Play your cut</button><button data-cut-reverse type="button" disabled><span aria-hidden="true">⇄</span> Reverse order</button></div>
+          <p class="cut-status" data-cut-status role="status" aria-live="polite">A different order. A different story.</p><p class="cut-disclaimer">A playful website study made from still images—not an app preview or video export.</p>
+          <noscript><p class="cut-no-script">This is the first frame of the study. Enable JavaScript to try the title, sequence and playback controls.</p></noscript>
+        </div>
+      </div>
     </section>
 
     <section class="home-studio" id="studio" aria-labelledby="studio-title"><div class="shell studio-intro"><div><p class="eyebrow">INDEPENDENT BY DESIGN</p><h2 id="studio-title">Small studio.<br>Open possibilities.</h2></div><div><p>NetVista brings filmmaking and creative software under one roof. We make atmospheric films, explore new visual ideas and build tools for the process.</p><p>There is no one right way to make something. We like finding our own—and giving you room to find yours.</p><a class="text-link" href="/applications/">Get to know the studio <span aria-hidden="true">↗</span></a></div></div></section>
+
+    <section class="home-news shell" aria-labelledby="home-news-title"><div class="home-section-head"><div><p class="eyebrow">NOTES FROM THE WORKBENCH</p><h2 id="home-news-title">A studio, still<br>in the making.</h2></div><a class="text-link" href="/news/">All studio news <span aria-hidden="true">↗</span></a></div><div class="home-news-list"><a href="/news/october-20-native-mobile-development-preview/"><span>IN DEVELOPMENT · 20 OCTOBER</span><h3>Bringing the creative workspaces to mobile.</h3><p>A look at the development branch—not a new downloadable beta.</p><b aria-hidden="true">↗</b></a><a href="/news/beta-7-mobile-editing-and-dedicated-3d/"><span>RELEASE ARCHIVE · 7 OCTOBER</span><h3>Beta 7: mobile editing and a dedicated 3D Editor.</h3><p>What shipped, which devices it supports, and what is still missing.</p><b aria-hidden="true">↗</b></a><a href="/news/first-public-source-and-mac-beta/"><span>FROM THE ARCHIVE · AUGUST 2026</span><h3>A first public source. A first Mac beta.</h3><p>Revisiting the earliest milestones in NetVista's public record.</p><b aria-hidden="true">↗</b></a></div><p class="home-news-note">Retrospectives published 21 October 2026. The dates above identify the original milestones.</p></section>
 
     <section class="home-collaborate shell" aria-labelledby="collaborate-title"><p class="eyebrow">MAKE SOMETHING TOGETHER</p><h2 id="collaborate-title">Different crafts.<br>Shared curiosity.</h2><p>Writers, directors, editors, performers and creative collaborators: show us what you make.</p><a class="button button-primary" href="/applications/">Introduce yourself <span aria-hidden="true">↗</span></a></section>
   </main>
 
   <footer class="site-footer">
     <a class="footer-brand" href="/">NetVista Studio</a><p>Independent films. Independent tools.</p>
-    <nav class="footer-actions" aria-label="Footer navigation"><a href="/video-editor/">Creative tools</a><a href="/video-editor/getting-started/">Guides</a><a href="/applications/">Applications</a><a href="/editor/account/">Account</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
+    <nav class="footer-actions" aria-label="Footer navigation"><a href="/video-editor/">Creative tools</a><a href="/video-editor/getting-started/">Guides</a><a href="/news/">News</a><a href="/applications/">Applications</a><a href="/editor/account/">Account</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
     <p class="copyright">© <span data-current-year>2026</span> NetVista Studio. Public beta—features vary by platform.</p>
   </footer>
 

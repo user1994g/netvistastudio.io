@@ -5,9 +5,10 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const origin = 'https://netvistastudio.com';
+const newsData = JSON.parse(fs.readFileSync(path.join(root, 'content/news-posts.json'), 'utf8'));
 const paths = ['/', '/applications/', '/video-editor/',
   '/video-editor/getting-started/', '/video-editor/keyframes/',
-  '/video-editor/colour-grading-luts/', '/video-editor/export-settings/'];
+  '/video-editor/colour-grading-luts/', '/video-editor/export-settings/', '/news/', ...newsData.posts.map(post => `/news/${post.slug}/`)];
 const decode = text => text.replaceAll('&amp;', '&').replaceAll('&quot;', '"');
 
 function meta(head, name) {
@@ -74,7 +75,7 @@ for (const pathname of paths) {
   assert.equal(primaryImage.height, dimensions.height);
   assert.equal(primaryImage.caption, meta(head, 'og:image:alt'));
 
-  const article = graph.find(node => node['@type'] === 'Article');
+  const article = graph.find(node => ['Article', 'NewsArticle'].includes(node['@type']));
   if (article) {
     assert.equal(meta(head, 'og:type'), 'article');
     assert.equal(page.mainEntity['@id'], article['@id']);
@@ -85,8 +86,10 @@ for (const pathname of paths) {
     assert.equal(breadcrumb?.['@type'], 'BreadcrumbList');
     assert.equal(breadcrumb.itemListElement.at(-1).item, canonical);
     assert(html.includes(`<time datetime="${article.dateModified}">`), 'Editorial date agrees with visible guide');
-    assert.equal(article.datePublished, '2026-10-03', 'Do not rewrite the original publication date');
-    assert.equal(article.dateModified, '2026-10-03', 'Motion and metadata changes are not a new editorial revision');
+    const post = newsData.posts.find(post => pathname === `/news/${post.slug}/`);
+    const expectedPublished = post ? post.published || newsData.published : '2026-10-03';
+    assert.equal(article.datePublished, expectedPublished, 'Publication dates describe the page, not its historical milestone');
+    assert.equal(article.dateModified, post?.modified || expectedPublished, 'Only actual editorial revisions change modification dates');
   }
   const app = graph.find(node => node['@type'] === 'SoftwareApplication');
   if (app) {
@@ -113,7 +116,9 @@ const entries = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(match => ({
 }));
 assert.deepEqual(entries.map(entry => entry.url).sort(), paths.map(pathname => origin + pathname).sort());
 for (const entry of entries) {
-  const overview = ['/', '/applications/', '/video-editor/'].includes(new URL(entry.url).pathname);
-  assert.equal(entry.date, overview ? '2026-10-21' : '2026-10-03', 'Only genuinely refreshed overview pages get a new sitemap date');
+  const pathname = new URL(entry.url).pathname;
+  const post = newsData.posts.find(post => pathname === `/news/${post.slug}/`);
+  const overview = ['/', '/applications/', '/video-editor/', '/news/'].includes(pathname);
+  assert.equal(entry.date, post ? post.modified || post.published || newsData.published : overview ? '2026-10-21' : '2026-10-03', 'Sitemap dates follow actual editorial publication or updates');
 }
 console.log('PASS: connected page/article/breadcrumb entities, truthful release metadata, verified social previews, editorial dates and public-only sitemap.');

@@ -1,0 +1,414 @@
+{
+  "published": "2026-10-21",
+  "posts": [
+    {
+      "slug": "first-public-source-and-mac-beta",
+      "title": "NetVista Studio's first public source and Mac beta",
+      "description": "A look back at the earliest public app source on 10 August 2026 and the first downloadable Mac beta three days later.",
+      "kind": "Release retrospective",
+      "milestone": "10–13 August 2026",
+      "version": "1.1 Beta 1",
+      "summary": "The earliest public source already contained a native Mac editor. Its first packaged beta followed with timeline, colour and 3D tools.",
+      "sections": [
+        {
+          "heading": "The earliest public record",
+          "paragraphs": [
+            "The first commit in NetVista Studio's public app repository is dated 10 August 2026. It contains the native macOS application, its build script and source for the timeline, colour, effects, export, 3D scene and local-sharing systems. This is the earliest development milestone we can verify publicly, not evidence that the app was created in a single day.",
+            "That distinction matters because the initial upload already included a compiled application and substantial working source. The Mac interface used Cocoa and Apple's media and graphics frameworks, rather than presenting the editor inside a website wrapper."
+          ]
+        },
+        {
+          "heading": "A downloadable beta follows",
+          "paragraphs": [
+            "NetVista Studio 1.1 Beta 1 was published on 13 August. It packaged multitrack video and audio editing, linked or independent audio movement, timeline preview, trimming, cutting, snapping and zoom. Colour grading, LUT import, effects, keyframes and 3D scenes were also listed in the release.",
+            "Editable project saves and native movie export formed two separate parts of the workflow: keep the project to revise an edit, and export a movie when you want a playable result. Local device sharing was included, but this first release was a Mac app, not a standalone mobile editor."
+          ]
+        },
+        {
+          "heading": "An early testing release",
+          "paragraphs": [
+            "The download required an Apple-silicon Mac running macOS 11 or newer. It was ad-hoc signed and not Apple-notarized, so downloaded copies could trigger Gatekeeper warnings. The release explicitly asked testers to expect incomplete features and protect important projects with backups. This retrospective records that historical release; the download page now offers the newer public beta."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "First public app-source commit, 10 August 2026",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/commit/7bafc193a283b730d8167fe10c23376cd689e22b"
+        },
+        {
+          "label": "README from the first public source snapshot",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/7bafc193a283b730d8167fe10c23376cd689e22b/README.md"
+        },
+        {
+          "label": "Published NetVista Studio 1.1 Beta 1 release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.1.0-beta.1"
+        }
+      ],
+      "guide": {
+        "label": "Start your first editing project",
+        "href": "/video-editor/getting-started/"
+      },
+      "status": "released"
+    },
+    {
+      "slug": "windows-linux-animated-3d-and-mods",
+      "title": "Windows and Linux join NetVista Studio as 3D animation develops",
+      "description": "The August 1.2 and 1.3 betas added native Windows/Linux editions, animated Mac scenes and a deliberately data-only Mods system.",
+      "kind": "Release retrospective",
+      "milestone": "13–14 August 2026",
+      "version": "1.2–1.3 Beta 1",
+      "summary": "Native Windows and Linux packages expanded desktop access, while the next beta developed Mac scene animation and checked, data-only Mods.",
+      "sections": [
+        {
+          "heading": "Three desktop editions",
+          "paragraphs": [
+            "NetVista Studio 1.2 Beta 1 was published on 13 August 2026, adding Windows and Linux downloads alongside the Mac application. The new desktop editions used Qt and FFmpeg rather than a browser wrapper. Their editing workflow covered media import, multitrack arrangement, cutting, clip movement, timeline zoom, preview rendering and project saving.",
+            "Shared .netvistastudio desktop projects and expanded export choices were important parts of the release. Resolution presets reached 16K, with custom sizes and codec options where the available FFmpeg build supported them. A listed resolution was not a guarantee that every computer could render it: memory, encoder support, storage and time remained practical constraints."
+          ]
+        },
+        {
+          "heading": "Animation and a bounded Mods system",
+          "paragraphs": [
+            "Published on 14 August, 1.3 Beta 1 expanded the Mac 3D workspace with object and camera keyframes, a dedicated scene timeline, procedural maps and physics settings. Imported models with an existing skeleton could expose bones for posing and rotation keyframes. This release did not create a skeleton or paint skin weights onto an unrigged model.",
+            "The same beta introduced Mods across the desktop editions. Packages could provide bounded themes, native declarative pages and checked catalog descriptions. They could not execute arbitrary creator scripts or native code. Newly installed packages stayed disabled until enabled, and catalog entries did not automatically insert assets into scenes."
+          ]
+        },
+        {
+          "heading": "Shared projects did not mean identical tools",
+          "paragraphs": [
+            "Advanced animated SceneKit editing remained Mac-only. Windows and Linux could preserve scene data without providing that native rendering workspace. Extracting the complete desktop package was also essential: the executable depended on its accompanying runtime files. These releases widened access while leaving clear platform differences that continued through later betas."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Published 1.2 Beta 1 desktop release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.2.0-beta.1"
+        },
+        {
+          "label": "Published 1.3 Beta 1 release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.3.0-beta.1"
+        },
+        {
+          "label": "Animated 3D and Mods source milestone",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/commit/07a719b92b0d8e21973aaead48fb037a39228732"
+        },
+        {
+          "label": "Mods guide at the 1.3 release commit",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/07a719b92b0d8e21973aaead48fb037a39228732/MODDING.md"
+        }
+      ],
+      "guide": {
+        "label": "Explore the desktop editing workflow",
+        "href": "/video-editor/getting-started/"
+      },
+      "status": "released"
+    },
+    {
+      "slug": "clearer-and-more-reliable-video-export",
+      "title": "Two focused betas make video export clearer and more reliable",
+      "description": "NetVista Studio 1.4 Betas 1 and 2 improved resolution selection, progress, completion messages and longer FFmpeg renders.",
+      "kind": "Release retrospective",
+      "milestone": "20–28 August 2026",
+      "version": "1.4 Betas 1–2",
+      "summary": "Resolution selection moved earlier, export progress became easier to follow, and longer Windows/Linux renders received a reliability fix.",
+      "sections": [
+        {
+          "heading": "Choose the output before its destination",
+          "paragraphs": [
+            "The first NetVista Studio 1.4 beta, published on 20 August 2026, concentrated on the export flow across macOS, Windows and Linux. It asked for the finished movie's resolution before asking where to save it, making that choice explicit rather than leaving users to discover it later in delivery.",
+            "The chooser offered 720p, 1080p, 1440p, 4K, 8K, 16K and custom dimensions. The selected size then continued into the existing format, codec, frame-rate, audio, progress and cancellation workflow. Windows and Linux packages were also arranged to extract into a clean application folder."
+          ]
+        },
+        {
+          "heading": "Make progress and failures visible",
+          "paragraphs": [
+            "Beta 2 followed on 28 August. Starting an export switched to the Delivery page so its progress was visible. A completed movie produced a confirmation and could be revealed in Finder on Mac. Failed exports surfaced the underlying error instead of appearing to stop without explanation.",
+            "For Windows and Linux, the release fixed a potential FFmpeg pipe stall during longer renders. This was a targeted reliability change, not a claim that every possible format, project or very large export had been certified. Both betas retained their early-access status and the request to back up project and media files."
+          ]
+        },
+        {
+          "heading": "A useful way to test delivery",
+          "paragraphs": [
+            "The practical lesson is to check a short sequence before committing to a long render. Choose an output that suits the source and intended destination, then inspect the exported movie's picture, sound and timing. Increasing the resolution does not create detail absent from the original footage, and the largest presets still depend on encoder capabilities and available resources. Keep the editable project as well as the exported movie."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Published 1.4 Beta 1 export-workflow release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.1"
+        },
+        {
+          "label": "Beta 1 source commit",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/commit/98fab1b50c8f4aed050c9eac390d9c32af5e3078"
+        },
+        {
+          "label": "Published 1.4 Beta 2 reliability release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.2"
+        },
+        {
+          "label": "Beta 2 source commit",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/commit/fad9ee7b37d5bbc40b10a113e65d4d29c2fb4af1"
+        }
+      ],
+      "guide": {
+        "label": "Choose MP4 and 4K export settings",
+        "href": "/video-editor/export-settings/"
+      },
+      "status": "released"
+    },
+    {
+      "slug": "beta-3-separate-native-photo-workspace",
+      "title": "Beta 3 brings a separate native photo workspace to Mac",
+      "description": "The 3 September beta introduced layered photo editing and separate editor windows, alongside clearer effects, colour and export controls.",
+      "kind": "Release retrospective",
+      "milestone": "3 September 2026",
+      "version": "1.4 Beta 3",
+      "summary": "Layered photo documents gained their own native Mac workspace, while effects browsing, grading feedback and export presentation improved.",
+      "sections": [
+        {
+          "heading": "Photos gets its own document space",
+          "paragraphs": [
+            "Published on 3 September 2026, NetVista Studio 1.4 Beta 3 introduced Photos NetVistaStudio as a separate native Mac workspace. Its central canvas was paired with layers, visibility and lock controls, ordering, renaming, duplication, opacity and blend modes. Selections, cropping and non-destructive adjustments gave images an editable structure rather than reducing every change to a flattened file.",
+            "The workspace included zoom, undo and redo, layered project saves and full-resolution image export. Studio's welcome window stayed available while Video Editor and Photo Editor opened separately. That separation let each editor keep its own working context instead of making one window serve every task."
+          ]
+        },
+        {
+          "heading": "More legible video controls",
+          "paragraphs": [
+            "Video Effects also changed in this beta. A searchable browser and applied-effect stack made multiple effects easier to find, inspect, remove and reorder. Clearer settings, live preview and visible motion or opacity keyframes helped connect an adjustment with its result in the image.",
+            "Colour work received responsive grading-wheel updates, LUT handling, numeric feedback and bypass or revert controls. Export controls and progress presentation were revised too, including fixes aimed at long and high-resolution renders. The release also recorded timeline, selection, project and cross-platform FFmpeg corrections."
+          ]
+        },
+        {
+          "heading": "Read the platform boundary carefully",
+          "paragraphs": [
+            "Mac, Windows and Linux packages shared the release number, but the new native photo workspace was not a Windows/Linux port. Nor was there a standalone mobile package in Beta 3. The Mac download remained locally signed rather than Apple-notarized, and the whole release remained beta software. For valuable work, retain the layered document, keep original images available and check a representative export before relying on the workflow."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Published 1.4 Beta 3 release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.3"
+        },
+        {
+          "label": "Beta 3 source snapshot",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/commit/c3ac9dc39d119051a813453c916615afe5283b12"
+        }
+      ],
+      "guide": {
+        "label": "Learn the colour and LUT workflow",
+        "href": "/video-editor/colour-grading-luts/"
+      },
+      "status": "released"
+    },
+    {
+      "slug": "beta-4-creative-tools-and-safer-updates",
+      "title": "Beta 4 expands photo, colour, 3D and Game Maker tools",
+      "description": "The 19 September release broadened Mac creative workspaces and introduced in-place updating with project recovery and rollback protections.",
+      "kind": "Release retrospective",
+      "milestone": "19 September 2026",
+      "version": "1.4 Beta 4",
+      "summary": "Mac photo, grading, scene and game workflows expanded, with recovery-aware in-place updating and explicit limits for other editions.",
+      "sections": [
+        {
+          "heading": "A wider Mac creative toolkit",
+          "paragraphs": [
+            "NetVista Studio 1.4 Beta 4 was published on 19 September 2026. Its largest additions were in the native Mac application: layered photo editing expanded with blank documents, painting and erasing, brush controls, supported ABR brush import, selections, masks and adjustments. Editable photo projects remained distinct from finished image exports.",
+            "Colour grading gained wheels, curves, qualifiers, scopes, grade nodes and custom cube LUT export. The 3D scene workflow also developed, with improved object manipulation, rigging and animation controls. These tools broadened what a Mac project could contain without making the beta a finished replacement for specialist production applications."
+          ]
+        },
+        {
+          "heading": "Game authoring and safer updating",
+          "paragraphs": [
+            "Game Maker supported empty 2D or 3D projects, imported assets, visual logic and a native play preview. It could export Three.js or Python source projects. Character and sprite-sheet animations still had a narrower boundary: they could preview natively but were not supported in those source exports.",
+            "The Mac update system gained in-place installation, project recovery and rollback support for compatible future releases. These protections were designed to preserve work through replacement and restart, but they did not remove the need for backups. End-to-end updating on a separate test Mac had not been verified for this release."
+          ]
+        },
+        {
+          "heading": "Different editions, different capabilities",
+          "paragraphs": [
+            "Windows and Linux received updated Qt packages with account sign-in and periodic account verification, while retaining their timeline, export and package-update workflows. They did not receive the Mac Photo Editor, Game Maker or advanced 3D workspace. In-place updating was Mac-only. The Apple-silicon Mac package was ad-hoc signed and not Apple-notarized; Windows/Linux users needed to extract the complete application folder. Those boundaries are part of the release, not footnotes to a claim of full platform parity."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Published 1.4 Beta 4 release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.4"
+        },
+        {
+          "label": "Beta 4 release notes at the release commit",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/1180dd153f6ba3a087478cf7f051953935588a01/RELEASE_NOTES_BETA_4.md"
+        }
+      ],
+      "guide": {
+        "label": "Practice video motion and opacity keyframes",
+        "href": "/video-editor/keyframes/"
+      },
+      "status": "released"
+    },
+    {
+      "slug": "beta-6-studio-home-and-quieter-startup",
+      "title": "Beta 6 makes Studio Home clearer and startup quieter",
+      "description": "Published on 29 September, Beta 6 gave the existing Game Maker a Home card and reduced interactive Keychain requests during startup.",
+      "kind": "Release retrospective",
+      "milestone": "29 September 2026",
+      "version": "1.4 Beta 6",
+      "summary": "Game Maker became easier to reach from Studio Home, recent games gained a filter, and background account reads stopped prompting at startup.",
+      "sections": [
+        {
+          "heading": "Find the workspace you need",
+          "paragraphs": [
+            "NetVista Studio 1.4 Beta 6 was publicly published on 29 September 2026. The source and download packages were prepared on 28 September, but that preparation date is not the release's publication date. This retrospective uses the public release timestamp so the sequence remains clear.",
+            "On Mac, Game Maker gained its own illustrated launch card on Studio Home. The card opened the existing 2D and 3D game launcher; it was not the first arrival of Game Maker itself. A Games filter for recent projects and a responsive three-workspace card arrangement made the Home screen more useful as a place to resume or switch work."
+          ]
+        },
+        {
+          "heading": "Keep background reads non-interactive",
+          "paragraphs": [
+            "Startup account restoration and reads of remembered sharing devices were changed so they no longer requested interactive Keychain access. That is a specific behaviour improvement: background checks should not unexpectedly ask for credential access simply because the app has opened.",
+            "Saving a remembered account after a successful sign-in could still require Keychain access. Beta 6 did not remove the platform's security controls or promise that credential prompts could never appear. It separated deliberate saving from background restoration, keeping the latter non-interactive."
+          ]
+        },
+        {
+          "heading": "A focused Mac refinement",
+          "paragraphs": [
+            "The Home layout and Keychain changes were Mac-specific. Windows and Linux continued to use the existing portable editor rather than receiving these native Mac interfaces. The Apple-silicon Mac download also remained ad-hoc signed and not Apple-notarized, with the possibility of a Gatekeeper warning. As with the earlier betas, users were asked to keep backups. Read this as a focused polish release, not evidence that every creative workspace had reached every operating system."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Published 1.4 Beta 6 release and publication date",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.6"
+        },
+        {
+          "label": "Beta 6 preparation commit, 28 September",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/commit/e254eb848a4478c324f11ae27a5930af41730b3c"
+        },
+        {
+          "label": "Beta 6 notes including signing clarification",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/fa485c32430fec02a76ed7e0ad6f63384435713d/design/RELEASE_BETA_6.md"
+        }
+      ],
+      "guide": {
+        "label": "Get comfortable with Studio and your first edit",
+        "href": "/video-editor/getting-started/"
+      },
+      "status": "released"
+    },
+    {
+      "slug": "beta-7-mobile-editing-and-dedicated-3d",
+      "title": "NetVista Studio Beta 7: standalone mobile editing and a dedicated 3D workspace",
+      "description": "The 7 October public beta added first native iPad/Android video editors and expanded Mac modelling, sculpting, keying and collaboration.",
+      "kind": "Release retrospective",
+      "milestone": "7 October 2026",
+      "version": "1.4 Beta 7",
+      "summary": "Beta 7 paired a dedicated Mac modelling workspace with first standalone iPad and Android video editors, each with a clearly defined scope.",
+      "sections": [
+        {
+          "heading": "A dedicated Mac 3D Editor",
+          "paragraphs": [
+            "NetVista Studio 1.4 Beta 7 was published on 7 October 2026 and remains the newest public prerelease as of this article's publication on 21 October. Mac additions included a separate 3D Editor with editable mesh documents, primitives, subdivision, sculpting, procedural model generation, undo and physics preview.",
+            "Optional local modelling assistance used a bundled CPU runtime, with model weights requiring a separate, explicit download. Keying, floating Effects and Colour workspaces, Game Maker consistency, declarative mod creation and paired local-network collaboration also received work. Optional AI models were not required simply to launch the editor."
+          ]
+        },
+        {
+          "heading": "Standalone mobile video, not the whole desktop suite",
+          "paragraphs": [
+            "The first native iPad and Android downloads could import local videos, preview a sequence, trim, reorder or delete clips, save a project and export a movie without a Mac or LAN sharing server. These were separate native apps, not the browser companion repackaged as mobile downloads.",
+            "Their scope was intentionally narrower than the Mac suite. The published mobile Beta 7 did not include Photos, 3D or Game Maker workspaces, advanced grading, effects or mods. Mobile and desktop project packages were not promised to be interchangeable, and phone or tablet export sizes depended on the device's encoder and resources."
+          ]
+        },
+        {
+          "heading": "Choose the actual published package",
+          "paragraphs": [
+            "Five release assets were available: Mac, Windows and Linux ZIPs, an iPad IPA and an Android APK. Mac required Apple Silicon and macOS 11+, remained ad-hoc signed and was not Apple-notarized. Windows/Linux retained their Qt/PySide editor without Mac feature parity. The iPad package required iPadOS 16+ and AltStore Classic re-signing; it was not an iPhone, App Store or TestFlight release. Android required Android 8+ and used a signed APK, not a Play Store listing. Physical-device testing remained important."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Published 1.4 Beta 7 release and five download assets",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.7"
+        },
+        {
+          "label": "Beta 7 notes at its exact release commit",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/8f47a5aeea411c80bf8d1c9428e80b7a7b5ee9d2/RELEASE_NOTES_BETA_7.md"
+        },
+        {
+          "label": "Mobile installation and limitations at release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/8f47a5aeea411c80bf8d1c9428e80b7a7b5ee9d2/MOBILE_RELEASE.md"
+        },
+        {
+          "label": "Published iPad device-family and OS requirements",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/8f47a5aeea411c80bf8d1c9428e80b7a7b5ee9d2/mobile/ipad/Info.plist"
+        }
+      ],
+      "guide": {
+        "label": "Choose the public beta for your device",
+        "href": "/editor/#download"
+      },
+      "status": "released"
+    },
+    {
+      "slug": "october-20-native-mobile-development-preview",
+      "title": "Development preview: native mobile creative workspaces after Beta 7",
+      "description": "The 20 October development report documents newer Apple and Android workspaces, their test evidence and the gaps before a future release.",
+      "kind": "Development preview",
+      "milestone": "20 October 2026",
+      "version": "Post-Beta 7 development",
+      "summary": "Newer source adds native mobile creative workspaces and stronger checks. These development previews do not replace the public Beta 7 downloads.",
+      "sections": [
+        {
+          "heading": "Development work, not a new public beta",
+          "paragraphs": [
+            "The 20 October 2026 development report records work on the publicly pushed codex/native-workspace-test branch after the Beta 7 release. These previews are explicitly NOT included in the downloadable Beta 7 packages. They do not silently update those release assets or establish a new public version.",
+            "By the recorded branch snapshot, 47 commits followed the released main branch. The report identifies exact build inputs and separates verified packages from later screenshot-only work. That distinction makes it possible to discuss progress without treating every source change or CI artifact as a supported public release."
+          ]
+        },
+        {
+          "heading": "Apple and Android progress",
+          "paragraphs": [
+            "The newer Apple development package supports both iPhone and iPad, with independent native Video, Photos, Game Maker and 3D Editor workspaces. Photos, game and modelling reuse Mac engines. Combined phone/tablet simulator checks and stable-SDK CI cover workspace transitions and an actual movie-render and Files-cancellation workflow. Installation through AltStore still requires re-signing.",
+            "Android development adds an independent Photos workspace alongside Video. The recorded build passed 44 instrumentation methods on each phone and tablet profile, including photo authoring, camera-image orientation, compositing comparisons and video preview/export. Its package retains the established signing identity. These are results for specific development inputs, not proof that every device or workflow is ready."
+          ]
+        },
+        {
+          "heading": "What still needs to happen",
+          "paragraphs": [
+            "Full desktop parity and physical-device acceptance remain open. Apple video still lacks complete multitrack/audio placement, ordered advanced effect stacks, node grading and 8K/16K delivery. Android Game Maker and 3D authoring are not yet ported, and several advanced photo tools remain absent.",
+            "A separate screenshot-evidence run encountered emulator or system-launcher interruptions and was not represented as passed. It must not be confused with the passing packaged build. Real installation, account sign-in and physical-device codec or memory coverage remain further gates. For the public download, continue to use Beta 7 and its narrower published feature list."
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "label": "Immutable 20 October native development-preview report",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/b757d17fd72ea75a5ef09bc3ceb00e5132665869/mobile/NATIVE_PREVIEW_2026-10-20.md"
+        },
+        {
+          "label": "Development workspace status at the same source snapshot",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/blob/b757d17fd72ea75a5ef09bc3ceb00e5132665869/NATIVE_WORKSPACE_STATUS.md"
+        },
+        {
+          "label": "Recorded source snapshot and interruption clarification",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/commit/b757d17fd72ea75a5ef09bc3ceb00e5132665869"
+        },
+        {
+          "label": "Unchanged public Beta 7 release",
+          "url": "https://github.com/user1994g/videoediterNetVistaStudio.github.io/releases/tag/v1.4.0-beta.7"
+        }
+      ],
+      "guide": {
+        "label": "Read the published beta's download information",
+        "href": "/editor/#download"
+      },
+      "status": "development"
+    }
+  ]
+}

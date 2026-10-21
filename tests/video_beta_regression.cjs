@@ -130,7 +130,7 @@ function filesUnder(directory) {
 }
 
 // Inspect only website source directories, never native/app/mobile copies.
-const publicHTML = ['index.html', '404.html', ...['applications', 'video-editor', 'editor', 'video-beta']
+const publicHTML = ['index.html', '404.html', ...['applications', 'video-editor', 'editor', 'video-beta', 'news']
   .flatMap(filesUnder).filter(filename => filename.endsWith('.html'))];
 for (const filename of publicHTML.filter(filename => !filename.startsWith('video-beta/'))) {
   for (const match of read(filename).matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
@@ -160,7 +160,7 @@ async function checkWorker() {
   assert.equal(routes.version, 1);
   assert.deepEqual(routes.include, ['/*'], 'Host isolation must cover all page requests, including future routes');
   const excludedAssets = ['/assets/images/*', '/assets/css/*',
-    '/assets/mobile-navigation.js', '/assets/public-domain.js', '/assets/studio-motion.js', '/assets/studio-look-demo.js', '/video-beta/assets/*', '/editor/assets/*'];
+    '/assets/mobile-navigation.js', '/assets/public-domain.js', '/assets/studio-motion.js', '/assets/studio-look-demo.js', '/assets/studio-cut-study.js', '/video-beta/assets/*', '/editor/assets/*'];
   assert.deepEqual([...routes.exclude].sort(), [...excludedAssets].sort(), 'Only verified asset-only paths bypass the worker');
   function matches(pattern, pathname) {
     const star = pattern.indexOf('*');
@@ -198,7 +198,7 @@ async function checkWorker() {
     return { original, calls, response, assetResponse, networkCalls: network.calls };
   }
   for (const host of [apexOrigin, 'https://www.netvistastudio.com', 'https://preview.netvistastudio.pages.dev']) {
-    for (const pathname of ['/', '/index.html', '/account/?code=synthetic', '/applications/', '/editor/', '/video-editor/', '/robots.txt', '/sitemap.xml']) {
+    for (const pathname of ['/', '/index.html', '/account/?code=synthetic', '/applications/', '/editor/', '/video-editor/', '/news/', '/news/beta-7-mobile-editing-and-dedicated-3d/', '/news/feed.xml', '/robots.txt', '/sitemap.xml']) {
       for (const method of ['GET', 'HEAD']) {
         const result = await route(host + pathname, method);
         assert.equal(result.calls.length, 1);
@@ -255,7 +255,7 @@ async function checkWorker() {
   }
   const blockedVideoPaths = ['/editor/unknown.html', '/editor/accounting/',
     '/applications', '/applications/', '/applications/index.html', '/video-editor', '/video-editor/',
-    '/video-editor/getting-started/', '/404.html', '/accounting/', '/unknown-page/',
+    '/video-editor/getting-started/', '/news/', '/news/index.html', '/news/beta-7-mobile-editing-and-dedicated-3d/', '/news/feed.xml', '/404.html', '/accounting/', '/unknown-page/',
     '/video-beta/unknown.html'];
   for (const pathname of blockedVideoPaths) {
     assert(usesWorker(pathname), `Blocked page must reach the worker: ${pathname}`);
