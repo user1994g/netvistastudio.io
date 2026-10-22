@@ -147,6 +147,33 @@ for (const problems of [{ get: true }, { set: true }, { get: true, set: true }])
   assert.equal(app.count(), 0, 'Unavailable or unverifiable storage cannot allow analytics');
   assert.match(app.status().textContent, /could not save/);
 }
+for (const problems of [{ get: true }, { set: true }, { get: true, set: true }]) {
+  const app = fixture({ problems });
+  app.click('data-privacy-reject');
+  assert.equal(app.panel().hidden, true, 'Reject closes the panel even when preference storage is blocked');
+  assert.equal(app.count(), 0, 'Session-only rejection never loads analytics');
+  assert.equal(app.storage.get('sb-tsitgxafmtzjgtmiczsq-auth-token'), 'FAKE_LOCAL_TEST_SESSION');
+  app.reopen();
+  assert.match(app.status().textContent, /necessary storage only for this page/);
+  app.click('data-privacy-accept');
+  assert.equal(app.count(), 0, 'Failed opt-in cannot override session-only rejection');
+  app.problems.get = false; app.problems.set = false;
+  app.click('data-privacy-accept');
+  assert.equal(app.count(), 1, 'An explicit later opt-in works once storage is available');
+}
+{
+  const app = fixture({ choice: choice(false) });
+  assert.equal(app.panel().hidden, true, 'A returning visitor’s saved rejection does not prompt again');
+  assert.equal(app.count(), 0);
+  const opener = app.document.createElement('button');
+  opener.setAttribute('data-privacy-settings', '');
+  app.documentEvent('click', { target: opener, preventDefault() {} });
+  assert.match(app.status().textContent, /necessary storage only/);
+  app.panel().fire('keydown', { key: 'Escape' });
+  assert.equal(app.panel().hidden, true);
+  assert.equal(app.document.activeElement, opener, 'Closing choices returns focus to the opener');
+  assert.equal(JSON.parse(app.storage.get(KEY)).analytics, false, 'Escape does not grant analytics consent');
+}
 {
   const app = fixture({ choice: choice() });
   app.problems.set = true;
@@ -161,6 +188,23 @@ for (const problems of [{ get: true }, { set: true }, { get: true, set: true }])
   app.problems.set = true; app.problems.remove = true;
   app.reopen(); app.click('data-privacy-reject');
   assert.equal(app.reloads(), 0, 'Never reload into stale accepted consent if it cannot be cleared');
+  assert.match(app.status().textContent, /Close this tab/);
+  assert.equal(app.window.clarity.q.at(-1)[1].analytics_Storage, 'denied');
+  app.problems.get = true;
+  app.event('focus', {});
+  app.event('storage', { key: KEY });
+  assert.equal(app.reloads(), 0, 'A later storage-read failure must not reload into an uncleared old opt-in');
+  app.problems.get = false;
+  app.reopen();
+  assert.match(app.status().textContent, /Close this tab/);
+}
+{
+  const app = fixture({ choice: choice() });
+  app.reopen();
+  app.problems.set = true; app.problems.get = true; app.problems.remove = true;
+  app.click('data-privacy-reject');
+  assert.equal(app.reloads(), 0, 'Unverifiable storage during withdrawal is not proof that an old opt-in was cleared');
+  assert.equal(JSON.parse(app.storage.get(KEY)).analytics, true, 'Synthetic old opt-in remains uncleared');
   assert.match(app.status().textContent, /Close this tab/);
   assert.equal(app.window.clarity.q.at(-1)[1].analytics_Storage, 'denied');
 }

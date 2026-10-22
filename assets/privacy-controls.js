@@ -8,7 +8,8 @@
   var lifetime = 180 * 24 * 60 * 60 * 1000;
   var analyticsPage = document.currentScript && document.currentScript.getAttribute('data-analytics') === 'clarity';
   var production = /^(?:www\.)?netvistastudio\.com$|^video\.netvistastudio\.com$/.test(window.location.hostname);
-  var loaded = false, banner, status, reopen, opener;
+  var loaded = false, rejectedForPage = false, banner, status, reopen, opener;
+  var withdrawalWarning = 'Analytics permission has been withdrawn for this page, but your browser could not clear the old saved choice. Close this tab and clear this site’s browser data before returning.';
 
   function gpc() { return navigator.globalPrivacyControl === true; }
   function read() {
@@ -48,7 +49,7 @@
   }
   function startAnalytics() {
     var choice = read();
-    if (loaded || !analyticsPage || !production || gpc() || !choice || choice.analytics !== true) return;
+    if (loaded || rejectedForPage || !analyticsPage || !production || gpc() || !choice || choice.analytics !== true) return;
     // Consent is persisted and verified before even contacting Microsoft.
     if (typeof window.clarity !== 'function') {
       window.clarity = function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
@@ -76,6 +77,8 @@
   }
   function checkActivePermission() {
     var choice = read();
+    // Never reload into an old opt-in after storage prevented a withdrawal.
+    if (loaded && rejectedForPage) { stopAnalytics(); return true; }
     if (loaded && (gpc() || !choice || !choice.analytics)) {
       stopAnalytics();
       window.location.reload();
@@ -90,6 +93,7 @@
     banner.hidden = false;
     var choice = read();
     status.textContent = gpc() ? 'Your browser’s Global Privacy Control is on. Optional analytics stays off.' :
+      rejectedForPage ? (loaded ? withdrawalWarning : 'Your current choice: necessary storage only for this page. Your browser could not save it for future visits.') :
       choice ? (choice.analytics ? 'Your current choice: analytics allowed on this browser and site.' : 'Your current choice: necessary storage only.') :
         'Optional analytics is off until you choose to allow it.';
     banner.querySelector('[data-privacy-accept]').disabled = gpc();
@@ -98,21 +102,28 @@
   function choose(analytics) {
     if (analytics && gpc()) { status.textContent = 'Global Privacy Control keeps optional analytics off.'; return; }
     var saved = store(analytics);
+    if (!analytics) rejectedForPage = !saved;
+    else if (saved) rejectedForPage = false;
     if (!analytics) {
       var reload = stopAnalytics();
-      if (!saved) { try { localStorage.removeItem(key); } catch (_) {} }
-      if (reload && (saved || !read() || read().analytics !== true)) {
+      var cleared = false;
+      if (!saved) {
+        try { localStorage.removeItem(key); cleared = localStorage.getItem(key) === null; } catch (_) {}
+      }
+      if (reload && (saved || cleared)) {
         // A reload removes the already-running vendor, not just its script tag.
         // With no saved choice the next page also defaults to analytics off.
         window.location.reload();
         return;
       }
       if (reload) {
-        status.textContent = 'Analytics permission has been withdrawn for this page, but your browser could not clear the old saved choice. Close this tab and clear this site’s browser data before returning.';
+        status.textContent = withdrawalWarning;
         return;
       }
     }
     if (!saved) {
+      // Rejection never needs browser storage to let someone use the page.
+      if (!analytics) { close(); return; }
       status.textContent = 'Your browser could not save this choice. Optional analytics stays off. You can still sign in and use the site.';
       return;
     }
@@ -162,6 +173,11 @@
     banner.addEventListener('keydown', function (event) { if (event.key === 'Escape') { event.preventDefault(); close(); } });
     window.addEventListener('storage', function (event) {
       if (event.key !== key && event.key !== null) return;
+      if (loaded && rejectedForPage) {
+        stopAnalytics();
+        if (!banner.hidden) show();
+        return;
+      }
       var next = read();
       if (!next || !next.analytics || gpc()) {
         if (stopAnalytics()) { window.location.reload(); return; }
