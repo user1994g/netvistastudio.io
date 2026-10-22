@@ -22,14 +22,8 @@
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" href="assets/site.css?v=13">
   <link rel="stylesheet" href="/editor/assets/account-ui.css?v=20261021">
-  <!-- Microsoft Clarity analytics for the public NetVista Studio site. -->
-  <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "yi9b33i0az");
-  </script>
+  <link rel="stylesheet" href="/assets/privacy-controls.css?v=1">
+  <script defer src="/assets/privacy-controls.js?v=1" data-analytics="clarity"></script>
   <script defer src="assets/site.js?v=20"></script>
   <style>
     .editor-locked main, .editor-locked > footer, .editor-locked > header { visibility: hidden; }
@@ -180,7 +174,7 @@
 
   <div class="account-gate-modal" id="account-gate-modal">
     <button class="account-gate-backdrop" type="button" data-close-account-gate aria-label="Close account sign-in"></button>
-    <section class="account-gate-dialog" role="dialog" aria-modal="true" aria-labelledby="account-gate-title" aria-describedby="account-gate-description">
+    <section class="account-gate-dialog" role="dialog" aria-modal="true" aria-labelledby="account-gate-title" aria-describedby="account-gate-description" data-clarity-mask="true">
       <button class="account-gate-close" type="button" data-close-account-gate aria-label="Close">×</button>
       <aside class="auth-story" aria-label="NetVista Studio">
         <p class="auth-wordmark">netvistastudio<span>CREATIVE TOOLS / PUBLIC BETA</span></p>
@@ -219,14 +213,14 @@
         </fieldset>
       </form>
       <p class="auth-local-note">Your projects stay yours. Files remain on your computer.</p>
-      <p class="account-gate-footnote">Secure sign-in by Supabase. App downloads and source are also public on GitHub.</p>
+      <p class="account-gate-footnote">Secure sign-in by Supabase. App downloads and source are also public on GitHub. <a href="/privacy/">Privacy &amp; saved data</a> · <a href="/editor/account/">Manage or delete your account</a></p>
       </div>
     </section>
   </div>
 
   <footer class="site-footer">
     <a class="footer-brand" href="/">NetVista Studio</a><p>Independent films. Independent tools.</p>
-    <nav class="footer-actions" aria-label="Footer navigation"><a href="/video-editor/">Creative tools</a><a href="/video-editor/getting-started/">Guides</a><a href="/news/">News</a><a href="/applications/">Applications</a><a href="/editor/account/">Account</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
+    <nav class="footer-actions" aria-label="Footer navigation"><a href="/video-editor/">Creative tools</a><a href="/video-editor/getting-started/">Guides</a><a href="/news/">News</a><a href="/applications/">Applications</a><a href="/editor/account/">Account</a><a href="/privacy/">Privacy &amp; saved data</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
     <p class="copyright">© <span data-current-year>2026</span> NetVista Studio. Public beta—features vary by platform.</p>
   </footer>
 </body>

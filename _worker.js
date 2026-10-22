@@ -16,7 +16,7 @@ const watchFilms = [
     mediaUrl: 'https://clip-kingdom-play.lovable.app/api/public/stream/878b4496-ab7a-47fe-8e0f-0b489311241c' }
 ];
 const assetPrefixes = ['/assets/images/', '/assets/css/', '/assets/js/', '/video-beta/assets/', '/editor/assets/'];
-const assetFiles = ['/assets/mobile-navigation.js', '/assets/public-domain.js'];
+const assetFiles = ['/assets/mobile-navigation.js', '/assets/public-domain.js', '/assets/privacy-controls.js', '/assets/privacy-controls.css'];
 function missing(request) {
   return new Response(request.method === 'HEAD' ? null : 'Not found', { status: 404,
     headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Robots-Tag': noIndex, 'Cache-Control': 'no-store' } });
@@ -68,6 +68,10 @@ export default {
       url.pathname = '/video-beta/';
       const response = await env.ASSETS.fetch(new Request(url, request)), headers = new Headers(response.headers);
       headers.set('X-Robots-Tag', 'index, follow');
+      headers.set('Referrer-Policy', 'no-referrer');
+      headers.set('X-Content-Type-Options', 'nosniff');
+      headers.set('X-Frame-Options', 'DENY');
+      headers.set('Content-Security-Policy', "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'none'");
       return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
     }
     if (pathname === '/video-beta' || pathname === '/video-beta/' || pathname === '/video-beta/index.html') { url.pathname = '/'; return Response.redirect(url.toString(), 308); }
@@ -77,6 +81,7 @@ export default {
       return Response.redirect(url.toString(), 308);
     }
     if (pathname === '/editor/account' || pathname.startsWith('/editor/account/')) return env.ASSETS.fetch(request);
+    if (pathname === '/privacy' || pathname === '/privacy/' || pathname === '/privacy/index.html') return env.ASSETS.fetch(request);
     if (pathname === '/editor' || pathname === '/editor/' || pathname === '/editor/index.html') {
       url.hostname = 'netvistastudio.com'; url.pathname = '/editor/'; return Response.redirect(url.toString(), 308);
     }

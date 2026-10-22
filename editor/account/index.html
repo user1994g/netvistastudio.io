@@ -11,19 +11,13 @@
   <link rel="icon" type="image/png" href="/assets/images/photos/netvistastudio-logo.png">
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" href="../assets/site.css?v=11">
-  <link rel="stylesheet" href="account.css?v=1">
+  <link rel="stylesheet" href="account.css?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/editor/assets/account-ui.css?v=20261021">
-  <!-- Microsoft Clarity analytics for the public NetVista Studio site. -->
-  <script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "yi9b33i0az");
-  </script>
+  <link rel="stylesheet" href="/assets/privacy-controls.css?v=1">
+  <script defer src="/assets/privacy-controls.js?v=1" data-analytics="clarity"></script>
   <script defer src="/assets/mobile-navigation.js?v=20261021-news1"></script>
   <link rel="stylesheet" href="/assets/css/studio-shared.css?v=20261021">
 </head>
@@ -55,7 +49,7 @@
       <figure class="auth-studio-image"><img src="/assets/images/creative/coast-1280.jpg" alt="A sunlit coastal road above the ocean" width="1280" height="720" decoding="async"><figcaption>A new perspective starts here.</figcaption></figure>
     </div>
 
-    <section class="account-card" aria-labelledby="account-title">
+    <section class="account-card" aria-labelledby="account-title" data-clarity-mask="true">
       <div class="account-card-head">
         <p class="auth-eyebrow">YOUR NETVISTA ACCOUNT</p>
         <h2 id="account-title">Welcome back.</h2>
@@ -89,7 +83,7 @@
         <input id="signup-email" type="email" autocomplete="email" inputmode="email" required>
         <label for="signup-password">Password</label>
         <input id="signup-password" type="password" autocomplete="new-password" minlength="8" required>
-        <p class="field-note">Use a unique password with at least 8 characters.</p>
+        <p class="field-note">Use a unique password with at least 8 characters. Read <a href="/privacy/">how your account information is used and saved</a>. Optional analytics is not required.</p>
         <button class="account-submit" type="submit">Create account <span aria-hidden="true">↗</span></button>
         </fieldset>
       </form>
@@ -114,19 +108,43 @@
           <button id="signout" class="text-button" type="button">Sign out</button>
           <button id="change-password" class="text-button" type="button">Change password</button>
         </div>
+        <section class="account-data-panel" aria-labelledby="account-data-title">
+          <h3 id="account-data-title">Your data, your choice.</h3>
+          <p>One account is shared by NetVista Editor and Watch. Your email and optional display name are held by Supabase; Watch also saves your viewing position and My List.</p>
+          <button id="export-account-data" class="text-button" type="button">Download my account &amp; Watch data</button>
+          <button id="open-delete-account" class="text-button danger-text" type="button">Delete my account…</button>
+          <p><a href="/privacy/#storage">How information is saved</a> · <a href="/privacy/#rights">Privacy rights &amp; requests</a></p>
+        </section>
       </section>
 
       <p class="auth-local-note">Your editing projects remain on your device unless you choose to share or export them.</p>
-      <p class="account-privacy">Secure sign-in by Supabase. Passwords are sent over HTTPS and never saved by this page. <a href="https://supabase.com/privacy" target="_blank" rel="noreferrer">Privacy ↗</a></p>
+      <p class="account-privacy">Sign-in is handled by Supabase over HTTPS. This page does not store your password; a sign-in session is stored in this browser. <a href="/privacy/">NetVista privacy policy</a> · <button type="button" data-privacy-settings>Privacy choices</button></p>
     </section>
   </main>
 
   <footer class="site-footer">
     <a class="footer-brand" href="https://netvistastudio.com/">NetVista Studio</a><p>Independent films. Independent tools.</p>
-    <nav class="footer-actions" aria-label="Footer navigation"><a href="https://netvistastudio.com/video-editor/">Creative tools</a><a href="https://netvistastudio.com/video-editor/getting-started/">Guides</a><a href="https://netvistastudio.com/news/">News</a><a href="https://netvistastudio.com/applications/">Applications</a><a href="https://netvistastudio.com/editor/account/">Account</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
+    <nav class="footer-actions" aria-label="Footer navigation"><a href="https://netvistastudio.com/video-editor/">Creative tools</a><a href="https://netvistastudio.com/video-editor/getting-started/">Guides</a><a href="https://netvistastudio.com/news/">News</a><a href="https://netvistastudio.com/applications/">Applications</a><a href="https://netvistastudio.com/editor/account/">Account</a><a href="/privacy/">Privacy &amp; saved data</a><a href="mailto:jackmiller@netvistastudio.com">Contact</a></nav>
     <p class="copyright">© <span id="year" data-current-year>2026</span> NetVista Studio. Public beta—features vary by platform.</p>
   </footer>
 
-  <script type="module" src="account.js?v=3"></script>
+  <dialog class="account-delete-dialog" id="delete-account-dialog" aria-labelledby="delete-account-title" aria-describedby="delete-account-description" data-clarity-mask="true">
+    <h2 id="delete-account-title">Delete your NetVista account?</h2>
+    <p>Account to delete: <strong id="delete-account-email"></strong></p>
+    <p id="delete-account-description">This permanently deletes the account used by <strong>both Editor and Watch</strong>, including your saved Watch progress and My List. You cannot undo this. Your local project files are not deleted.</p>
+    <p>Download your account data first if you want a copy. Security logs, backups and support correspondence may be retained as explained in the <a href="/privacy/#retention">privacy policy</a>.</p>
+    <form id="delete-account-form" method="post">
+      <fieldset disabled class="account-fields">
+        <label for="delete-account-password">Current password</label>
+        <input id="delete-account-password" type="password" autocomplete="current-password" maxlength="1024" required>
+        <label for="delete-account-confirm">Type DELETE to confirm</label>
+        <input id="delete-account-confirm" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" pattern="DELETE" maxlength="6" required>
+        <button class="account-submit delete-submit" type="submit">Permanently delete my account</button>
+      </fieldset>
+      <p id="delete-account-status" role="status" aria-live="polite"></p>
+      <button id="cancel-delete-account" class="text-button" type="button">Cancel — keep my account</button>
+    </form>
+  </dialog>
+  <script type="module" src="account.js?v=4"></script>
 </body>
 </html>

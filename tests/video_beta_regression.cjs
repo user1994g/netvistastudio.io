@@ -78,7 +78,7 @@ assert.match(html, /href="\/video-beta\/assets\/cinema\.css\?v=\d+"/);
 for (const match of html.matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
   const url = new URL(decode(match[1]), videoOrigin + '/');
   assert(![apexOrigin, 'https://www.netvistastudio.com'].includes(url.origin), 'Film navigation must not lead to the main or editor site');
-  if (url.origin === videoOrigin) assert(['/', '/account/'].includes(url.pathname), 'Watch navigation stays on its own page/account callback');
+  if (url.origin === videoOrigin) assert(['/', '/account/', '/privacy/'].includes(url.pathname), 'Watch navigation stays on its own page/account callback or same-site privacy notice');
 }
 const frame = [...html.matchAll(/<video\b[^>]*>/g)];
 assert.equal(frame.length, 1, 'There is one native on-demand film player');
@@ -411,6 +411,14 @@ async function checkWorker() {
       assert.equal(result.calls.length, 1);
       assert.equal(result.calls[0], result.original, `Existing callback Request is unchanged: ${pathname}`);
       assert.equal(result.response, result.assetResponse, `Existing callback Response is unchanged: ${pathname}`);
+    }
+  }
+  for (const pathname of ['/privacy/', '/privacy/index.html', '/assets/privacy-controls.js', '/assets/privacy-controls.css']) {
+    for (const method of ['GET', 'HEAD']) {
+      const result = await route(videoOrigin + pathname, method);
+      assert.equal(result.response.status, 200, 'Privacy notice and preferences remain public on Watch');
+      assert.equal(result.calls.length, 1);
+      assert.equal(result.networkCalls.length, 0, 'Public privacy routes do not request account/catalogue data');
     }
   }
   for (const pathname of ['/account', '/account/', '/account/account.js']) {
@@ -796,7 +804,10 @@ async function checkController() {
   assert(!guest.node('auth-dialog').open, 'Guests can inspect plans without submitting credentials');
   assert.equal(guest.node('free-plan-action').textContent, 'Join for free');
   assert(!guest.calls.some(call => call[0] === 'fetch' || call[0] === 'select'), 'Public Plans do not expose the catalogue');
+  guest.node('signin-email').value = "test' OR 1=1--@example.invalid";
+  guest.node('signin-password').value = "'; DROP TABLE users; -- <script>";
   assert((await guest.node('signin-form').fire('submit')).prevented, 'All form events prevent native credential submission');
+  assert.equal(guest.calls.find(call => call[0] === 'signin')[1].password, "'; DROP TABLE users; -- <script>", 'Watch credentials are passed as literal Auth data, never interpreted as SQL/code');
   assert(!guest.node('authenticated-app').hidden, 'Successful same-project sign-in opens the Watch library');
   const failed = await controller({ sdkFailure: true });
   assert(failed.node('authenticated-app').hidden && failed.node('signin-form:fieldset').disabled);
