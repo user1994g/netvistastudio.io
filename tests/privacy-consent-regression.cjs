@@ -11,7 +11,7 @@ const css = fs.readFileSync(path.join(root, 'assets/privacy-controls.css'), 'utf
 for (const file of ['editor/index.html', 'editor/account/index.html', 'video-beta/index.html']) {
   const page = fs.readFileSync(path.join(root, file), 'utf8');
   assert(!page.includes('clarity.ms/tag/'), file + ': no unconditional vendor loader remains');
-  assert(page.includes('src="/assets/privacy-controls.js?v=1" data-analytics="clarity"'), file + ': shared consent gate');
+  assert(page.includes('src="/assets/privacy-controls.js?v=2" data-analytics="clarity"'), file + ': current shared consent gate bypasses older cached versions');
   assert(page.includes('href="/privacy/"'), file + ': accessible first-party privacy notice');
   assert(page.includes('data-clarity-mask="true"'), file + ': private account/form areas masked');
 }
@@ -252,7 +252,7 @@ assert(html.includes('Formspree') && html.includes('Cloudflare') && html.include
 assert(html.includes('jackmiller@netvistastudio.com'));
 assert(html.includes('not a promise that every backup copy disappears immediately'));
 assert(!/EU approved|GDPR certified|guaranteed compliance/i.test(html), 'Do not invent regulatory approval');
-assert(/<script defer src="\/assets\/privacy-controls\.js\?v=1"><\/script>/.test(html), 'Policy settings do not enable a new analytics page');
+assert(/<script defer src="\/assets\/privacy-controls\.js\?v=2"><\/script>/.test(html), 'Policy settings do not enable a new analytics page');
 assert(!html.includes('https://www.clarity.ms/tag/') && !html.includes('googlesyndication'), 'No direct vendor load from policy markup');
 assert(!code.includes('innerHTML') && !code.includes('eval('), 'Consent UI never interpolates external markup');
 assert(css.includes('.nv-privacy-panel[hidden]{display:none!important}'));
