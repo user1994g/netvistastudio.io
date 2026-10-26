@@ -278,5 +278,6 @@ assert(/@media\s*\(max-width:\s*760px\)\s*\{\s*\.cut-study\s*\{\s*grid-template-
 assert(/\.cut-strip\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/.test(css), 'The three shots can shrink without overflowing the narrow layout');
 assert(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*animation:\s*none\s*!important;\s*transition:\s*none\s*!important/.test(css), 'Reduced-motion users get no decorative motion');
 const routes = JSON.parse(fs.readFileSync(path.join(root, '_routes.json'), 'utf8'));
-assert(routes.exclude.includes('/assets/studio-cut-study.js'), 'The public script bypasses worker routing like the other public-page enhancements');
+assert.deepEqual(routes.include, ['/*'], 'Public enhancement assets reach the hostname guard on every host');
+assert.deepEqual(routes.exclude, [], 'The cut-study script and other public assets cannot bypass exact-host isolation');
 console.log('PASS: manual cut-study playback, finite RAF lifecycle, scrubbing, real DOM reversal, accessible state, safe titles and authored static fallbacks');

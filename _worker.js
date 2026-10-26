@@ -16,7 +16,7 @@ const watchFilms = [
     mediaUrl: 'https://clip-kingdom-play.lovable.app/api/public/stream/878b4496-ab7a-47fe-8e0f-0b489311241c' }
 ];
 const assetPrefixes = ['/assets/images/', '/assets/css/', '/assets/js/', '/video-beta/assets/', '/editor/assets/'];
-const assetFiles = ['/assets/mobile-navigation.js', '/assets/public-domain.js', '/assets/privacy-controls.js', '/assets/privacy-controls.css'];
+const assetFiles = ['/assets/mobile-navigation.js', '/assets/public-domain.js', '/assets/studio-motion.js', '/assets/studio-look-demo.js', '/assets/studio-cut-study.js', '/assets/privacy-controls.js', '/assets/privacy-controls.css'];
 function missing(request) {
   return new Response(request.method === 'HEAD' ? null : 'Not found', { status: 404,
     headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Robots-Tag': noIndex, 'Cache-Control': 'no-store' } });
@@ -49,11 +49,90 @@ async function catalogue(request) {
   } catch { return json({ error: 'Account verification is temporarily unavailable' }, 503); }
   finally { clearTimeout(timer); }
 }
+// Fibre concept: exact-host routing must run before generic asset and API routes.
+// This intentionally does not change the main site or the existing Watch host.
+const host = 'fibre.netvistastudio.com';
+const securityHeaders = {
+  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+  'X-Frame-Options': 'DENY',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'no-referrer',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+  'X-Robots-Tag': 'noindex, nofollow'
+};
+const resources = new Map([
+  // Use the directory form, as in the existing Watch mount, to avoid Pages'
+  // index.html-to-directory canonical redirect exposing an internal mount path.
+  ['/', ['/fibre-concept/', 'text/html; charset=utf-8']],
+  ['/index.html', ['/fibre-concept/', 'text/html; charset=utf-8']],
+  ['/assets/fibre.css', ['/fibre-concept/assets/fibre.css', 'text/css; charset=utf-8']],
+  ['/assets/fibre.js', ['/fibre-concept/assets/fibre.js', 'text/javascript; charset=utf-8']],
+  ['/assets/fibre-loop.svg', ['/fibre-concept/assets/fibre-loop.svg', 'image/svg+xml']],
+  ['/assets/fibre-icon.svg', ['/fibre-concept/assets/fibre-icon.svg', 'image/svg+xml']]
+]);
+
+function plain(request, message, status, extraHeaders = {}) {
+  return new Response(request.method === 'HEAD' ? null : message, {
+    status,
+    headers: { ...securityHeaders, 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store', ...extraHeaders }
+  });
+}
+
+async function handleFibreRequest(request, env) {
+  let url;
+  try { url = new URL(request.url); } catch { return null; }
+  if (url.hostname !== host) return null;
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return plain(request, 'Method not allowed', 405, { Allow: 'GET, HEAD' });
+  }
+  if (url.protocol === 'http:') {
+    url.protocol = 'https:';
+    return plain(request, 'Use HTTPS', 308, { Location: url.toString() });
+  }
+  if (url.protocol !== 'https:') return plain(request, 'Bad request', 400);
+  try { decodeURIComponent(url.pathname); } catch { return plain(request, 'Bad request', 400); }
+  if (url.pathname === '/robots.txt') {
+    return plain(request, 'User-agent: *\nDisallow: /\n', 200, { 'Cache-Control': 'no-cache' });
+  }
+  const resource = resources.get(url.pathname);
+  if (!resource) return plain(request, 'Not found', 404);
+
+  // No request cookies, Authorization, Origin, query, body or other client headers
+  // are passed to the static binding. This concept has no account or API routes.
+  const assetURL = new URL(url);
+  assetURL.pathname = resource[0];
+  assetURL.search = '';
+  let response;
+  try {
+    response = await env.ASSETS.fetch(new Request(assetURL, { method: request.method, redirect: 'manual' }));
+  } catch { return plain(request, 'Concept temporarily unavailable', 502); }
+  if (response.status === 404) return plain(request, 'Not found', 404);
+  if (!response.ok) return plain(request, 'Concept temporarily unavailable', 502);
+
+  // Do not inherit application CORS, Set-Cookie, Location or other route headers.
+  // Encoding/length must stay paired with the upstream static response body.
+  const headers = new Headers(securityHeaders);
+  for (const name of ['Content-Encoding', 'Content-Length', 'ETag', 'Last-Modified']) {
+    const value = response.headers.get(name);
+    if (value !== null) headers.set(name, value);
+  }
+  if (headers.has('Content-Encoding')) headers.set('Vary', 'Accept-Encoding');
+  headers.set('Content-Type', resource[1]);
+  headers.set('Cache-Control', 'no-cache');
+  return new Response(request.method === 'HEAD' ? null : response.body, {
+    status: response.status,
+    headers
+  });
+}
+
 export default {
   async fetch(request, env) {
+    const fibreResponse = await handleFibreRequest(request, env);
+    if (fibreResponse) return fibreResponse;
     const url = new URL(request.url), pathname = url.pathname;
     let decodedPath;
     try { decodedPath = decodeURIComponent(pathname); } catch { return missing(request); }
+    if (decodedPath === '/fibre-concept' || decodedPath.startsWith('/fibre-concept/')) return missing(request);
     if (url.hostname === videoHost && decodedPath === '/assets/js/data/catalog.js') return missing(request);
     if (pathname.startsWith('/api/watch/')) {
       if (url.hostname !== videoHost || pathname !== '/api/watch/catalog') return missing(request);

@@ -159,9 +159,9 @@ async function checkWorker() {
   const routes = JSON.parse(read('_routes.json'));
   assert.equal(routes.version, 1);
   assert.deepEqual(routes.include, ['/*'], 'Host isolation must cover all page requests, including future routes');
-  const excludedAssets = ['/assets/images/*', '/assets/css/*',
+  const formerlyExcludedAssets = ['/assets/images/*', '/assets/css/*',
     '/assets/mobile-navigation.js', '/assets/public-domain.js', '/assets/studio-motion.js', '/assets/studio-look-demo.js', '/assets/studio-cut-study.js', '/video-beta/assets/*', '/editor/assets/*'];
-  assert.deepEqual([...routes.exclude].sort(), [...excludedAssets].sort(), 'Only verified asset-only paths bypass the worker');
+  assert.deepEqual(routes.exclude, [], 'Every public request must reach the exact-host guard before shared assets are served');
   function matches(pattern, pathname) {
     const star = pattern.indexOf('*');
     return star === -1 ? pathname === pattern : pathname.startsWith(pattern.slice(0, star)) && pathname.endsWith(pattern.slice(star + 1));
@@ -177,12 +177,20 @@ async function checkWorker() {
       assert(usesWorker(directory.slice(0, -1)), `Slashless entry must not bypass host isolation: ${directory}`);
     }
   }
-  for (const pattern of excludedAssets) {
+  for (const pattern of formerlyExcludedAssets) {
     const filenames = pattern.endsWith('/*') ? filesUnder(pattern.slice(1, -2)) : [pattern.slice(1)];
-    assert(filenames.length, `Excluded asset path must exist: ${pattern}`);
+    assert(filenames.length, `Previously bypassed shared asset path must still exist: ${pattern}`);
     for (const filename of filenames) {
-      assert(!/\.(?:html?|xhtml)$/i.test(filename), `Excluded directory must not contain HTML: ${filename}`);
-      assert(!usesWorker('/' + filename), `Verified static asset should avoid unnecessary Function requests: ${filename}`);
+      assert(!/\.(?:html?|xhtml)$/i.test(filename), `Shared asset-only directory must not contain HTML: ${filename}`);
+      assert(usesWorker('/' + filename), `Shared assets must reach hostname isolation first: ${filename}`);
+      for (const host of [videoOrigin, apexOrigin]) {
+        for (const method of ['GET', 'HEAD']) {
+          const result = await route(host + '/' + filename + '?v=synthetic', method);
+          assert.equal(result.calls.length, 1, `Existing shared asset still reaches ASSETS: ${host}/${filename}`);
+          assert.equal(result.calls[0], result.original, `Existing shared asset Request is unchanged: ${filename}`);
+          assert.equal(result.response, result.assetResponse, `Existing shared asset Response is unchanged: ${filename}`);
+        }
+      }
     }
   }
   assert(usesWorker('/api/watch/catalog'), 'Catalog access control always reaches the worker');

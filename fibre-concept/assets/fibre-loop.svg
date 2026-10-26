@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" fill="none">
+  <defs>
+    <linearGradient id="cable" x1="124" y1="124" x2="563" y2="569" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fa8458"/>
+      <stop offset=".22" stop-color="#f45d3f"/>
+      <stop offset=".47" stop-color="#e64129"/>
+      <stop offset=".7" stop-color="#ff8b60"/>
+      <stop offset="1" stop-color="#df3e26"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="296" y1="83" x2="456" y2="592" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd2b0" stop-opacity=".85"/>
+      <stop offset=".4" stop-color="#fff1d8" stop-opacity=".36"/>
+      <stop offset=".8" stop-color="#ffd5b1" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#ff9c75" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sleeve" x1="540" y1="489" x2="615" y2="568" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b5347"/>
+      <stop offset=".45" stop-color="#203b2e"/>
+      <stop offset="1" stop-color="#12261c"/>
+    </linearGradient>
+    <radialGradient id="port">
+      <stop stop-color="#f2e3bd"/>
+      <stop offset=".56" stop-color="#cfbb91"/>
+      <stop offset=".58" stop-color="#182c22"/>
+      <stop offset=".88" stop-color="#182c22"/>
+      <stop offset="1" stop-color="#637365"/>
+    </radialGradient>
+    <filter id="ground" x="57" y="88" width="616" height="611" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="detail-shadow" x="68" y="537" width="132" height="145" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <path id="coil" d="M612 100C497 61 359 69 256 145C159 216 120 337 158 447C197 560 302 600 401 554C500 508 528 388 469 311C425 254 342 253 306 306C264 368 291 447 356 463C436 483 532 460 587 526"/>
+  </defs>
+
+  <circle cx="355" cy="350" r="274" stroke="#1b332b" stroke-opacity=".09"/>
+  <circle cx="355" cy="350" r="238" stroke="#1b332b" stroke-opacity=".06" stroke-dasharray="2 8"/>
+  <path d="M47 350h31m554 0h31M355 42v31m0 554v31" stroke="#1b332b" stroke-opacity=".18"/>
+
+  <g opacity=".16" filter="url(#ground)" transform="translate(5 36)">
+    <use href="#coil" stroke="#22382b" stroke-width="56" stroke-linecap="round"/>
+  </g>
+  <use href="#coil" transform="translate(0 5)" stroke="#b63822" stroke-width="57" stroke-linecap="round"/>
+  <use href="#coil" stroke="url(#cable)" stroke-width="56" stroke-linecap="round"/>
+  <use href="#coil" transform="translate(-2 -9)" stroke="url(#shine)" stroke-width="13" stroke-linecap="round"/>
+  <use href="#coil" transform="translate(3 15)" stroke="#ab2e1e" stroke-opacity=".22" stroke-width="7" stroke-linecap="round"/>
+
+  <g transform="rotate(43 587 526)">
+    <rect x="566" y="493" width="63" height="66" rx="11" fill="url(#sleeve)"/>
+    <path d="M577 501v50m9-50v50m9-50v50" stroke="#a5b1a0" stroke-opacity=".17" stroke-width="3"/>
+    <path d="M616 493v66" stroke="#9cae98" stroke-opacity=".35" stroke-width="2"/>
+    <ellipse cx="630" cy="526" rx="11" ry="29" fill="#11251b"/>
+    <ellipse cx="630" cy="526" rx="8" ry="23" fill="#8fa18a"/>
+    <ellipse cx="630" cy="526" rx="6" ry="20" fill="#1b332b"/>
+    <path d="M631 514v24" stroke="#f1caa2" stroke-width="3" stroke-linecap="round"/>
+    <path d="M629 519v14m4-12v10" stroke="#f7f0d9" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <ellipse cx="132" cy="620" rx="41" ry="22" fill="#1b332b" fill-opacity=".17" filter="url(#detail-shadow)"/>
+    <circle cx="129" cy="599" r="39" fill="#ef4e35"/>
+    <circle cx="129" cy="596" r="37" fill="url(#port)"/>
+    <g fill="#f8efd1" stroke="#9d9a6c" stroke-width=".7">
+      <circle cx="129" cy="596" r="5"/>
+      <circle cx="117" cy="589" r="5"/>
+      <circle cx="129" cy="582" r="5"/>
+      <circle cx="141" cy="589" r="5"/>
+      <circle cx="141" cy="603" r="5"/>
+      <circle cx="129" cy="610" r="5"/>
+      <circle cx="117" cy="603" r="5"/>
+    </g>
+    <g fill="#ef8257">
+      <circle cx="129" cy="596" r="2"/>
+      <circle cx="117" cy="589" r="2"/>
+      <circle cx="129" cy="582" r="2"/>
+      <circle cx="141" cy="589" r="2"/>
+      <circle cx="141" cy="603" r="2"/>
+      <circle cx="129" cy="610" r="2"/>
+      <circle cx="117" cy="603" r="2"/>
+    </g>
+  </g>
+  <circle cx="612" cy="100" r="17" fill="#c84029"/>
+  <circle cx="612" cy="100" r="11" fill="#ffbd91" fill-opacity=".54"/>
+</svg>
