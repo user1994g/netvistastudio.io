@@ -6,7 +6,7 @@
   const toggle = header.querySelector('#nav-toggle');
   const nav = header.querySelector('#primary-nav');
   if (!toggle || !nav) return;
-  const mobile = window.matchMedia('(max-width: 1100px)');
+  const mobile = window.matchMedia('(max-width: 1240px)');
   const searchToggle = header.querySelector('#search-toggle');
   const searchPanel = document.querySelector('#search-panel');
   const searchInput = document.querySelector('#search-input');

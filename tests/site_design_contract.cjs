@@ -12,11 +12,18 @@ for (const file of pages) {
  for (const match of html.matchAll(/\b(?:for|aria-controls|aria-labelledby|aria-describedby)="([^"]+)"/g)) for(const id of match[1].split(/\s+/)) assert(ids.includes(id),`${file}: missing referenced element ${id}`);
  for(const id of ['site-header','nav-toggle','primary-nav','search-toggle','search-panel','search-input','search-close','search-results'])assert(ids.includes(id),`${file}: shared shell ${id}`);
  assert(html.includes('class="nv-wordmark">NetVista <small>STUDIO</small>'),`${file}: consistent wordmark`);
- assert(html.includes('mobile-navigation.js?v=20261021-news1'),`${file}: current navigation controller`);
+ assert(html.includes('mobile-navigation.js?v=20261026-links'),`${file}: current navigation controller`);
  const header=html.match(/<header\b[\s\S]*?<\/header>/)[0];
+ for (const [key, host, label] of [['watch','video','Watch'],['fibre','fibre','Fibre']]) {
+  const links=[...header.matchAll(new RegExp(`<a\\b[^>]*data-related-site="${key}"[^>]*>[\\s\\S]*?<\\/a>`, 'g'))];
+  assert.equal(links.length,1,`${file}: one ${label} menu link`);
+  for (const attribute of [`href="https://${host}.netvistastudio.com/"`, 'target="_blank"', 'rel="noopener noreferrer"', `aria-label="${label} (opens in new tab)"`]) assert(links[0][0].includes(attribute),`${file}: ${label} link ${attribute}`);
+ }
  headers.push(header.replaceAll('https://netvistastudio.com','').replaceAll(' class="is-active" aria-current="page"',''));
 }
 assert(headers.every(header=>header===headers[0]),'Every main-site page shares identical navigation and branding');
+assert(read('assets/css/studio-shared.css').includes('@media (max-width: 1240px)'), 'Expanded menu collapses before links crowd');
+assert(read('assets/mobile-navigation.js').includes("matchMedia('(max-width: 1240px)')"), 'Menu controller matches the stylesheet breakpoint');
 for(const [htmlFile,jsFile] of [['editor/account/index.html','editor/account/account.js'],['index.html','assets/js/app.js']]){
  const html=read(htmlFile), js=read(jsFile);
  for(const match of js.matchAll(/(?:\$|document\.querySelector)\(['"]#([A-Za-z][\w-]*)['"]\)/g)) assert(html.includes(`id="${match[1]}"`),`${htmlFile}: controller target #${match[1]} must survive layout changes`);

@@ -212,7 +212,7 @@ function document({ pathname, title, description, image, graph, content, post })
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=20261021">
+  <link rel="stylesheet" href="/assets/css/studio-shared.css?v=20261026-links">
   <link rel="stylesheet" href="/assets/css/studio-news.css?v=2">
   <script src="/assets/public-domain.js"></script>
   <script defer src="${escape(navScript)}"></script>

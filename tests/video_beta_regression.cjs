@@ -133,13 +133,18 @@ function filesUnder(directory) {
 const publicHTML = ['index.html', '404.html', ...['applications', 'video-editor', 'editor', 'video-beta', 'news']
   .flatMap(filesUnder).filter(filename => filename.endsWith('.html'))];
 for (const filename of publicHTML.filter(filename => !filename.startsWith('video-beta/'))) {
+  const html = read(filename);
+  const navigation = html.match(/<nav class="nv-nav" id="primary-nav"[\s\S]*?<\/nav>/);
   for (const match of read(filename).matchAll(/<a\b[^>]*href="([^"]+)"/g)) {
     const url = new URL(decode(match[1]), apexOrigin + '/' + filename);
-    assert.notEqual(url.hostname, 'video.netvistastudio.com', `Main/editor navigation must not link to the unlisted film site: ${filename}`);
+    if (url.hostname === 'video.netvistastudio.com') {
+      assert.equal(url.href, 'https://video.netvistastudio.com/', `Only the Watch entry point belongs in public navigation: ${filename}`);
+      assert(navigation && match.index >= navigation.index && match.index < navigation.index + navigation[0].length && navigation[0].includes('data-related-site="watch"'), `Watch link must be in the shared menu: ${filename}`);
+    }
     assert(!/^\/video-beta(?:\/|$)/.test(url.pathname), `Main/editor navigation must not expose the film source path: ${filename}`);
   }
 }
-assert(!read('sitemap.xml').includes('video.netvistastudio.com'), 'The main sitemap must not advertise the unlisted film host');
+assert(!read('sitemap.xml').includes('video.netvistastudio.com'), 'Watch retains its independent sitemap');
 assert(!read('sitemap.xml').includes('/video-beta'), 'The main sitemap must not advertise the film source path');
 
 async function checkWorker() {

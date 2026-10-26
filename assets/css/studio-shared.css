@@ -189,7 +189,7 @@ html.navigation-open, html.search-open { overflow: hidden; }
 .nv-site .application-form .form-status { min-height: 22px; color: #315b3a; font-size: 14px; line-height: 1.6; }
 .nv-site .application-form .form-status.is-error { color: #b92727; }
 
-@media (max-width: 1100px) {
+@media (max-width: 1240px) {
   :root { --nv-header-height: 64px; }
   .nv-header { gap: 14px; }
   .nv-brand { order: 1; }
