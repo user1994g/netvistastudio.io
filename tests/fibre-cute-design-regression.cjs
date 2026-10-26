@@ -85,14 +85,21 @@ assert.equal(tagForId('menu-toggle')['aria-controls'], 'primary-nav');
 assert.equal(tagForId('menu-toggle')['aria-expanded'], 'false');
 
 const resources = new Set();
+const allowedResources = new Set(['./assets/fibre-icon.svg', './assets/fibre-loop.svg', './assets/fibre.css', './assets/fibre.js']);
 for (const match of html.matchAll(/<(?:script|img|link)\b[^>]*>/g)) {
   const item = attrs(match[0]);
   const address = item.src || (['stylesheet', 'icon'].includes(item.rel) ? item.href : null);
   if (!address) continue;
   assert.ok(address.startsWith('./assets/'), 'No new remote script, stylesheet or image dependency');
-  resources.add(address.split('?')[0]);
+  const resource = address.split('?')[0];
+  assert.ok(allowedResources.has(resource), `Unexpected resource outside the existing local asset allowlist: ${resource}`);
+  const filename = path.join(root, 'fibre-concept', resource);
+  assert.ok(fs.existsSync(filename) && fs.statSync(filename).isFile(), `Declared local asset exists: ${resource}`);
+  resources.add(resource);
 }
-assert.deepEqual([...resources].sort(), ['./assets/fibre-icon.svg', './assets/fibre-loop.svg', './assets/fibre.css', './assets/fibre.js'].sort());
+for (const resource of allowedResources) {
+  assert.ok(resources.has(resource), `Required local site resource is retained: ${resource}`);
+}
 assert.equal([...html.matchAll(/<script\b/g)].length, 1, 'Only the existing local controller script is loaded');
 assert.ok(!/<form\b|\son[a-z]+\s*=/i.test(html), 'No checkout/form or inline event handler is introduced');
 assert.ok(!/clarity\.ms|googletagmanager|googlesyndication|google-analytics|stripe\.com/i.test(html + css + js), 'No tracking or payment integration is added');

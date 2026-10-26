@@ -1,53 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" fill="none">
-  <!-- Original NetVista Fibre companion. Illustration, not actual equipment. -->
-  <ellipse cx="365" cy="594" rx="227" ry="24" fill="#32243f" fill-opacity=".08"/>
-  <path d="M122 368C108 291 157 234 227 208C306 177 371 203 437 185C503 167 600 178 626 255C649 324 608 397 620 461C632 523 568 566 495 578C399 596 326 561 250 567C170 575 120 520 128 454C132 422 129 401 122 368Z" fill="#fff0a6"/>
-  <path d="M523 446C615 455 654 404 636 350C618 298 545 314 535 263C523 210 562 164 611 175C658 185 666 244 629 268" stroke="#32243f" stroke-width="23" stroke-linecap="round"/>
-  <path d="M523 446C615 455 654 404 636 350C618 298 545 314 535 263C523 210 562 164 611 175C658 185 666 244 629 268" stroke="#f17966" stroke-width="18" stroke-linecap="round"/>
-  <path d="M546 442C611 442 643 404 629 358" stroke="#ffd3ae" stroke-width="4" stroke-linecap="round"/>
-  <path d="m629 268-12 9" stroke="#32243f" stroke-width="28" stroke-linecap="round"/>
-  <path d="m630 268-12 9" stroke="#a5d8bf" stroke-width="20" stroke-linecap="round"/>
-  <path d="m624 264-13 10m17-5-13 10" stroke="#32243f" stroke-width="2" stroke-linecap="round"/>
-  <path d="M239 295L214 204" stroke="#32243f" stroke-width="27" stroke-linecap="round"/>
-  <path d="M239 295L214 204" stroke="#f7c5da" stroke-width="21" stroke-linecap="round"/>
-  <path d="M493 295L515 204" stroke="#32243f" stroke-width="27" stroke-linecap="round"/>
-  <path d="M493 295L515 204" stroke="#f7c5da" stroke-width="21" stroke-linecap="round"/>
-  <path d="M236 278L216 207M495 278L514 208" stroke="#fff7e6" stroke-width="4" stroke-linecap="round"/>
-  <path d="M233 502L225 552C221 569 238 579 262 575L282 567L287 511" fill="#d9cbff" stroke="#32243f" stroke-width="3.5" stroke-linejoin="round"/>
-  <path d="M440 509L447 565L467 573C489 578 506 568 500 550L491 504" fill="#d9cbff" stroke="#32243f" stroke-width="3.5" stroke-linejoin="round"/>
-  <rect x="172" y="283" width="386" height="238" rx="62" fill="#f7c5da" stroke="#32243f" stroke-width="3.5"/>
-  <path d="M174 429C174 478 202 507 243 507H491C519 507 542 489 554 464V466C554 495 531 519 500 519H233C200 519 174 490 174 459Z" fill="#e5a6c1"/>
-  <rect x="175" y="278" width="376" height="221" rx="59" fill="#fff8e9" stroke="#32243f" stroke-width="3.5"/>
-  <path d="M204 322C210 305 227 296 247 296H480M197 340V349" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
-  <ellipse cx="279" cy="378" rx="9" ry="12" fill="#32243f"/>
-  <ellipse cx="447" cy="378" rx="9" ry="12" fill="#32243f"/>
-  <ellipse cx="254" cy="405" rx="21" ry="11" fill="#f7c5da"/>
-  <ellipse cx="472" cy="405" rx="21" ry="11" fill="#f7c5da"/>
-  <path d="M335 404C345 421 380 421 391 404" stroke="#32243f" stroke-width="5" stroke-linecap="round"/>
-  <path d="M352 374Q363 366 374 374" stroke="#dca9ad" stroke-width="3" stroke-linecap="round"/>
-  <path d="M223 462H239M251 462H267M279 462H295" stroke="#b9a3b6" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="471" cy="462" r="5" fill="#a5d8bf" stroke="#32243f" stroke-width="1.5"/>
-  <circle cx="490" cy="462" r="5" fill="#d9cbff" stroke="#32243f" stroke-width="1.5"/>
-  <circle cx="509" cy="462" r="5" fill="#f17966" stroke="#32243f" stroke-width="1.5"/>
-  <path d="M112 548V597" stroke="#32243f" stroke-width="4" stroke-linecap="round"/>
-  <path d="M112 580C94 579 84 569 82 557C99 556 111 565 112 580Z" fill="#a5d8bf" stroke="#32243f" stroke-width="2.5"/>
-  <path d="M113 591C131 590 141 581 142 570C126 568 114 578 113 591Z" fill="#a5d8bf" stroke="#32243f" stroke-width="2.5"/>
-  <g fill="#f7c5da" stroke="#32243f" stroke-width="2.5">
-    <ellipse cx="112" cy="510" rx="13" ry="19"/>
-    <ellipse cx="112" cy="549" rx="13" ry="19"/>
-    <ellipse cx="92" cy="530" rx="19" ry="13"/>
-    <ellipse cx="132" cy="530" rx="19" ry="13"/>
-    <ellipse cx="98" cy="516" rx="12" ry="16" transform="rotate(-45 98 516)"/>
-    <ellipse cx="126" cy="544" rx="12" ry="16" transform="rotate(-45 126 544)"/>
+  <!-- Original editorial equipment study; not a real NetVista product. -->
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M352 366C351 413 414 431 416 486C419 553 354 592 269 588C174 585 116 529 137 450C152 392 238 366 302 386C367 407 384 489 335 526C292 559 208 542 188 499C174 469 183 432 213 414C239 398 246 366 225 335L194 302" stroke="#666875" stroke-width="9"/>
+    <path d="M352 366C351 413 414 431 416 486C419 553 354 592 269 588C174 585 116 529 137 450C152 392 238 366 302 386C367 407 384 489 335 526C292 559 208 542 188 499C174 469 183 432 213 414C239 398 246 366 225 335L194 302" stroke="#d8d1e2" stroke-width="5"/>
+
+    <rect x="296" y="140" width="302" height="226" rx="13" fill="#f6f4ef" stroke="#25262b" stroke-width="2.5"/>
+    <path d="M310 156H584M310 348H584" stroke="#666875" stroke-width="1.5"/>
+    <path d="M326 177V248M336 177V248M346 177V248M356 177V248M366 177V248M376 177V248M386 177V248M396 177V248M406 177V248M416 177V248M426 177V248M436 177V248M446 177V248M456 177V248M466 177V248M476 177V248M486 177V248M496 177V248M506 177V248M516 177V248M526 177V248M536 177V248M546 177V248M556 177V248M566 177V248" stroke="#666875" stroke-width="1.4"/>
+    <path d="M325 285H349M325 291H341" stroke="#25262b" stroke-width="2"/>
+    <path d="M466 303H571" stroke="#666875" stroke-width="1.4"/>
+    <path d="M470 316H475M488 316H493M506 316H511M524 316H529M542 316H547M560 316H565" stroke="#666875" stroke-width="2"/>
+    <rect x="337" y="350" width="30" height="25" rx="2" fill="#d8d1e2" stroke="#25262b" stroke-width="2"/>
+    <path d="M344 355H360M344 360H360M345 375V382M351 375V382M357 375V382" stroke="#666875" stroke-width="1.4"/>
+    <path d="M438 350V367H465V350M480 350V367H507V350M522 350V367H549V350" stroke="#25262b" stroke-width="1.5"/>
+    <path d="M444 357H459M486 357H501M528 357H543" stroke="#666875" stroke-width="1.2"/>
+
+    <g transform="rotate(-36 183 285)">
+      <rect x="173" y="269" width="20" height="35" rx="2" fill="#d8d1e2" stroke="#25262b" stroke-width="2"/>
+      <path d="M179 269V255H187V269" fill="#f6f4ef" stroke="#25262b" stroke-width="1.8"/>
+      <path d="M178 277H188M178 284H188M178 291H188" stroke="#666875" stroke-width="1.2"/>
+      <path d="M178 305V312M183 305V312M188 305V312" stroke="#666875" stroke-width="1.2"/>
+    </g>
   </g>
-  <circle cx="112" cy="530" r="19" fill="#fff0a6" stroke="#32243f" stroke-width="2.5"/>
-  <circle cx="106" cy="528" r="2" fill="#32243f"/>
-  <circle cx="118" cy="528" r="2" fill="#32243f"/>
-  <path d="M108 535Q112 539 116 535" stroke="#32243f" stroke-width="2" stroke-linecap="round"/>
-  <path d="M117 182C101 182 95 161 107 152C106 128 138 119 151 137C170 132 185 149 177 166C187 177 177 188 165 188H124" fill="#a5d8bf" stroke="#32243f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M327 129L337 153L361 163L337 173L327 197L317 173L293 163L317 153Z" fill="#d9cbff" stroke="#32243f" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M613 500L621 519L640 527L621 535L613 554L605 535L586 527L605 519Z" fill="#f17966" stroke="#32243f" stroke-width="3" stroke-linejoin="round"/>
-  <circle cx="435" cy="136" r="6" fill="#f17966"/>
-  <circle cx="92" cy="357" r="5" fill="#32243f"/>
-  <path d="M132 268H147M139 261V276M584 111H597M590 105V118" stroke="#32243f" stroke-width="3" stroke-linecap="round"/>
 </svg>
