@@ -16,7 +16,12 @@
   const presets = Array.from(document.querySelectorAll('[data-speed]'));
   const plans = Array.from(document.querySelectorAll('[data-plan-speed]'));
   const selectedPlanStatus = document.getElementById('selected-plan-status');
-  const planNames = new Map([[500, '500 Mbps'], [1000, '1 Gig'], [2000, '2 Gig'], [20000, '20 Gig']]);
+  const planNames = new Map([[500, '500 Mbps'], [1000, '1 Gig'], [2000, '2 Gig'], [5000, '5 Gig'], [8000, '8 Gig'], [12000, '12 Gig'], [15000, '15 Gig'], [20000, '20 Gig']]);
+  // Each page owns its speed range: the main range ends at 15 Gig; the
+  // separate specialist page compares 12 and 20 Gig without cross-page state.
+  const minimum = Number(speed.getAttribute('min'));
+  const maximum = Number(speed.getAttribute('max'));
+  const initialSpeed = Number(speed.value);
   let returnFocus = null;
 
   // This notice is deliberately not remembered. Every new page load starts here.
@@ -57,12 +62,12 @@
     // The dropdown and slider are bounded, but treat their values as untrusted.
     const parsedSpeed = Number(speed.value);
     const parsedSize = Number(size.value);
-    const mbps = Number.isFinite(parsedSpeed) ? Math.max(500, Math.min(20000, parsedSpeed)) : 1000;
+    const mbps = Number.isFinite(parsedSpeed) ? Math.max(minimum, Math.min(maximum, parsedSpeed)) : initialSpeed;
     const gigabytes = [1, 10, 100].includes(parsedSize) ? parsedSize : 10;
     const label = mbps.toLocaleString('en-GB');
     speedValue.textContent = label;
     speed.setAttribute('aria-valuetext', `${label} megabits per second, illustrative`);
-    speed.style.setProperty('--range-progress', `${((mbps - 500) / 19500) * 100}%`);
+    speed.style.setProperty('--range-progress', `${((mbps - minimum) / (maximum - minimum)) * 100}%`);
     time.textContent = formatTime(Math.ceil((gigabytes * 8000) / mbps));
     detail.textContent = `For ${gigabytes} GB at ${label} Mbps.`;
     presets.forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.speed) === mbps)));

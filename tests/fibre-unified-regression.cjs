@@ -32,6 +32,7 @@ function fixture() {
   const requests = [];
   const pages = new Map([
     ['/fibre-concept/', '<!doctype html><h1>This is not a real ISP.</h1>'],
+    ['/fibre-concept/high-speed/', '<!doctype html><h1>12 and 20 Gig fictional concepts.</h1>'],
     ['/fibre-concept/assets/fibre.css', '/* Fibre stylesheet */'],
     ['/fibre-concept/assets/fibre.js', '/* Fibre calculator */'],
     ['/fibre-concept/assets/fibre-loop.svg', '<svg><title>Fibre loop</title></svg>'],
@@ -92,6 +93,33 @@ test('all four Fibre assets are mounted into the concept directory only', async 
   assert.deepEqual(requests.map(request => new URL(request.url).pathname), [...contentTypes.keys()].map(file => '/fibre-concept/assets/' + file));
 });
 
+test('specialist page is routed only on Fibre and strips incoming account headers', async () => {
+  const { requests, env } = fixture();
+  for (const suffix of ['/high-speed/', '/high-speed/index.html']) {
+    const response = await worker.fetch(new Request(fibre + suffix + '?test=1', {
+      headers: { Cookie: 'account=fixture', Authorization: 'Bearer fixture' }
+    }), env);
+    assert.equal(response.status, 200);
+    assert.match(await response.text(), /12 and 20 Gig fictional/);
+    assert.equal(response.headers.get('Content-Type'), 'text/html; charset=utf-8');
+    assertFibreHeaders(response);
+    const assetRequest = requests.at(-1);
+    assert.equal(new URL(assetRequest.url).pathname, '/fibre-concept/high-speed/');
+    assert.equal(new URL(assetRequest.url).search, '');
+    assert.equal(assetRequest.headers.get('Cookie'), null);
+    assert.equal(assetRequest.headers.get('Authorization'), null);
+  }
+  const redirect = await worker.fetch(new Request(fibre + '/high-speed'), env);
+  assert.equal(redirect.status, 308);
+  assert.equal(redirect.headers.get('Location'), fibre + '/high-speed/');
+  const head = await worker.fetch(new Request(fibre + '/high-speed/', { method: 'HEAD' }), env);
+  assert.equal(head.status, 200);
+  assert.equal(await head.text(), '');
+  const unknown = await worker.fetch(new Request(fibre + '/high-speed/anything'), env);
+  assert.equal(unknown.status, 404);
+  assert.equal(externalFetches, 0);
+});
+
 test('Fibre never falls through into main assets, editor, Watch or API routes', async () => {
   const { requests, env } = fixture();
   for (const suffix of [
@@ -111,7 +139,7 @@ test('Fibre never falls through into main assets, editor, Watch or API routes', 
 test('internal Fibre mount and encoded aliases cannot be opened on main or Watch hosts', async () => {
   const { requests, env } = fixture();
   for (const origin of [main, watch]) {
-    for (const suffix of ['/fibre-concept', '/fibre-concept/', '/fibre-concept/index.html', '/%66ibre-concept/', '/fibre-concept%2Fassets/fibre.js']) {
+    for (const suffix of ['/fibre-concept', '/fibre-concept/', '/fibre-concept/index.html', '/fibre-concept/high-speed/', '/fibre-concept/high-speed/index.html', '/%66ibre-concept/', '/fibre-concept%2Fassets/fibre.js']) {
       const response = await worker.fetch(new Request(origin + suffix), env);
       assert.equal(response.status, 404, origin + suffix);
       assert.equal(response.headers.get('Cache-Control'), 'no-store');

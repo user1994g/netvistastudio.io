@@ -118,7 +118,7 @@ class Element extends EventTarget {
   click() { if (!this.disabled) this.dispatchEvent({ type: 'click', bubbles: true }); }
 }
 
-function createHarness() {
+function createHarness(pageHTML = html) {
   const document = new EventTarget();
   document.children = [];
   document.readyState = 'complete';
@@ -128,7 +128,7 @@ function createHarness() {
   document.activeElement = null;
   const stack = [document];
   const voidTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
-  const tokens = html.replace(/<!--[^]*?-->/g, '').match(/<[^>]+>|[^<]+/g) || [];
+  const tokens = pageHTML.replace(/<!--[^]*?-->/g, '').match(/<[^>]+>|[^<]+/g) || [];
   for (const token of tokens) {
     const end = token.match(/^<\/([a-z][\w-]*)/i);
     if (end) {
@@ -255,7 +255,7 @@ check('transfer calculator uses the advertised theoretical formula', () => {
   assert.equal(file.value, '10');
   assert.equal(speed.value, '1000');
   assert.equal(speed.getAttribute('min'), '500');
-  assert.equal(speed.getAttribute('max'), '20000');
+  assert.equal(speed.getAttribute('max'), '15000');
   assert.equal(speed.getAttribute('step'), '500');
   assert.equal(output.textContent.trim(), '1 min 20 sec');
   file.value = '100'; file.dispatchEvent({ type: 'change' });
@@ -263,10 +263,10 @@ check('transfer calculator uses the advertised theoretical formula', () => {
   file.value = '1'; file.dispatchEvent({ type: 'change' });
   assert.equal(output.textContent.trim(), '8 sec');
   file.value = '10'; file.dispatchEvent({ type: 'change' });
-  speed.value = '20000'; speed.dispatchEvent({ type: 'input' });
-  assert.equal(output.textContent.trim(), '4 sec');
+  speed.value = '15000'; speed.dispatchEvent({ type: 'input' });
+  assert.equal(output.textContent.trim(), '6 sec');
   file.value = '100'; file.dispatchEvent({ type: 'change' });
-  assert.equal(output.textContent.trim(), '40 sec');
+  assert.equal(output.textContent.trim(), '54 sec');
   speed.value = '500'; speed.dispatchEvent({ type: 'input' });
   assert.equal(output.textContent.trim(), '26 min 40 sec');
 });
@@ -274,15 +274,15 @@ check('transfer calculator uses the advertised theoretical formula', () => {
 check('speed presets update the slider, estimate and pressed states together', () => {
   const { document, byId } = createHarness();
   const presets = document.querySelectorAll('[data-speed]');
-  assert.equal(presets.length, 4);
-  assert.deepEqual(presets.map(button => button.dataset.speed), ['500', '1000', '2000', '20000']);
-  const fastest = presets.find(button => button.dataset.speed === '20000');
+  assert.equal(presets.length, 6);
+  assert.deepEqual(presets.map(button => button.dataset.speed), ['500', '1000', '2000', '5000', '8000', '15000']);
+  const fastest = presets.find(button => button.dataset.speed === '15000');
   fastest.click();
-  assert.equal(byId('connection-speed').value, '20000');
-  assert.equal(byId('transfer-time').textContent.trim(), '4 sec');
+  assert.equal(byId('connection-speed').value, '15000');
+  assert.equal(byId('transfer-time').textContent.trim(), '6 sec');
   assert.equal(fastest.getAttribute('aria-pressed'), 'true');
   assert.equal(presets.filter(button => button.getAttribute('aria-pressed') === 'true').length, 1);
-  assert.match(byId('connection-speed').getAttribute('aria-valuetext'), /20,000.*illustrative/);
+  assert.match(byId('connection-speed').getAttribute('aria-valuetext'), /15,000.*illustrative/);
 });
 
 check('each fictional plan updates the calculator without placing an order', () => {
@@ -291,13 +291,15 @@ check('each fictional plan updates the calculator without placing an order', () 
   const status = byId('selected-plan-status');
   assert.equal(status.getAttribute('role'), 'status');
   assert.equal(status.textContent, '1 Gig concept selected. Nothing has been ordered.');
-  assert.equal(plans.length, 4);
-  assert.deepEqual(plans.map(button => button.dataset.planSpeed), ['500', '1000', '2000', '20000']);
+  assert.equal(plans.length, 6);
+  assert.deepEqual(plans.map(button => button.dataset.planSpeed), ['500', '1000', '2000', '5000', '8000', '15000']);
   const expected = {
     '500': ['500 Mbps', '2 min 40 sec'],
     '1000': ['1 Gig', '1 min 20 sec'],
     '2000': ['2 Gig', '40 sec'],
-    '20000': ['20 Gig', '4 sec']
+    '5000': ['5 Gig', '16 sec'],
+    '8000': ['8 Gig', '10 sec'],
+    '15000': ['15 Gig', '6 sec']
   };
   for (const button of plans) {
     const mbps = button.dataset.planSpeed;
@@ -331,7 +333,7 @@ check('calculator clamps unexpected input instead of emitting NaN or markup', ()
   speed.value = '-500'; speed.dispatchEvent({ type: 'input' });
   assert.equal(output.textContent.trim(), '2 min 40 sec');
   speed.value = '99999'; speed.dispatchEvent({ type: 'input' });
-  assert.equal(output.textContent.trim(), '4 sec');
+  assert.equal(output.textContent.trim(), '6 sec');
 });
 
 check('concept does not collect accounts, analytics, orders or payment data', () => {
@@ -344,6 +346,43 @@ check('concept does not collect accounts, analytics, orders or payment data', ()
   const { document } = createHarness();
   for (const link of document.querySelectorAll('a[href]')) {
     assert.doesNotMatch(link.getAttribute('href'), /checkout|payment|stripe\.com|paypal\.com/i);
+  }
+});
+
+check('12 and 20 Gig live on their own gated page, not in the main plan cards', () => {
+  const specialist = fs.readFileSync(path.join(root, 'high-speed/index.html'), 'utf8');
+  const { document, window, byId } = createHarness(specialist);
+  assert.equal(byId('concept-gate').hidden, false);
+  assert.equal(byId('site-content').hidden, true);
+  assert.equal(byId('site-content').inert, true);
+  byId('enter-concept').click();
+  assert.equal(byId('site-content').hidden, false);
+  const plans = document.querySelectorAll('[data-plan-speed]');
+  assert.deepEqual(plans.map(button => button.dataset.planSpeed), ['12000', '20000']);
+  assert.equal(byId('connection-speed').getAttribute('min'), '12000');
+  assert.equal(byId('connection-speed').getAttribute('max'), '20000');
+  assert.equal(byId('transfer-time').textContent.trim(), '7 sec');
+  assert.equal(byId('selected-plan-status').textContent, '12 Gig concept selected. Nothing has been ordered.');
+  plans[1].click();
+  assert.equal(byId('connection-speed').value, '20000');
+  assert.equal(byId('transfer-time').textContent.trim(), '4 sec');
+  assert.equal(byId('selected-plan-status').textContent, '20 Gig concept selected. Nothing has been ordered.');
+  plans[0].click();
+  assert.equal(byId('transfer-time').textContent.trim(), '7 sec');
+  byId('connection-speed').value = '-500';
+  byId('connection-speed').dispatchEvent({ type: 'input' });
+  assert.equal(byId('transfer-time').textContent.trim(), '7 sec');
+  byId('connection-speed').value = '99999';
+  byId('connection-speed').dispatchEvent({ type: 'input' });
+  assert.equal(byId('transfer-time').textContent.trim(), '4 sec');
+  window.dispatchEvent({ type: 'pageshow', persisted: true });
+  assert.equal(byId('site-content').hidden, true);
+  assert(html.includes('href="./high-speed/"'), 'Main page links to specialist page');
+  assert(specialist.includes('href="../#plans"'), 'Specialist page links back to main plans');
+  for (const page of [html, specialist]) {
+    assert.doesNotMatch(page, /<form[\s>]|<script[^>]+src=["'](?:https?:)?\/\//i);
+    const ids = [...page.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+    assert.equal(ids.length, new Set(ids).size);
   }
 });
 

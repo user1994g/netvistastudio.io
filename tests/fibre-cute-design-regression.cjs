@@ -6,9 +6,14 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'fibre-concept/index.html'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'fibre-concept/assets/fibre.css'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'fibre-concept/assets/fibre.js'), 'utf8');
+
+for (const [filename, expected] of [
+  ['fibre-concept/index.html', new Map([['500', '25'], ['1000', '35'], ['2000', '49'], ['5000', '65'], ['8000', '85'], ['15000', '129']])],
+  ['fibre-concept/high-speed/index.html', new Map([['12000', '109'], ['20000', '149']])]
+]) {
+const html = fs.readFileSync(path.join(root, filename), 'utf8');
 
 function attrs(tag) {
   return Object.fromEntries([...tag.matchAll(/([^\s=<>/]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/g)]
@@ -40,8 +45,7 @@ assert.match(html, /<noscript\b/i, 'There is a usable no-JavaScript explanation'
 
 const plans = [...html.matchAll(/<article\b[^>]*>[\s\S]*?<\/article>/g)]
   .map(match => match[0]).filter(fragment => /\bdata-plan-speed=/.test(fragment));
-assert.equal(plans.length, 4, 'There are exactly four fictional plan cards');
-const expected = new Map([['500', '25'], ['1000', '35'], ['2000', '49'], ['20000', '149']]);
+assert.equal(plans.length, expected.size, `${filename}: exactly the requested fictional plan cards`);
 const seen = new Set();
 for (const card of plans) {
   const button = card.match(/<button\b[^>]*\bdata-plan-speed=[^>]*>/)?.[0];
@@ -90,8 +94,8 @@ for (const match of html.matchAll(/<(?:script|img|link)\b[^>]*>/g)) {
   const item = attrs(match[0]);
   const address = item.src || (['stylesheet', 'icon'].includes(item.rel) ? item.href : null);
   if (!address) continue;
-  assert.ok(address.startsWith('./assets/'), 'No new remote script, stylesheet or image dependency');
-  const resource = address.split('?')[0];
+  assert.ok(/^\.\.?\/assets\//.test(address), 'No new remote script, stylesheet or image dependency');
+  const resource = address.split('?')[0].replace('../assets/', './assets/');
   assert.ok(allowedResources.has(resource), `Unexpected resource outside the existing local asset allowlist: ${resource}`);
   const filename = path.join(root, 'fibre-concept', resource);
   assert.ok(fs.existsSync(filename) && fs.statSync(filename).isFile(), `Declared local asset exists: ${resource}`);
@@ -122,3 +126,4 @@ for (const name of ['hero', 'plan-grid']) {
 }
 
 console.log('PASS: fictional tier/pricing contracts, shared 50G PON caveat, mandatory notice, local-only resources, accessibility and responsive/reduced-motion authoring');
+}

@@ -65,6 +65,8 @@ const resources = new Map([
   // index.html-to-directory canonical redirect exposing an internal mount path.
   ['/', ['/fibre-concept/', 'text/html; charset=utf-8']],
   ['/index.html', ['/fibre-concept/', 'text/html; charset=utf-8']],
+  ['/high-speed/', ['/fibre-concept/high-speed/', 'text/html; charset=utf-8']],
+  ['/high-speed/index.html', ['/fibre-concept/high-speed/', 'text/html; charset=utf-8']],
   ['/assets/fibre.css', ['/fibre-concept/assets/fibre.css', 'text/css; charset=utf-8']],
   ['/assets/fibre.js', ['/fibre-concept/assets/fibre.js', 'text/javascript; charset=utf-8']],
   ['/assets/fibre-loop.svg', ['/fibre-concept/assets/fibre-loop.svg', 'image/svg+xml']],
@@ -93,6 +95,9 @@ async function handleFibreRequest(request, env) {
   try { decodeURIComponent(url.pathname); } catch { return plain(request, 'Bad request', 400); }
   if (url.pathname === '/robots.txt') {
     return plain(request, 'User-agent: *\nDisallow: /\n', 200, { 'Cache-Control': 'no-cache' });
+  }
+  if (url.pathname === '/high-speed') {
+    return plain(request, 'Use the canonical page', 308, { Location: `https://${host}/high-speed/` });
   }
   const resource = resources.get(url.pathname);
   if (!resource) return plain(request, 'Not found', 404);
